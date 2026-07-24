@@ -1,5 +1,5 @@
 import { useEffect, useState, Component } from 'react'
-import type { ErrorInfo, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { Button } from '@/components/ui/Button'
