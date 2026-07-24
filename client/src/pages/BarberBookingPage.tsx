@@ -49,8 +49,8 @@ export function BarberBookingPage() {
     }
   }, [user, clientName, clientPhone])
 
-  const totalPrice = selectedServices.reduce((acc, s) => acc + s.price, 0)
-  const totalDuration = selectedServices.reduce((acc, s) => acc + s.durationMin, 0)
+  const totalPrice = selectedServices.reduce((acc, s) => acc + (Number(s.price) || 0), 0)
+  const totalDuration = selectedServices.reduce((acc, s) => acc + (Number(s.durationMin) || 0), 0)
 
   // Next 14 days in Brasilia Timezone
   const availableDates = getBrasiliaNextDays(14)
@@ -257,7 +257,7 @@ export function BarberBookingPage() {
                     </div>
                     <div className="text-right flex flex-col items-end gap-2 ml-4">
                       <span className="font-mono text-xl font-extrabold text-white whitespace-nowrap">
-                        R$ {srv.price.toFixed(2)}
+                        R$ {Number(srv.price || 0).toFixed(2)}
                       </span>
                       <span className="bg-white/5 px-2.5 py-1 rounded-lg text-xs font-mono text-[#8C97A8] flex items-center gap-1 whitespace-nowrap">
                         <Clock className="w-3 h-3" /> {srv.durationMin} min
@@ -463,7 +463,7 @@ export function BarberBookingPage() {
           <div className="max-w-2xl mx-auto flex items-center justify-between">
             <div className="flex flex-col">
               <span className="text-xs text-[#8C97A8] font-medium">{selectedServices.length} serviço{selectedServices.length !== 1 ? 's' : ''} selecionado{selectedServices.length !== 1 ? 's' : ''}</span>
-              <span className="font-mono text-2xl font-bold text-[#11AFFA]">R$ {totalPrice.toFixed(2)}</span>
+              <span className="font-mono text-2xl font-bold text-[#11AFFA]">R$ {Number(totalPrice || 0).toFixed(2)}</span>
             </div>
             <button 
               disabled={selectedServices.length === 0} 
