@@ -1,7 +1,7 @@
 import { GlassCard } from '@/components/ui/GlassCard'
 import { AppointmentCard, type DashboardAppointment } from '@/components/dashboard/AppointmentCard'
 import type { AppointmentStatus } from '@/types'
-import { Calendar as CalendarIcon, Clock, Filter } from 'lucide-react'
+import { Calendar as CalendarIcon, Scissors, Filter } from 'lucide-react'
 import { useState } from 'react'
 
 interface TabScheduleProps {
@@ -31,73 +31,71 @@ export function TabSchedule({
     a.startTime.localeCompare(b.startTime)
   )
 
+  const filterOptions: { id: string; label: string }[] = [
+    { id: 'ALL', label: 'Todos' },
+    { id: 'CONFIRMED', label: 'Confirmados' },
+    { id: 'COMPLETED', label: 'Concluídos' },
+    { id: 'CANCELLED', label: 'Cancelados' },
+  ]
+
   return (
     <div className="space-y-6">
       {/* Header & Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
         <div>
           <h2 className="text-xl font-bold text-white tracking-tight">Agenda do Dia</h2>
-          <p className="text-xs text-figaro-text-secondary">
+          <p className="text-xs text-[#8C97A8]">
             Linha do tempo e gestão de status dos seus agendamentos
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Status Filter */}
-          <div className="flex items-center gap-1 bg-white/5 border border-glass-border p-1 rounded-xl text-xs">
-            <Filter className="w-3.5 h-3.5 text-figaro-text-secondary ml-1.5" />
-            <button
-              onClick={() => setFilterStatus('ALL')}
-              className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
-                filterStatus === 'ALL'
-                  ? 'bg-[var(--color-figaro-blue)] text-white'
-                  : 'text-figaro-text-secondary hover:text-white'
-              }`}
-            >
-              Todos
-            </button>
-            <button
-              onClick={() => setFilterStatus('CONFIRMED')}
-              className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
-                filterStatus === 'CONFIRMED'
-                  ? 'bg-[var(--color-figaro-blue)] text-white'
-                  : 'text-figaro-text-secondary hover:text-white'
-              }`}
-            >
-              Confirmados
-            </button>
-            <button
-              onClick={() => setFilterStatus('COMPLETED')}
-              className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
-                filterStatus === 'COMPLETED'
-                  ? 'bg-[var(--color-figaro-mint)] text-white'
-                  : 'text-figaro-text-secondary hover:text-white'
-              }`}
-            >
-              Concluídos
-            </button>
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Pill Buttons Filter Bar */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <Filter className="w-4 h-4 text-[#8C97A8] mr-1 hidden sm:inline" />
+            {filterOptions.map((opt) => {
+              const isActive = filterStatus === opt.id
+              return (
+                <button
+                  key={opt.id}
+                  onClick={() => setFilterStatus(opt.id)}
+                  className={`rounded-full px-3.5 py-1.5 text-xs transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-[#11AFFA] text-white shadow-[0_0_15px_rgba(17,175,250,0.4)] font-semibold border border-[#11AFFA]'
+                      : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              )
+            })}
           </div>
 
-          <div className="flex items-center gap-2">
-            <CalendarIcon className="w-4 h-4 text-[var(--color-figaro-blue)]" />
+          {/* Styled Date Picker */}
+          <div className="flex items-center gap-2 bg-white/[0.05] border border-white/10 backdrop-blur-md px-3 py-1.5 rounded-full shadow-inner">
+            <CalendarIcon className="w-4 h-4 text-[#11AFFA] drop-shadow-[0_0_8px_rgba(17,175,250,0.8)]" />
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => onDateChange(e.target.value)}
-              className="bg-white/5 border border-glass-border px-3 py-1.5 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-[var(--color-figaro-blue)] cursor-pointer"
+              className="bg-transparent text-xs font-bold text-white focus:outline-none cursor-pointer"
             />
           </div>
         </div>
       </div>
 
-      {/* Schedule List */}
+      {/* Schedule Timeline List */}
       {sorted.length === 0 ? (
-        <GlassCard className="p-10 text-center space-y-3 border border-white/10">
-          <Clock className="w-10 h-10 text-figaro-text-secondary mx-auto opacity-50" />
-          <h3 className="text-base font-bold text-white">Nenhum agendamento encontrado</h3>
-          <p className="text-xs text-figaro-text-secondary">
-            Não há clientes agendados para este filtro ou data.
-          </p>
+        <GlassCard className="p-12 text-center space-y-4 border border-white/10 max-w-md mx-auto my-8">
+          <div className="w-16 h-16 rounded-full bg-[#11AFFA]/10 border border-[#11AFFA]/20 flex items-center justify-center mx-auto text-[#11AFFA] shadow-[0_0_15px_rgba(17,175,250,0.2)]">
+            <Scissors className="w-8 h-8" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-base font-bold text-white">Nenhum agendamento para esta data</h3>
+            <p className="text-xs text-[#8C97A8]">
+              Não foram encontrados agendamentos registrados no filtro selecionado.
+            </p>
+          </div>
         </GlassCard>
       ) : (
         <div className="space-y-3">

@@ -43,17 +43,17 @@ export function AppointmentCard({
     },
     COMPLETED: {
       label: 'Concluído',
-      bg: 'bg-[#2ED9A0]/15',
-      text: 'text-[#2ED9A0]',
-      border: 'border-[#2ED9A0]/30',
-      bar: 'border-l-[#2ED9A0]',
+      bg: 'bg-[#8C97A8]/20',
+      text: 'text-[#8C97A8]',
+      border: 'border-[#8C97A8]/30',
+      bar: 'border-l-[#8C97A8]',
     },
     CANCELLED: {
       label: 'Cancelado',
-      bg: 'bg-[var(--color-figaro-terracotta)]/15',
-      text: 'text-[var(--color-figaro-terracotta)]',
-      border: 'border-[var(--color-figaro-terracotta)]/30',
-      bar: 'border-l-[var(--color-figaro-terracotta)]',
+      bg: 'bg-[#F0553F]/15',
+      text: 'text-[#F0553F]',
+      border: 'border-[#F0553F]/30',
+      bar: 'border-l-[#F0553F]',
     },
     NO_SHOW: {
       label: 'No-Show',
@@ -64,27 +64,28 @@ export function AppointmentCard({
     },
     PENDING: {
       label: 'Pendente',
-      bg: 'bg-[var(--color-figaro-amber)]/15',
-      text: 'text-[var(--color-figaro-amber)]',
-      border: 'border-[var(--color-figaro-amber)]/30',
-      bar: 'border-l-[var(--color-figaro-amber)]',
+      bg: 'bg-[#11AFFA]/15',
+      text: 'text-[#11AFFA]',
+      border: 'border-[#11AFFA]/30',
+      bar: 'border-l-[#11AFFA]',
     },
   }
 
   const currentStatus = statusConfig[appointment.status] || statusConfig.CONFIRMED
+  const rawPhoneNumbers = appointment.clientPhone ? appointment.clientPhone.replace(/\D/g, '') : ''
 
   return (
     <GlassCard
       variant="interactive"
-      className={`p-5 space-y-3 transition-all duration-200 border-l-[6px] ${currentStatus.bar} ${
-        showStatusMenu ? 'relative z-50 shadow-2xl' : 'relative z-10'
+      className={`p-5 space-y-3 transition-all duration-200 border-l-[5px] ${currentStatus.bar} bg-white/[0.04] backdrop-blur-xl border border-white/[0.1] hover:border-white/[0.2] rounded-2xl shadow-lg relative overflow-hidden ${
+        showStatusMenu ? 'z-50 shadow-2xl' : 'z-10'
       }`}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          {/* Highlighted Time Badge */}
-          <div className="bg-[#11AFFA]/15 border border-[#11AFFA]/40 text-[#11AFFA] font-mono font-black text-sm px-3 py-1.5 rounded-xl shadow-[0_0_12px_rgba(17,175,250,0.25)] flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5" />
+          {/* Tabular Time Badge */}
+          <div className="bg-white/10 border border-white/15 text-white font-mono font-black text-sm px-3 py-1.5 rounded-xl shadow-inner flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 text-[#11AFFA]" />
             {appointment.startTime}
           </div>
 
@@ -93,12 +94,12 @@ export function AppointmentCard({
               onClick={() => onSelectClient(appointment)}
               className="group cursor-pointer flex items-center gap-1.5"
             >
-              <h4 className="font-bold text-white text-base group-hover:text-[var(--color-figaro-blue)] transition-colors">
+              <h4 className="font-semibold text-[#F2F4F7] text-lg group-hover:text-[#11AFFA] transition-colors">
                 {appointment.clientName}
               </h4>
-              <MessageSquare className="w-3.5 h-3.5 text-figaro-text-secondary group-hover:text-white" />
+              <MessageSquare className="w-4 h-4 text-figaro-text-secondary group-hover:text-white" />
             </div>
-            <p className="text-xs font-semibold text-[var(--color-figaro-blue)]">
+            <p className="text-sm font-medium text-[#11AFFA]">
               {appointment.serviceName}
             </p>
           </div>
@@ -111,7 +112,7 @@ export function AppointmentCard({
               e.stopPropagation()
               setShowStatusMenu(!showStatusMenu)
             }}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1.5 cursor-pointer ${currentStatus.bg} ${currentStatus.text} ${currentStatus.border}`}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1.5 cursor-pointer backdrop-blur-md ${currentStatus.bg} ${currentStatus.text} ${currentStatus.border}`}
           >
             {currentStatus.label}
             <ChevronDown className="w-3.5 h-3.5" />
@@ -119,7 +120,7 @@ export function AppointmentCard({
 
           {showStatusMenu && (
             <>
-              {/* Backdrop capture to close menu when clicking outside */}
+              {/* Backdrop capture to close dropdown when clicking outside */}
               <div
                 className="fixed inset-0 z-40 bg-transparent cursor-default"
                 onClick={(e) => {
@@ -129,7 +130,7 @@ export function AppointmentCard({
               />
 
               {/* Floating Dropdown Menu */}
-              <div className="absolute right-0 top-9 z-50 w-40 bg-[#0A0E14]/95 backdrop-blur-xl rounded-xl p-1.5 shadow-2xl border border-white/20 space-y-1">
+              <div className="absolute right-0 top-10 z-50 w-40 bg-[#0A0E14]/95 backdrop-blur-2xl rounded-2xl p-1.5 shadow-2xl border border-white/20 space-y-1">
                 {(['CONFIRMED', 'COMPLETED', 'NO_SHOW', 'CANCELLED'] as AppointmentStatus[]).map(
                   (st) => (
                     <button
@@ -139,11 +140,11 @@ export function AppointmentCard({
                         onStatusChange(appointment.id, st)
                         setShowStatusMenu(false)
                       }}
-                      className="w-full text-left px-3 py-2 text-xs rounded-lg font-medium text-white hover:bg-white/10 flex items-center justify-between transition-colors cursor-pointer"
+                      className="w-full text-left px-3 py-2 text-xs rounded-xl font-medium text-white hover:bg-white/10 flex items-center justify-between transition-colors cursor-pointer"
                     >
                       {statusConfig[st].label}
                       {appointment.status === st && (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[var(--color-figaro-blue)]" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#11AFFA]" />
                       )}
                     </button>
                   )
@@ -154,12 +155,29 @@ export function AppointmentCard({
         </div>
       </div>
 
-      <div className="flex items-center justify-between pt-2 text-xs border-t border-white/5">
-        <span className="text-figaro-text-secondary flex items-center gap-1">
-          <Phone className="w-3.5 h-3.5 text-[var(--color-figaro-amber)]" />
-          {appointment.clientPhone}
+      <div className="flex items-center justify-between pt-3 text-xs border-t border-white/5">
+        {/* Interactive WhatsApp Direct Link */}
+        {rawPhoneNumbers ? (
+          <a
+            href={`https://wa.me/55${rawPhoneNumbers}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center gap-1.5 text-[#2ED9A0] hover:underline font-semibold text-xs bg-[#2ED9A0]/10 border border-[#2ED9A0]/20 px-2.5 py-1 rounded-lg transition-colors"
+          >
+            <Phone className="w-3.5 h-3.5 text-[#2ED9A0]" />
+            {appointment.clientPhone}
+          </a>
+        ) : (
+          <span className="text-figaro-text-secondary flex items-center gap-1">
+            <Phone className="w-3.5 h-3.5 text-[var(--color-figaro-amber)]" />
+            {appointment.clientPhone}
+          </span>
+        )}
+
+        <span className="font-mono font-bold text-base text-[#F2F4F7]">
+          R$ {appointment.price.toFixed(2)}
         </span>
-        <span className="font-extrabold text-white text-sm">R$ {appointment.price.toFixed(2)}</span>
       </div>
 
       {appointment.notes && (
