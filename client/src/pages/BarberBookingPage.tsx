@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Component, ErrorInfo, ReactNode } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { Button } from '@/components/ui/Button'
@@ -16,6 +16,24 @@ import {
   UserPlus,
 } from 'lucide-react'
 import { getBrasiliaTodayStr, getBrasiliaNextDays, formatBrasiliaTime } from '@/lib/date'
+
+class LocalErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean, error: Error | null}> {
+  state = { hasError: false, error: null }
+  static getDerivedStateFromError(error: Error) { return { hasError: true, error } }
+  componentDidCatch(error: Error, info: ErrorInfo) { console.error(error, info) }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-8 m-8 bg-red-900/50 border-2 border-red-500 rounded-xl text-white font-mono text-xs overflow-auto">
+          <h2 className="text-xl font-bold mb-4">CRASH DETECTED</h2>
+          <p>{this.state.error?.message}</p>
+          <pre className="mt-4 text-[10px]">{this.state.error?.stack}</pre>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 
 export function BarberBookingPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -185,8 +203,9 @@ export function BarberBookingPage() {
   }
 
   return (
-    <div className="space-y-6 pb-24 max-w-2xl mx-auto">
-      {/* Barber Public Header Banner */}
+    <LocalErrorBoundary>
+      <div className="space-y-6 pb-24 max-w-2xl mx-auto">
+        {/* Barber Public Header Banner */}
       <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl flex items-center gap-5">
         <img
           src={barber.avatarUrl}
@@ -475,6 +494,9 @@ export function BarberBookingPage() {
           </div>
         </div>
       )}
-    </div>
+        </div>
+      )}
+      </div>
+    </LocalErrorBoundary>
   )
 }
