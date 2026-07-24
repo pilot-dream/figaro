@@ -127,26 +127,26 @@ export function TabSettings({ barber }: TabSettingsProps) {
   }
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6 max-w-4xl mx-auto">
       {/* Header */}
       <div className="border-b border-white/10 pb-4">
         <h2 className="text-xl font-bold text-white tracking-tight">Configurações do Perfil & Serviços</h2>
-        <p className="text-xs text-figaro-text-secondary">
+        <p className="text-xs text-[#8C97A8]">
           Gerencie seu link público de agendamentos, catálogo de serviços e horário de funcionamento
         </p>
       </div>
 
-      {/* Public Booking Link Banner in Glassmorphism */}
-      <GlassCard glow className="p-6 border-[var(--color-figaro-blue)]/50 relative overflow-hidden space-y-4">
+      {/* Public Booking Link Highlight Card */}
+      <div className="bg-gradient-to-r from-[#11AFFA]/10 to-transparent backdrop-blur-xl border border-[#11AFFA]/30 rounded-2xl p-6 shadow-[0_0_25px_rgba(17,175,250,0.15)] relative overflow-hidden space-y-4">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[var(--color-figaro-blue)]/20 text-[var(--color-figaro-blue)] border border-[var(--color-figaro-blue)]/30">
-              Seu Link Público de Agendamento
+            <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-[#11AFFA]/20 text-[#11AFFA] border border-[#11AFFA]/30">
+              SEU LINK PÚBLICO DE AGENDAMENTO
             </span>
             <h3 className="text-lg font-bold text-white tracking-tight">
               Divulgue seu Link de Agendamentos
             </h3>
-            <p className="text-xs text-figaro-text-secondary">
+            <p className="text-xs text-[#8C97A8]">
               Seus clientes entram direto no seu perfil exclusivo para reservar horários.
             </p>
           </div>
@@ -154,49 +154,51 @@ export function TabSettings({ barber }: TabSettingsProps) {
             href={publicUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 rounded-xl bg-white/5 border border-white/10 text-white hover:text-[var(--color-figaro-blue)] transition-colors"
+            className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-white hover:text-[#11AFFA] hover:border-[#11AFFA]/40 transition-colors"
           >
             <ExternalLink className="w-5 h-5" />
           </a>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
-          <div className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border font-mono text-xs text-white truncate">
+          {/* Read-only URL Field */}
+          <div className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 font-mono text-[#11AFFA] text-sm flex-1 truncate">
             {publicUrl}
           </div>
-          <Button
+
+          {/* Copy Button */}
+          <button
             onClick={handleCopyLink}
-            className={`w-full sm:w-auto flex-shrink-0 flex items-center justify-center gap-2 ${
-              copied ? 'bg-[var(--color-figaro-mint)] text-black font-bold' : ''
+            className={`w-full sm:w-auto flex-shrink-0 bg-[#11AFFA] hover:bg-[#0B3B5C] text-white font-semibold px-5 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer ${
+              copied ? '!bg-[#2ED9A0] !text-black' : ''
             }`}
           >
             {copied ? (
               <>
-                <Check className="w-4 h-4" /> Link Copiado!
+                <Check className="w-4 h-4 text-black" /> Link Copiado!
               </>
             ) : (
               <>
                 <Share2 className="w-4 h-4" /> Copiar meu Link
               </>
             )}
-          </Button>
+          </button>
         </div>
-      </GlassCard>
+      </div>
 
       {/* CRUD Catalog of Services */}
       <div className="space-y-4 pt-2">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Scissors className="w-4 h-4 text-[var(--color-figaro-blue)]" /> Catálogo de Serviços
+              <Scissors className="w-4 h-4 text-[#11AFFA]" /> Catálogo de Serviços
             </h3>
-            <p className="text-xs text-figaro-text-secondary">
+            <p className="text-xs text-[#8C97A8]">
               Adicione e edite os valores e a duração estimada de cada serviço
             </p>
           </div>
 
-          <Button
-            size="sm"
+          <button
             onClick={() => {
               setEditingService(null)
               setName('')
@@ -205,84 +207,98 @@ export function TabSettings({ barber }: TabSettingsProps) {
               setDescription('')
               setShowServiceModal(true)
             }}
+            className="bg-[#11AFFA] hover:bg-[#0B3B5C] text-white font-semibold rounded-xl px-4 py-2 text-sm shadow-md transition-all flex items-center gap-2 cursor-pointer"
           >
             <Plus className="w-4 h-4" /> Adicionar Serviço
-          </Button>
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {services.map((srv) => (
-            <GlassCard key={srv.id} className="p-4 flex items-center justify-between space-x-3">
+            <div
+              key={srv.id}
+              className="bg-white/[0.04] backdrop-blur-xl border border-white/10 hover:border-white/20 rounded-2xl p-5 shadow-lg transition-all relative group space-y-3 flex flex-col justify-between"
+            >
               <div className="space-y-1">
-                <h4 className="font-bold text-white text-sm">{srv.name}</h4>
-                <p className="text-xs text-figaro-text-secondary line-clamp-1">{srv.description}</p>
-                <div className="flex items-center gap-3 text-xs pt-1">
-                  <span className="font-bold text-[var(--color-figaro-mint)]">
-                    R$ {srv.price.toFixed(2)}
-                  </span>
-                  <span className="text-figaro-text-secondary flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-[var(--color-figaro-amber)]" /> {srv.durationMin} min
-                  </span>
+                <div className="flex items-start justify-between">
+                  <h4 className="text-white font-semibold text-lg">{srv.name}</h4>
+
+                  {/* Action Buttons (Edit / Delete) */}
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => handleOpenEdit(srv)}
+                      title="Editar Serviço"
+                      className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 hover:text-[#11AFFA] hover:border-[#11AFFA]/40 hover:bg-[#11AFFA]/10 transition-all text-[#8C97A8] cursor-pointer"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteService(srv.id)}
+                      title="Excluir Serviço"
+                      className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 hover:text-[#F0553F] hover:border-[#F0553F]/40 hover:bg-[#F0553F]/10 transition-all text-[#8C97A8] cursor-pointer"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
+
+                <p className="text-[#8C97A8] text-xs line-clamp-2 mt-1 mb-3">
+                  {srv.description || 'Sem descrição cadastrada'}
+                </p>
               </div>
 
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => handleOpenEdit(srv)}
-                  className="p-2 rounded-lg text-figaro-text-secondary hover:text-white hover:bg-white/10"
-                >
-                  <Edit2 className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleDeleteService(srv.id)}
-                  className="p-2 rounded-lg text-figaro-text-secondary hover:text-red-400 hover:bg-red-500/10"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+              {/* Information Badges */}
+              <div className="flex items-center gap-2 pt-2 border-t border-white/5">
+                <span className="bg-[#2ED9A0]/10 border border-[#2ED9A0]/20 text-[#2ED9A0] font-mono font-bold text-sm px-3 py-1 rounded-lg">
+                  R$ {srv.price.toFixed(2)}
+                </span>
+                <span className="bg-white/5 border border-white/10 text-[#8C97A8] font-mono text-xs px-3 py-1 rounded-lg flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5 text-[#F2A93B]" /> {srv.durationMin} min
+                </span>
               </div>
-            </GlassCard>
+            </div>
           ))}
         </div>
       </div>
 
       {/* Operating Hours Settings */}
-      <GlassCard className="p-5 space-y-4">
+      <GlassCard className="p-6 space-y-4">
         <h3 className="text-base font-bold text-white flex items-center gap-2">
-          <Clock className="w-4 h-4 text-[var(--color-figaro-amber)]" /> Grade de Horário de Atendimento
+          <Clock className="w-4 h-4 text-[#F2A93B]" /> Grade de Horário de Atendimento
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
           <div>
-            <label className="text-figaro-text-secondary block mb-1 font-semibold">Horário de Início (Abertura)</label>
+            <label className="text-[#8C97A8] block mb-1.5 font-semibold">Horário de Início (Abertura)</label>
             <input
               type="time"
               defaultValue="09:00"
-              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs font-mono"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 focus:border-[#11AFFA] text-white text-xs font-mono outline-none"
             />
           </div>
 
           <div>
-            <label className="text-figaro-text-secondary block mb-1 font-semibold">Horário de Término (Fechamento)</label>
+            <label className="text-[#8C97A8] block mb-1.5 font-semibold">Horário de Término (Fechamento)</label>
             <input
               type="time"
               defaultValue="20:00"
-              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs font-mono"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 focus:border-[#11AFFA] text-white text-xs font-mono outline-none"
             />
           </div>
         </div>
       </GlassCard>
 
-      {/* Service Modal */}
+      {/* Glass Modal for Adding / Editing Service */}
       {showServiceModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <GlassCard className="w-full max-w-md p-6 space-y-4 border-[var(--color-figaro-blue)]/40 shadow-2xl">
-            <h3 className="font-bold text-white text-lg">
+          <div className="bg-[#0A0E14]/90 backdrop-blur-2xl border border-white/20 rounded-3xl p-6 shadow-2xl shadow-black/80 max-w-md w-full space-y-4">
+            <h3 className="font-bold text-white text-lg border-b border-white/10 pb-3">
               {editingService ? 'Editar Serviço' : 'Novo Serviço'}
             </h3>
 
-            <form onSubmit={handleSaveService} className="space-y-3">
+            <form onSubmit={handleSaveService} className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-figaro-text-secondary block mb-1">
+                <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">
                   Nome do Serviço *
                 </label>
                 <input
@@ -290,14 +306,14 @@ export function TabSettings({ barber }: TabSettingsProps) {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Ex: Corte Degradê + Barba"
-                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs"
+                  placeholder="Ex: Corte Fígaro Signature"
+                  className="bg-white/5 border border-white/10 focus:border-[#11AFFA] focus:ring-1 focus:ring-[#11AFFA] text-white rounded-xl p-3 outline-none text-xs w-full"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-semibold text-figaro-text-secondary block mb-1">
+                  <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">
                     Preço (R$) *
                   </label>
                   <input
@@ -307,18 +323,18 @@ export function TabSettings({ barber }: TabSettingsProps) {
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     placeholder="75.00"
-                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs"
+                    className="bg-white/5 border border-white/10 focus:border-[#11AFFA] focus:ring-1 focus:ring-[#11AFFA] text-white rounded-xl p-3 outline-none text-xs w-full font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-figaro-text-secondary block mb-1">
+                  <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">
                     Duração (minutos) *
                   </label>
                   <select
                     value={durationMin}
                     onChange={(e) => setDurationMin(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0A0E14] border border-glass-border text-white text-xs"
+                    className="bg-[#0A0E14] border border-white/10 focus:border-[#11AFFA] focus:ring-1 focus:ring-[#11AFFA] text-white rounded-xl p-3 outline-none text-xs w-full"
                   >
                     <option value="15">15 min</option>
                     <option value="30">30 min</option>
@@ -330,26 +346,31 @@ export function TabSettings({ barber }: TabSettingsProps) {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-figaro-text-secondary block mb-1">
+                <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">
                   Descrição (opcional)
                 </label>
                 <textarea
-                  rows={2}
+                  rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Descrição breve dos detalhes do serviço..."
-                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs resize-none"
+                  className="bg-white/5 border border-white/10 focus:border-[#11AFFA] focus:ring-1 focus:ring-[#11AFFA] text-white rounded-xl p-3 outline-none text-xs w-full resize-none"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2">
+              <div className="flex items-center justify-end gap-3 pt-2">
                 <Button variant="ghost" type="button" onClick={() => setShowServiceModal(false)}>
                   Cancelar
                 </Button>
-                <Button type="submit">Salvar Serviço</Button>
+                <button
+                  type="submit"
+                  className="bg-[#11AFFA] hover:bg-[#0B3B5C] text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg transition-all text-xs cursor-pointer"
+                >
+                  Salvar Serviço
+                </button>
               </div>
             </form>
-          </GlassCard>
+          </div>
         </div>
       )}
     </div>
