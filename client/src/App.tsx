@@ -105,6 +105,20 @@ export default function App() {
           />
         </Routes>
       </main>
+      {/* Navigation bar for logged in CLIENT */}
+      {user?.role === 'CLIENT' && (
+        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#0A0E14]/80 backdrop-blur-xl border-t border-white/10 pb-safe">
+          <div className="max-w-md mx-auto p-3 flex items-center justify-around">
+            <Link
+              to="/meus-agendamentos"
+              className="flex-1 py-2 text-xs font-semibold flex flex-col items-center gap-1 text-[#11AFFA] drop-shadow-[0_0_8px_rgba(17,175,250,0.5)]"
+            >
+              <Clock className="w-5 h-5 mb-0.5" />
+              Meus Agendamentos
+            </Link>
+          </div>
+        </nav>
+      )}
     </div>
   )
 }
