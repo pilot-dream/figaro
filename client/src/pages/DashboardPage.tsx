@@ -84,13 +84,8 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0E14] text-white relative overflow-hidden pb-28">
-      {/* Background Ambient Glow Orbs */}
-      <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#11AFFA]/15 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-[#F2A93B]/10 rounded-full blur-[100px] pointer-events-none" />
-
-      <div className="max-w-4xl mx-auto space-y-6 relative z-10 px-2 sm:px-0">
-        {/* Top Welcome Header Banner */}
+    <div className="space-y-6 pb-28">
+      {/* Top Welcome Header Banner */}
         <GlassCard glow className="p-4 border-[#11AFFA]/30 flex items-center justify-between">
           <div className="flex items-center gap-3.5">
             {/* Avatar with Blue Ring & Glow */}
@@ -155,7 +150,6 @@ export function DashboardPage() {
         )}
 
         {activeTab === 'settings' && user && <TabSettings barber={user} />}
-      </div>
 
       {/* Liquid Glass Bottom Navigation Bar */}
       <BarberBottomNav activeTab={activeTab} onChangeTab={setActiveTab} />

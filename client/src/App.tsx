@@ -24,17 +24,18 @@ export default function App() {
 
   if (!initialized) {
     return (
-      <div className="min-h-screen bg-figaro-dark flex items-center justify-center">
+      <div className="min-h-screen w-full bg-[#0A0E14] flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-[var(--color-figaro-blue)] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-figaro-dark text-figaro-text-primary selection:bg-[var(--color-figaro-blue)] selection:text-white">
-      {/* Background glow effects */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[var(--color-figaro-blue)]/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="fixed bottom-0 right-0 w-[400px] h-[400px] bg-[var(--color-figaro-amber)]/5 rounded-full blur-[140px] pointer-events-none" />
+    <div className="min-h-screen w-full bg-[#0A0E14] text-figaro-text-primary selection:bg-[var(--color-figaro-blue)] selection:text-white relative overflow-x-hidden">
+      {/* Full Viewport Viewport-Wide Ambient Glow Orbs */}
+      <div className="fixed -top-40 -left-40 w-[600px] h-[600px] bg-[#11AFFA]/15 rounded-full blur-[140px] pointer-events-none z-0" />
+      <div className="fixed -bottom-40 -right-40 w-[600px] h-[600px] bg-[#F2A93B]/10 rounded-full blur-[140px] pointer-events-none z-0" />
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#11AFFA]/10 rounded-full blur-[160px] pointer-events-none z-0" />
 
       {/* Main Container */}
       <main className="relative z-10 max-w-4xl mx-auto px-4 pt-4">
