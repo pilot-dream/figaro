@@ -16,10 +16,11 @@ export function GlassCard({
   return (
     <div
       className={cn(
-        'glass-panel rounded-2xl p-6 transition-all duration-300 ios-transition',
+        'bg-white/[0.05] backdrop-blur-xl border border-white/[0.12] border-t-white/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] rounded-2xl p-6 transition-all duration-300 ios-transition',
         {
-          'glass-glow': glow || variant === 'elevated',
-          'hover:border-[var(--color-glass-border-hover)] hover:bg-[rgba(255,255,255,0.12)] cursor-pointer':
+          'shadow-[0_0_25px_rgba(17,175,250,0.15)] border-[var(--color-figaro-blue)]/40':
+            glow || variant === 'elevated',
+          'hover:border-white/30 hover:bg-white/[0.08] cursor-pointer':
             variant === 'interactive',
         },
         className

@@ -84,67 +84,78 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="space-y-6 pb-28 max-w-4xl mx-auto">
-      {/* Top Welcome Header */}
-      <div className="flex items-center justify-between bg-white/5 border border-glass-border p-4 rounded-2xl">
-        <div className="flex items-center gap-3">
-          <img
-            src={
-              user?.avatarUrl ||
-              'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80'
-            }
-            alt={user?.name}
-            className="w-12 h-12 rounded-full object-cover border border-[var(--color-figaro-blue)] shadow-md"
-          />
-          <div>
-            <span className="text-[10px] font-bold text-[var(--color-figaro-amber)] uppercase tracking-wider">
-              Painel do Barbeiro
-            </span>
-            <h1 className="text-lg font-black text-white">{user?.name || 'Barbeiro'}</h1>
+    <div className="min-h-screen bg-[#0A0E14] text-white relative overflow-hidden pb-28">
+      {/* Background Ambient Glow Orbs */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#11AFFA]/15 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-[#F2A93B]/10 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="max-w-4xl mx-auto space-y-6 relative z-10 px-2 sm:px-0">
+        {/* Top Welcome Header Banner */}
+        <GlassCard glow className="p-4 border-[#11AFFA]/30 flex items-center justify-between">
+          <div className="flex items-center gap-3.5">
+            {/* Avatar with Blue Ring & Glow */}
+            <img
+              src={
+                user?.avatarUrl ||
+                'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80'
+              }
+              alt={user?.name}
+              className="w-12 h-12 rounded-full object-cover ring-2 ring-[#11AFFA] ring-offset-2 ring-offset-[#0A0E14] shadow-[0_0_15px_rgba(17,175,250,0.4)]"
+            />
+            <div>
+              <span className="text-[10px] font-extrabold text-[var(--color-figaro-amber)] uppercase tracking-wider block">
+                Painel do Barbeiro
+              </span>
+              <h1 className="text-lg font-black text-white">{user?.name || 'Barbeiro'}</h1>
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-figaro-mint)] animate-pulse" />
-          <span className="text-xs font-semibold text-[var(--color-figaro-mint)] hidden sm:inline">
-            Agenda Conectada em Tempo Real
-          </span>
-        </div>
+          {/* Animated Realtime Pulsing Badge */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2ED9A0] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#2ED9A0]" />
+            </span>
+            <span className="text-xs font-bold text-[#2ED9A0] hidden sm:inline">
+              Agenda Conectada em Tempo Real
+            </span>
+          </div>
+        </GlassCard>
+
+        {/* Render Active Tab Content */}
+        {activeTab === 'home' && (
+          <TabHome
+            appointments={appointments}
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+            onSelectClient={setSelectedClient}
+            onStatusChange={handleStatusChange}
+          />
+        )}
+
+        {activeTab === 'schedule' && (
+          <TabSchedule
+            appointments={appointments}
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+            onSelectClient={setSelectedClient}
+            onStatusChange={handleStatusChange}
+          />
+        )}
+
+        {activeTab === 'financial' && <TabFinancial appointments={appointments} />}
+
+        {activeTab === 'booking' && user && (
+          <TabBooking
+            barber={user}
+            selectedDate={selectedDate}
+            onAppointmentCreated={loadAppointments}
+            onOpenBlockModal={() => setShowBlockModal(true)}
+          />
+        )}
+
+        {activeTab === 'settings' && user && <TabSettings barber={user} />}
       </div>
-
-      {/* Render Active Tab Content */}
-      {activeTab === 'home' && (
-        <TabHome
-          appointments={appointments}
-          selectedDate={selectedDate}
-          onDateChange={setSelectedDate}
-          onSelectClient={setSelectedClient}
-          onStatusChange={handleStatusChange}
-        />
-      )}
-
-      {activeTab === 'schedule' && (
-        <TabSchedule
-          appointments={appointments}
-          selectedDate={selectedDate}
-          onDateChange={setSelectedDate}
-          onSelectClient={setSelectedClient}
-          onStatusChange={handleStatusChange}
-        />
-      )}
-
-      {activeTab === 'financial' && <TabFinancial appointments={appointments} />}
-
-      {activeTab === 'booking' && user && (
-        <TabBooking
-          barber={user}
-          selectedDate={selectedDate}
-          onAppointmentCreated={loadAppointments}
-          onOpenBlockModal={() => setShowBlockModal(true)}
-        />
-      )}
-
-      {activeTab === 'settings' && user && <TabSettings barber={user} />}
 
       {/* Liquid Glass Bottom Navigation Bar */}
       <BarberBottomNav activeTab={activeTab} onChangeTab={setActiveTab} />

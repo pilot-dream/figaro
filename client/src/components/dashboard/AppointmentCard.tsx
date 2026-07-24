@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import type { AppointmentStatus } from '@/types'
-import { Phone, CheckCircle2, AlertCircle, ChevronDown, MessageSquare } from 'lucide-react'
+import { Phone, CheckCircle2, AlertCircle, ChevronDown, MessageSquare, Clock } from 'lucide-react'
 
 export interface DashboardAppointment {
   id: string
@@ -30,53 +30,64 @@ export function AppointmentCard({
 }: AppointmentCardProps) {
   const [showStatusMenu, setShowStatusMenu] = useState(false)
 
-  const statusConfig: Record<AppointmentStatus, { label: string; bg: string; text: string; border: string }> = {
+  const statusConfig: Record<
+    AppointmentStatus,
+    { label: string; bg: string; text: string; border: string; bar: string }
+  > = {
     CONFIRMED: {
       label: 'Confirmado',
-      bg: 'bg-[var(--color-figaro-blue)]/10',
-      text: 'text-[var(--color-figaro-blue)]',
-      border: 'border-[var(--color-figaro-blue)]/20',
+      bg: 'bg-[#2ED9A0]/15',
+      text: 'text-[#2ED9A0]',
+      border: 'border-[#2ED9A0]/30',
+      bar: 'border-l-[#2ED9A0]',
     },
     COMPLETED: {
       label: 'Concluído',
-      bg: 'bg-[var(--color-figaro-mint)]/10',
-      text: 'text-[var(--color-figaro-mint)]',
-      border: 'border-[var(--color-figaro-mint)]/20',
+      bg: 'bg-[#2ED9A0]/15',
+      text: 'text-[#2ED9A0]',
+      border: 'border-[#2ED9A0]/30',
+      bar: 'border-l-[#2ED9A0]',
     },
     CANCELLED: {
       label: 'Cancelado',
-      bg: 'bg-[var(--color-figaro-terracotta)]/10',
+      bg: 'bg-[var(--color-figaro-terracotta)]/15',
       text: 'text-[var(--color-figaro-terracotta)]',
-      border: 'border-[var(--color-figaro-terracotta)]/20',
+      border: 'border-[var(--color-figaro-terracotta)]/30',
+      bar: 'border-l-[var(--color-figaro-terracotta)]',
     },
     NO_SHOW: {
       label: 'No-Show',
-      bg: 'bg-red-500/10',
+      bg: 'bg-red-500/15',
       text: 'text-red-400',
-      border: 'border-red-500/20',
+      border: 'border-red-500/30',
+      bar: 'border-l-red-500',
     },
     PENDING: {
       label: 'Pendente',
-      bg: 'bg-[var(--color-figaro-amber)]/10',
+      bg: 'bg-[var(--color-figaro-amber)]/15',
       text: 'text-[var(--color-figaro-amber)]',
-      border: 'border-[var(--color-figaro-amber)]/20',
+      border: 'border-[var(--color-figaro-amber)]/30',
+      bar: 'border-l-[var(--color-figaro-amber)]',
     },
   }
 
-  const currentStatus = statusConfig[appointment.status]
+  const currentStatus = statusConfig[appointment.status] || statusConfig.CONFIRMED
 
   return (
     <GlassCard
       variant="interactive"
-      className={`p-5 space-y-3 transition-all duration-200 border-l-4 border-l-[var(--color-figaro-blue)] ${
+      className={`p-5 space-y-3 transition-all duration-200 border-l-[6px] ${currentStatus.bar} ${
         showStatusMenu ? 'relative z-50 shadow-2xl' : 'relative z-10'
       }`}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-sm">
+          {/* Highlighted Time Badge */}
+          <div className="bg-[#11AFFA]/15 border border-[#11AFFA]/40 text-[#11AFFA] font-mono font-black text-sm px-3 py-1.5 rounded-xl shadow-[0_0_12px_rgba(17,175,250,0.25)] flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5" />
             {appointment.startTime}
           </div>
+
           <div>
             <div
               onClick={() => onSelectClient(appointment)}
@@ -93,14 +104,14 @@ export function AppointmentCard({
           </div>
         </div>
 
-        {/* Status Dropdown */}
+        {/* Status Dropdown Button */}
         <div className="relative">
           <button
             onClick={(e) => {
               e.stopPropagation()
               setShowStatusMenu(!showStatusMenu)
             }}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold border flex items-center gap-1.5 cursor-pointer ${currentStatus.bg} ${currentStatus.text} ${currentStatus.border}`}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1.5 cursor-pointer ${currentStatus.bg} ${currentStatus.text} ${currentStatus.border}`}
           >
             {currentStatus.label}
             <ChevronDown className="w-3.5 h-3.5" />
@@ -108,7 +119,7 @@ export function AppointmentCard({
 
           {showStatusMenu && (
             <>
-              {/* Backdrop capture to close dropdown when clicking outside */}
+              {/* Backdrop capture to close menu when clicking outside */}
               <div
                 className="fixed inset-0 z-40 bg-transparent cursor-default"
                 onClick={(e) => {
@@ -148,7 +159,7 @@ export function AppointmentCard({
           <Phone className="w-3.5 h-3.5 text-[var(--color-figaro-amber)]" />
           {appointment.clientPhone}
         </span>
-        <span className="font-extrabold text-white">R$ {appointment.price.toFixed(2)}</span>
+        <span className="font-extrabold text-white text-sm">R$ {appointment.price.toFixed(2)}</span>
       </div>
 
       {appointment.notes && (
