@@ -482,7 +482,9 @@ export function BarberBookingPage() {
         <div className="fixed bottom-0 left-0 right-0 bg-[#0A0E14]/90 backdrop-blur-2xl border-t border-white/10 p-4 z-40">
           <div className="max-w-2xl mx-auto flex items-center justify-between">
             <div className="flex flex-col">
-              <span className="text-xs text-[#8C97A8] font-medium">{selectedServices.length} serviço{selectedServices.length !== 1 ? 's' : ''} selecionado{selectedServices.length !== 1 ? 's' : ''}</span>
+              <span className="text-xs text-[#8C97A8] font-medium">
+                {selectedServices.length === 1 ? '1 serviço selecionado' : `${selectedServices.length} serviços selecionados`}
+              </span>
               <span className="font-mono text-2xl font-bold text-[#11AFFA]">R$ {Number(totalPrice || 0).toFixed(2)}</span>
             </div>
             <button 
