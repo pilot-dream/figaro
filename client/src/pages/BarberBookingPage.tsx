@@ -1,4 +1,5 @@
-import { useEffect, useState, Component, ErrorInfo, ReactNode } from 'react'
+import { useEffect, useState, Component } from 'react'
+import type { ErrorInfo, ReactNode } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { Button } from '@/components/ui/Button'
@@ -17,10 +18,10 @@ import {
 } from 'lucide-react'
 import { getBrasiliaTodayStr, getBrasiliaNextDays, formatBrasiliaTime } from '@/lib/date'
 
-class LocalErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean, error: Error | null}> {
-  state = { hasError: false, error: null }
-  static getDerivedStateFromError(error: Error) { return { hasError: true, error } }
-  componentDidCatch(error: Error, info: ErrorInfo) { console.error(error, info) }
+class LocalErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean, error: any}> {
+  state = { hasError: false, error: null as any }
+  static getDerivedStateFromError(error: any) { return { hasError: true, error } }
+  componentDidCatch(error: any, info: any) { console.error(error, info) }
   render() {
     if (this.state.hasError) {
       return (
