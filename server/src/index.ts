@@ -4,12 +4,24 @@ import { config } from './config/env'
 import { AvailabilityService } from './services/availability.service'
 import authRoutes from './routes/auth.routes'
 import barberRoutes from './routes/barber.routes'
+import { securityHeaders, globalLimiter } from './middleware/security.middleware'
 
 const app = express()
 const availabilityService = new AvailabilityService()
 
-app.use(cors())
+// 1. Helmet Security Headers
+app.use(securityHeaders)
+
+// 2. Restrição de CORS
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  optionsSuccessStatus: 200
+}))
+
 app.use(express.json())
+
+// 3. Limite global de Rate Limiting para /api/*
+app.use('/api', globalLimiter)
 
 // Mount routes
 app.use('/api/auth', authRoutes)
@@ -37,8 +49,16 @@ app.get('/api/availability', async (req, res, next) => {
 
 // Global Error handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err)
-  res.status(err.status || 500).json({ error: err.message || 'Internal server error' })
+  console.error('Erro detectado:', err)
+  
+  const status = err.status || 500;
+  
+  // 5. Tratamento de Erros e Sanitização: Não expor detalhes de banco ou stack trace
+  const safeMessage = status === 500 
+    ? 'Ocorreu um erro interno no servidor.' 
+    : (err.message || 'Erro inesperado');
+    
+  res.status(status).json({ error: safeMessage })
 })
 
 const PORT = config.get('PORT')

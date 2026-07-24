@@ -50,6 +50,15 @@ export default function App() {
               </span>
             </div>
             <div className="flex items-center gap-3">
+              {user.role === 'CLIENT' && (
+                <Link
+                  to="/meus-agendamentos"
+                  className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs font-semibold text-white hover:bg-white/10 flex items-center gap-1.5 transition-colors"
+                >
+                  <Clock className="w-3.5 h-3.5 text-[#11AFFA]" />
+                  <span className="hidden sm:inline">Meus Agendamentos</span>
+                </Link>
+              )}
               <span className="text-xs text-figaro-text-secondary hidden sm:inline">
                 Olá, <strong className="text-white">{user.name}</strong>
               </span>
@@ -96,21 +105,6 @@ export default function App() {
           />
         </Routes>
       </main>
-
-      {/* Navigation bar for logged in CLIENT */}
-      {user?.role === 'CLIENT' && (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 p-3">
-          <div className="max-w-md mx-auto glass-panel rounded-2xl p-1.5 flex items-center justify-around border border-glass-border shadow-2xl backdrop-blur-3xl">
-            <Link
-              to="/meus-agendamentos"
-              className="flex-1 py-2 rounded-xl text-xs font-semibold flex flex-col items-center gap-1 bg-[var(--color-figaro-blue)] text-white shadow-lg shadow-[rgba(17,175,250,0.25)]"
-            >
-              <Clock className="w-4 h-4" />
-              Meus Agendamentos
-            </Link>
-          </div>
-        </nav>
-      )}
     </div>
   )
 }

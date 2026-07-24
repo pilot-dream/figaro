@@ -187,38 +187,36 @@ export function BarberBookingPage() {
   return (
     <div className="space-y-6 pb-24 max-w-2xl mx-auto">
       {/* Barber Public Header Banner */}
-      <GlassCard glow className="p-6 relative overflow-hidden border-[var(--color-figaro-blue)]/40">
-        <div className="flex items-center gap-4">
-          <img
-            src={barber.avatarUrl}
-            alt={barber.name}
-            className="w-20 h-20 rounded-full object-cover border-2 border-[var(--color-figaro-blue)] ring-4 ring-white/10 shadow-xl"
-          />
-          <div className="space-y-1">
-            <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-[var(--color-figaro-amber)]/20 text-[var(--color-figaro-amber)] border border-[var(--color-figaro-amber)]/30">
-              Agendamento com Barbeiro
-            </span>
-            <h1 className="text-2xl font-black text-white tracking-tight">{barber.name}</h1>
-            <p className="text-xs text-figaro-text-secondary">{barber.notes}</p>
-            <div className="flex items-center gap-1 text-xs text-[var(--color-figaro-amber)] pt-1">
-              <Star className="w-3.5 h-3.5 fill-current" />
-              <span className="text-white font-bold">5.0</span> (Barbearia Fígaro)
-            </div>
+      <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl flex items-center gap-5">
+        <img
+          src={barber.avatarUrl}
+          alt={barber.name}
+          className="w-20 h-20 rounded-full object-cover border-2 border-[#11AFFA]"
+        />
+        <div className="space-y-1">
+          <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-[var(--color-figaro-amber)]/20 text-[var(--color-figaro-amber)] border border-[var(--color-figaro-amber)]/30">
+            Agendamento com Barbeiro
+          </span>
+          <h1 className="text-2xl font-bold text-white tracking-tight">{barber.name}</h1>
+          <p className="text-xs text-figaro-text-secondary">{barber.notes}</p>
+          <div className="flex items-center gap-1 text-xs text-[#F2A93B] pt-1 font-semibold">
+            <Star className="w-3.5 h-3.5 fill-current" />
+            ★ 5.0 (Barbearia Fígaro)
           </div>
         </div>
-      </GlassCard>
+      </div>
 
       {/* Progress Steps Header */}
-      <div className="flex items-center justify-between text-xs font-semibold px-2">
-        <span className={step >= 1 ? 'text-[var(--color-figaro-blue)]' : 'text-figaro-text-secondary'}>
+      <div className="flex items-center justify-between text-xs px-2">
+        <span className={step >= 1 ? 'bg-[#11AFFA] text-white px-4 py-1.5 rounded-full font-semibold shadow-[0_0_12px_rgba(17,175,250,0.4)]' : 'bg-white/5 text-[#8C97A8] px-4 py-1.5 rounded-full border border-white/10'}>
           1. Serviços
         </span>
         <span className="text-white/20">➔</span>
-        <span className={step >= 2 ? 'text-[var(--color-figaro-blue)]' : 'text-figaro-text-secondary'}>
+        <span className={step >= 2 ? 'bg-[#11AFFA] text-white px-4 py-1.5 rounded-full font-semibold shadow-[0_0_12px_rgba(17,175,250,0.4)]' : 'bg-white/5 text-[#8C97A8] px-4 py-1.5 rounded-full border border-white/10'}>
           2. Data & Hora
         </span>
         <span className="text-white/20">➔</span>
-        <span className={step === 3 ? 'text-[var(--color-figaro-blue)]' : 'text-figaro-text-secondary'}>
+        <span className={step === 3 ? 'bg-[#11AFFA] text-white px-4 py-1.5 rounded-full font-semibold shadow-[0_0_12px_rgba(17,175,250,0.4)]' : 'bg-white/5 text-[#8C97A8] px-4 py-1.5 rounded-full border border-white/10'}>
           3. Confirmação
         </span>
       </div>
@@ -228,56 +226,49 @@ export function BarberBookingPage() {
         <div className="space-y-4">
           <h3 className="text-lg font-bold text-white">Escolha os Serviços com {barber.name}</h3>
           <div className="space-y-3">
-            {services.map((srv) => {
-              const isSelected = selectedServices.some((s) => s.id === srv.id)
-              return (
-                <GlassCard
-                  key={srv.id}
-                  variant="interactive"
-                  onClick={() => toggleService(srv)}
-                  className={`flex items-center justify-between border-2 transition-all p-4 ${
-                    isSelected
-                      ? 'border-[var(--color-figaro-blue)] bg-[var(--color-figaro-blue)]/10'
-                      : 'border-glass-border'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-5 h-5 rounded border flex items-center justify-center ${
-                        isSelected
-                          ? 'bg-[var(--color-figaro-blue)] border-[var(--color-figaro-blue)] text-white'
-                          : 'border-white/20'
-                      }`}
-                    >
-                      {isSelected && <Check className="w-3.5 h-3.5" />}
+            {services
+              .filter((srv, index, self) => index === self.findIndex((t) => t.id === srv.id))
+              .map((srv) => {
+                const isSelected = selectedServices.some((s) => s.id === srv.id)
+                return (
+                  <div
+                    key={srv.id}
+                    onClick={() => toggleService(srv)}
+                    className={`bg-white/[0.03] backdrop-blur-md hover:border-white/20 rounded-2xl p-5 transition-all cursor-pointer flex items-center justify-between group mb-3 border ${
+                      isSelected
+                        ? 'border-[#11AFFA] bg-[#11AFFA]/10 shadow-[0_0_20px_rgba(17,175,250,0.15)]'
+                        : 'border-white/10'
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+                          isSelected
+                            ? 'bg-[#11AFFA] border-[#11AFFA] text-white'
+                            : 'border-white/20 bg-white/5'
+                        }`}
+                      >
+                        {isSelected && <Check className="w-4 h-4" />}
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-white text-sm">{srv.name}</h4>
+                        <p className="text-xs text-[#8C97A8] mt-1 line-clamp-2">{srv.description}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-white text-sm">{srv.name}</h4>
-                      <p className="text-xs text-figaro-text-secondary">{srv.description}</p>
-                      <span className="text-[11px] text-[var(--color-figaro-amber)] flex items-center gap-1 mt-1">
+                    <div className="text-right flex flex-col items-end gap-2 ml-4">
+                      <span className="font-mono text-xl font-extrabold text-white whitespace-nowrap">
+                        R$ {srv.price.toFixed(2)}
+                      </span>
+                      <span className="bg-white/5 px-2.5 py-1 rounded-lg text-xs font-mono text-[#8C97A8] flex items-center gap-1 whitespace-nowrap">
                         <Clock className="w-3 h-3" /> {srv.durationMin} min
                       </span>
                     </div>
                   </div>
-                  <span className="text-base font-extrabold text-white">
-                    R$ {srv.price.toFixed(2)}
-                  </span>
-                </GlassCard>
-              )
-            })}
+                )
+              })}
           </div>
 
-          <div className="pt-4 flex items-center justify-between border-t border-white/10">
-            <div>
-              <span className="text-[10px] text-figaro-text-secondary uppercase font-bold block">
-                Total
-              </span>
-              <span className="text-xl font-black text-white">R$ {totalPrice.toFixed(2)}</span>
-            </div>
-            <Button disabled={selectedServices.length === 0} onClick={() => setStep(2)}>
-              Avançar para Horários
-            </Button>
-          </div>
+
         </div>
       )}
 
@@ -465,6 +456,24 @@ export function BarberBookingPage() {
             )}
           </div>
         </form>
+      )}
+      {/* STEP 1: Sticky Bottom Bar Checkout */}
+      {step === 1 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-[#0A0E14]/90 backdrop-blur-2xl border-t border-white/10 p-4 z-40">
+          <div className="max-w-2xl mx-auto flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="text-xs text-[#8C97A8] font-medium">{selectedServices.length} serviço{selectedServices.length !== 1 ? 's' : ''} selecionado{selectedServices.length !== 1 ? 's' : ''}</span>
+              <span className="font-mono text-2xl font-bold text-[#11AFFA]">R$ {totalPrice.toFixed(2)}</span>
+            </div>
+            <button 
+              disabled={selectedServices.length === 0} 
+              onClick={() => setStep(2)}
+              className="bg-[#11AFFA] hover:bg-[#0B3B5C] text-white font-bold px-8 py-3.5 rounded-xl shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Avançar para Horários
+            </button>
+          </div>
+        </div>
       )}
     </div>
   )

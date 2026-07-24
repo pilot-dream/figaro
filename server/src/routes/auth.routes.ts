@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import { PrismaClient } from '@prisma/client'
 import { config } from '../config/env'
 import { requireAuth, AuthenticatedRequest } from '../middleware/auth.middleware'
+import { authLimiter } from '../middleware/security.middleware'
 
 const router = Router()
 const prisma = new PrismaClient()
@@ -77,7 +78,7 @@ router.post('/register', async (req, res, next) => {
 })
 
 // POST /api/auth/login
-router.post('/login', async (req, res, next) => {
+router.post('/login', authLimiter, async (req, res, next) => {
   try {
     const { email, password } = req.body
     if (!email || !password) {

@@ -13,7 +13,8 @@ export interface AuthenticatedRequest extends Request {
   user?: AuthenticatedUser
 }
 
-export function requireAuth(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+// 4. Autenticação e validação do JWT
+export function authMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Token de autenticação não fornecido' })
@@ -24,19 +25,31 @@ export function requireAuth(req: AuthenticatedRequest, res: Response, next: Next
     const decoded = jwt.verify(token, config.get('JWT_SECRET')) as AuthenticatedUser
     req.user = decoded
     next()
-  } catch {
+  } catch (error) {
     return res.status(401).json({ error: 'Token inválido ou expirado' })
   }
 }
 
-export function requireRole(allowedRole: string) {
+// 4. Autorização por Roles Múltiplas (ex: checkRole(['BARBEIRO']))
+export function checkRole(allowedRoles: string[]) {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(401).json({ error: 'Não autenticado' })
     }
-    if (req.user.role !== allowedRole) {
+    
+    // O sistema atual usa 'BARBER'. Mapear 'BARBEIRO' para 'BARBER' e vice versa para garantir compatibilidade
+    const userRole = req.user.role;
+    const normalizedRole = userRole === 'BARBER' ? 'BARBEIRO' : userRole;
+    
+    if (!allowedRoles.includes(userRole) && !allowedRoles.includes(normalizedRole)) {
       return res.status(403).json({ error: 'Acesso negado para este perfil' })
     }
     next()
   }
+}
+
+// Compatibilidade com rotas já existentes que usavam requireAuth e requireRole
+export const requireAuth = authMiddleware;
+export function requireRole(allowedRole: string) {
+  return checkRole([allowedRole]);
 }
