@@ -68,7 +68,9 @@ export function AppointmentCard({
   return (
     <GlassCard
       variant="interactive"
-      className="p-5 space-y-3 relative transition-all duration-200 border-l-4 border-l-[var(--color-figaro-blue)]"
+      className={`p-5 space-y-3 transition-all duration-200 border-l-4 border-l-[var(--color-figaro-blue)] ${
+        showStatusMenu ? 'relative z-50 shadow-2xl' : 'relative z-10'
+      }`}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
@@ -105,24 +107,38 @@ export function AppointmentCard({
           </button>
 
           {showStatusMenu && (
-            <div className="absolute right-0 top-9 z-30 w-36 glass-panel rounded-xl p-1.5 shadow-2xl border border-glass-border space-y-1">
-              {(['CONFIRMED', 'COMPLETED', 'NO_SHOW', 'CANCELLED'] as AppointmentStatus[]).map(
-                (st) => (
-                  <button
-                    key={st}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      onStatusChange(appointment.id, st)
-                      setShowStatusMenu(false)
-                    }}
-                    className="w-full text-left px-3 py-1.5 text-xs rounded-lg font-medium text-white hover:bg-white/10 flex items-center justify-between"
-                  >
-                    {statusConfig[st].label}
-                    {appointment.status === st && <CheckCircle2 className="w-3.5 h-3.5 text-[var(--color-figaro-blue)]" />}
-                  </button>
-                )
-              )}
-            </div>
+            <>
+              {/* Backdrop capture to close dropdown when clicking outside */}
+              <div
+                className="fixed inset-0 z-40 bg-transparent cursor-default"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setShowStatusMenu(false)
+                }}
+              />
+
+              {/* Floating Dropdown Menu */}
+              <div className="absolute right-0 top-9 z-50 w-40 bg-[#0A0E14]/95 backdrop-blur-xl rounded-xl p-1.5 shadow-2xl border border-white/20 space-y-1">
+                {(['CONFIRMED', 'COMPLETED', 'NO_SHOW', 'CANCELLED'] as AppointmentStatus[]).map(
+                  (st) => (
+                    <button
+                      key={st}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onStatusChange(appointment.id, st)
+                        setShowStatusMenu(false)
+                      }}
+                      className="w-full text-left px-3 py-2 text-xs rounded-lg font-medium text-white hover:bg-white/10 flex items-center justify-between transition-colors cursor-pointer"
+                    >
+                      {statusConfig[st].label}
+                      {appointment.status === st && (
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[var(--color-figaro-blue)]" />
+                      )}
+                    </button>
+                  )
+                )}
+              </div>
+            </>
           )}
         </div>
       </div>
