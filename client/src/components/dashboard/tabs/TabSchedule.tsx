@@ -49,30 +49,27 @@ export function TabSchedule({
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Pill Buttons Filter Bar */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <Filter className="w-4 h-4 text-[#8C97A8] mr-1 hidden sm:inline" />
-            {filterOptions.map((opt) => {
-              const isActive = filterStatus === opt.id
-              return (
-                <button
-                  key={opt.id}
-                  onClick={() => setFilterStatus(opt.id)}
-                  className={`rounded-full px-3.5 py-1.5 text-xs transition-all cursor-pointer ${
-                    isActive
-                      ? 'bg-[#11AFFA] text-white shadow-[0_0_15px_rgba(17,175,250,0.4)] font-semibold border border-[#11AFFA]'
-                      : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              )
-            })}
-          </div>
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <Filter className="w-4 h-4 text-[#8C97A8] mr-1 hidden sm:inline" />
+          {filterOptions.map((opt) => {
+            const isActive = filterStatus === opt.id
+            return (
+              <button
+                key={opt.id}
+                onClick={() => setFilterStatus(opt.id)}
+                className={`rounded-full px-3.5 py-1.5 text-xs transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-[#11AFFA] text-white shadow-[0_0_15px_rgba(17,175,250,0.4)] font-semibold border border-[#11AFFA]'
+                    : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+                }`}
+              >
+                {opt.label}
+              </button>
+            )
+          })}
 
-          {/* Styled Date Picker */}
-          <div className="flex items-center gap-2 bg-white/[0.05] border border-white/10 backdrop-blur-md px-3 py-1.5 rounded-full shadow-inner">
+          {/* Styled Date Picker Pill Inline */}
+          <div className="flex items-center gap-2 bg-white/[0.05] border border-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-inner">
             <CalendarIcon className="w-4 h-4 text-[#11AFFA] drop-shadow-[0_0_8px_rgba(17,175,250,0.8)]" />
             <input
               type="date"

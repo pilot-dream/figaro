@@ -77,8 +77,8 @@ export function AppointmentCard({
   return (
     <GlassCard
       variant="interactive"
-      className={`p-5 space-y-3 transition-all duration-200 border-l-[5px] ${currentStatus.bar} bg-white/[0.04] backdrop-blur-xl border border-white/[0.1] hover:border-white/[0.2] rounded-2xl shadow-lg relative overflow-hidden ${
-        showStatusMenu ? 'z-50 shadow-2xl' : 'z-10'
+      className={`p-5 space-y-3 transition-all duration-200 border-l-[5px] ${currentStatus.bar} bg-white/[0.04] backdrop-blur-xl border border-white/[0.1] hover:border-white/[0.2] rounded-2xl shadow-lg relative ${
+        showStatusMenu ? 'z-[999] overflow-visible shadow-2xl ring-1 ring-[#11AFFA]/40' : 'z-10 overflow-hidden'
       }`}
     >
       <div className="flex items-start justify-between">
@@ -130,7 +130,7 @@ export function AppointmentCard({
               />
 
               {/* Floating Dropdown Menu */}
-              <div className="absolute right-0 top-10 z-50 w-40 bg-[#0A0E14]/95 backdrop-blur-2xl rounded-2xl p-1.5 shadow-2xl border border-white/20 space-y-1">
+              <div className="absolute right-0 top-10 z-[9999] w-44 bg-[#0A0E14] backdrop-blur-2xl rounded-2xl p-1.5 shadow-[0_10px_38px_rgba(0,0,0,0.9)] border border-white/20 space-y-1">
                 {(['CONFIRMED', 'COMPLETED', 'NO_SHOW', 'CANCELLED'] as AppointmentStatus[]).map(
                   (st) => (
                     <button
