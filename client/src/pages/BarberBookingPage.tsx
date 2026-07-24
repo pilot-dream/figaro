@@ -494,8 +494,6 @@ export function BarberBookingPage() {
           </div>
         </div>
       )}
-        </div>
-      )}
       </div>
     </LocalErrorBoundary>
   )
