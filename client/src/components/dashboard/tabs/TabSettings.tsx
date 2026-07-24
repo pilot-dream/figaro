@@ -87,9 +87,9 @@ export function TabSettings({ barber }: TabSettingsProps) {
       : 'filipe-lacerda')
 
   const publicUrl = `${window.location.origin}/${barberSlug}`
-  const qrCodeApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(
+  const qrCodeApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${encodeURIComponent(
     publicUrl
-  )}&color=11AFFA&bgcolor=0A0E14`
+  )}&color=000000&bgcolor=ffffff`
 
   useEffect(() => {
     fetchServices().then((data) => {
