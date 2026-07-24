@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String?  @unique
+  passwordHash String   @default("")
+  phone        String?  @unique
+  email        String?  @unique
+  role         String   @default("CLIENT") // "CLIENT", "BARBER", "MANAGER"
+  avatarUrl    String?
+  notes        String?
+  createdAt    DateTime @default(now())
+
+  // Relations
+  appointments  Appointment[] @relation("ClientAppointments")
+  barberSlots   Appointment[] @relation("BarberAppointments")
+  blockedTimes  BlockedTime[]
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  durationMin Int
+  price       Float
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+
+  // Relations
+  appointmentServices AppointmentService[]
+}
+
+model Appointment {
+  id          String   @id @default(cuid())
+  clientId    String
+  barberId    String?
+  startTime   DateTime
+  endTime     DateTime
+  totalPrice  Float
+  status      String   @default("PENDING") // "PENDING", "CONFIRMED", "COMPLETED", "CANCELLED", "NO_SHOW"
+  clientNotes String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  client   User                 @relation("ClientAppointments", fields: [clientId], references: [id])
+  barber   User?                @relation("BarberAppointments", fields: [barberId], references: [id])
+  services AppointmentService[]
+}
+
+model AppointmentService {
+  appointmentId String
+  serviceId     String
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  service       Service     @relation(fields: [serviceId], references: [id])
+
+  @@id([appointmentId, serviceId])
+}
+
+model BlockedTime {
+  id        String   @id @default(cuid())
+  barberId  String
+  startTime DateTime
+  endTime   DateTime
+  reason    String?
+  barber    User     @relation(fields: [barberId], references: [id])
+}
+
+model Waitlist {
+  id          String   @id @default(cuid())
+  clientId    String
+  barberId    String?
+  serviceIds  String   // JSON array de IDs
+  desiredDate DateTime
+  createdAt   DateTime @default(now())
+}
