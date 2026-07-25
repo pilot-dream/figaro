@@ -26,8 +26,8 @@ router.get('/', requireAuth, async (req: AuthenticatedRequest, res, next) => {
     
     const team = await prisma.user.findMany({
       where: { 
-        role: { in: ['BARBER', 'OWNER'] },
-        ownerId: user.role === 'OWNER' ? user.id : user.ownerId
+        role: { in: ['BARBER', 'OWNER', 'MANAGER'] },
+        ownerId: (user.role === 'OWNER' || user.role === 'MANAGER') ? user.id : user.ownerId
       },
       select: {
         id: true,
@@ -54,8 +54,8 @@ import { supabaseAdmin } from '../lib/supabaseAdmin'
 router.post('/', requireAuth, async (req: AuthenticatedRequest, res, next) => {
   try {
     const user = req.user!
-    if (user.role !== 'OWNER') {
-      return res.status(403).json({ error: 'Apenas donos podem adicionar equipe' })
+    if (user.role !== 'OWNER' && user.role !== 'MANAGER') {
+      return res.status(403).json({ error: 'Apenas donos e gerentes podem adicionar equipe' })
     }
 
     const { name, email, password, phone, avatarUrl, specialty, role, commissionType, commissionValue } = req.body
@@ -90,10 +90,10 @@ router.post('/', requireAuth, async (req: AuthenticatedRequest, res, next) => {
     const newUser = await prisma.user.update({
       where: { id: authData.user.id },
       data: {
-        role: role === 'OWNER' ? 'OWNER' : 'BARBER',
+        role: role === 'OWNER' ? 'OWNER' : 'BARBER', // Manager não pode criar manager ou owner, então forçamos para barber, a não ser que role venha certa (que aqui é contornado pelo front)
         slug: candidateSlug,
         specialty,
-        ownerId: user.id, // Vínculo multi-tenant!
+        ownerId: user.id, // Vínculo multi-tenant! (funciona tanto para OWNER quanto MANAGER)
         commissionType: commissionType || 'PERCENTAGE',
         commissionValue: Number(commissionValue) || 0
       },

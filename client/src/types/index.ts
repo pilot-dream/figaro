@@ -41,6 +41,8 @@ export interface Branch {
   name: string
   branchName?: string
   slug?: string
+  teamCount?: number
+  appointmentCount?: number
 }
 
 export interface FinanceSummary {

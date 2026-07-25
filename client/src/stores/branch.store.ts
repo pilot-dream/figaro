@@ -14,6 +14,7 @@ interface BranchState {
   setBranches: (branches: Branch[]) => void
   setSelectedBranch: (branch: Branch | null) => void
   fetchBranches: () => Promise<void>
+  createBranch: (data: any) => Promise<void>
 }
 
 export const useBranchStore = create<BranchState>((set) => ({
@@ -65,5 +66,30 @@ export const useBranchStore = create<BranchState>((set) => ({
     } catch {
       set({ loading: false })
     }
+  },
+
+  createBranch: async (data: any) => {
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+    const { supabase } = await import('@/lib/supabase')
+    const { data: { session } } = await supabase.auth.getSession()
+
+    if (!session?.access_token) throw new Error('Não autenticado')
+
+    const response = await fetch(`${API_URL}/dashboard/branches`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+
+    if (!response.ok) {
+      const errData = await response.json()
+      throw new Error(errData.error || 'Erro ao criar filial')
+    }
+
+    // Recarrega as filiais após criar
+    await useBranchStore.getState().fetchBranches()
   }
 }))

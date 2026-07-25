@@ -21,6 +21,7 @@ model User {
   // Enterprise: Hierarquia Matriz → Filial (self-relation entre OWNERs)
   parentId             String?  @map("parent_id") @db.Uuid
   branchName           String?  @map("branch_name") // Nome da unidade (ex: "Unidade Centro")
+  branchAddress        String?  @map("branch_address") // Endereço da unidade
   
   // Comissionamento (para BARBERS)
   commissionType       String   @default("PERCENTAGE") @map("commission_type") // 'PERCENTAGE' | 'FIXED'

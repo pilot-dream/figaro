@@ -1,6 +1,7 @@
-import { Home, Calendar, Wallet, Scissors, Settings, Crown } from 'lucide-react'
+import { Home, Calendar, Wallet, Scissors, Settings, Crown, Building2 } from 'lucide-react'
+import { useAuthStore } from '@/stores/auth.store'
 
-export type BarberTab = 'home' | 'schedule' | 'financial' | 'booking' | 'settings' | 'subscriptions' | 'saas'
+export type BarberTab = 'home' | 'schedule' | 'financial' | 'booking' | 'settings' | 'subscriptions' | 'saas' | 'network'
 
 interface BarberBottomNavProps {
   activeTab: BarberTab
@@ -17,11 +18,16 @@ export function BarberBottomNav({ activeTab, onChangeTab }: BarberBottomNavProps
     { id: 'settings', label: 'Ajustes', icon: Settings },
   ]
 
+  const { user } = useAuthStore()
+
   // Se o usuário for OWNER, adicionamos a aba de SaaS no final
-  // Obs: Vamos usar um ícone diferente ou apenas substituir a de configurações.
-  // Para simplificar, vou inserir no final:
-  if (true) {
+  if (user?.role === 'OWNER') {
     tabs.push({ id: 'saas', label: 'Plano', icon: Crown })
+  }
+
+  // Se o usuário for OWNER e plano ENTERPRISE, adicionamos a aba Rede
+  if (user?.role === 'OWNER' && user?.subscriptionPlan === 'ENTERPRISE') {
+    tabs.push({ id: 'network', label: 'Rede', icon: Building2 })
   }
 
   return (

@@ -11,6 +11,9 @@ export interface AuthenticatedUser {
   slug?: string
   commissionType?: string
   commissionValue?: number
+  ownerId?: string
+  subscriptionPlan?: string
+  parentId?: string
 }
 
 export interface AuthenticatedRequest extends Request {
@@ -48,7 +51,10 @@ export async function authMiddleware(req: AuthenticatedRequest, res: Response, n
       role: dbUser.role,
       slug: dbUser.slug || undefined,
       commissionType: dbUser.commissionType,
-      commissionValue: dbUser.commissionValue
+      commissionValue: dbUser.commissionValue,
+      ownerId: dbUser.ownerId || undefined,
+      subscriptionPlan: dbUser.subscriptionPlan,
+      parentId: dbUser.parentId || undefined
     }
     
     next()

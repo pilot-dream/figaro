@@ -5,7 +5,7 @@ import { useAuthStore } from '@/stores/auth.store'
 
 export function BranchSwitcher() {
   const { user } = useAuthStore()
-  const { branches, selectedBranch, setSelectedBranch, isNetwork, fetchBranches } = useBranchStore()
+  const { branches, selectedBranch, setSelectedBranch, fetchBranches } = useBranchStore()
   const [open, setOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -27,8 +27,8 @@ export function BranchSwitcher() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Only render for OWNER with Enterprise plan and actual branches
-  if (user?.role !== 'OWNER' || !isNetwork) return null
+  // Only render for OWNER with Enterprise plan
+  if (user?.role !== 'OWNER' || user?.subscriptionPlan !== 'ENTERPRISE') return null
 
   const currentLabel = selectedBranch?.branchName || 'Toda a Rede'
 
