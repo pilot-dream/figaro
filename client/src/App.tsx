@@ -14,6 +14,7 @@ import { ToastContainer } from '@/components/ui/Toast'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { PageTransition } from '@/components/ui/PageTransition'
 import { DashboardSkeleton } from '@/components/ui/DashboardSkeleton'
+import { TrialCountdownBadge } from '@/components/dashboard/TrialCountdownBadge'
 
 export default function App() {
   const { user, logout, initAuth, initialized } = useAuthStore()
@@ -56,6 +57,7 @@ export default function App() {
               <span className="text-[10px] px-2 py-0.5 rounded font-mono font-bold uppercase bg-white/10 text-figaro-text-secondary">
                 {user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER' ? 'PAINEL BARBEIRO' : 'ÁREA CLIENTE'}
               </span>
+              <TrialCountdownBadge />
             </div>
             <div className="flex items-center gap-3">
               {user.role === 'CLIENT' && (

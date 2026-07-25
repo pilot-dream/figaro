@@ -85,12 +85,16 @@ router.post('/register-owner', async (req, res, next) => {
       counter++
     }
 
-    // 3. Força a role OWNER e salva o slug
+    // 3. Força a role OWNER, salva o slug e inicia 7 dias de TRIAL
+    const trialEnd = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+
     await prisma.user.update({
       where: { id: authData.user.id },
       data: { 
         role: 'OWNER',
-        slug: candidateSlug
+        slug: candidateSlug,
+        saasStatus: 'TRIAL',
+        trialEndsAt: trialEnd
       }
     })
 

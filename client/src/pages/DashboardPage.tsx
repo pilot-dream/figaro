@@ -100,6 +100,15 @@ export function DashboardPage() {
     }
   }, [user, loadAppointments])
 
+  // Listen for custom event from the TrialBadge to navigate to SaaS tab
+  useEffect(() => {
+    const handleNavToSaaS = () => {
+      setActiveTab('saas')
+    }
+    window.addEventListener('nav-to-saas-tab', handleNavToSaaS)
+    return () => window.removeEventListener('nav-to-saas-tab', handleNavToSaaS)
+  }, [])
+
   const handleStatusChange = async (id: string, newStatus: AppointmentStatus) => {
     try {
       await updateAppointmentStatus(id, newStatus)
