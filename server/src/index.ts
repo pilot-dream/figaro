@@ -11,7 +11,7 @@ import financeRoutes from './routes/finance.routes'
 import appointmentsRoutes from './routes/appointments.routes'
 import mrrRoutes from './routes/mrr.routes'
 import { securityHeaders, globalLimiter } from './middleware/security.middleware'
-import { startReminderCron } from './cron/reminder.cron'
+import { startReminderCron, processReminders } from './cron/reminder.cron'
 
 const app = express()
 const availabilityService = new AvailabilityService()
@@ -39,6 +39,18 @@ app.use('/api/team', teamRoutes)
 app.use('/api/finance', financeRoutes)
 app.use('/api/appointments', appointmentsRoutes)
 app.use('/api/mrr', mrrRoutes)
+
+// Cron execution endpoint for Vercel Serverless
+app.get('/api/cron/reminders', async (req, res) => {
+  try {
+    await processReminders()
+    res.json({ success: true, message: 'Reminders processed successfully' })
+  } catch (error) {
+    console.error('Cron error:', error)
+    res.status(500).json({ success: false, error: 'Failed to process reminders' })
+  }
+})
+
 
 // Public global availability endpoint
 app.get('/api/availability', async (req, res, next) => {
