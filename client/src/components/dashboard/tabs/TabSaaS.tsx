@@ -1,4 +1,4 @@
-import { Crown, CheckCircle2, AlertTriangle, CreditCard } from 'lucide-react'
+import { Crown, CheckCircle2, AlertTriangle, CreditCard, Building2, Globe, Zap } from 'lucide-react'
 import { useAuthStore } from '@/stores/auth.store'
 
 export function TabSaaS() {
@@ -6,6 +6,7 @@ export function TabSaaS() {
 
   const isTrial = user?.saasStatus === 'TRIAL'
   const isPastDue = user?.saasStatus === 'PAST_DUE'
+  const isEnterprise = user?.subscriptionPlan === 'ENTERPRISE'
   
   return (
     <div className="space-y-6">
@@ -44,10 +45,17 @@ export function TabSaaS() {
       )}
 
       <div className="grid md:grid-cols-2 gap-4">
-        <div className="glass-panel p-6 border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.1)] relative overflow-hidden group">
-          <div className="absolute top-0 right-0 px-3 py-1 bg-amber-500 text-black text-[10px] font-bold tracking-wider rounded-bl-lg uppercase">
-            Plano Atual
-          </div>
+        {/* FÍGARO PRO */}
+        <div className={`glass-panel p-6 relative overflow-hidden group transition-all ${
+          !isEnterprise 
+            ? 'border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.1)]' 
+            : 'border-white/5 opacity-70'
+        }`}>
+          {!isEnterprise && (
+            <div className="absolute top-0 right-0 px-3 py-1 bg-amber-500 text-black text-[10px] font-bold tracking-wider rounded-bl-lg uppercase">
+              Plano Atual
+            </div>
+          )}
           
           <h3 className="text-2xl font-bold text-white mb-2">Fígaro PRO</h3>
           <div className="flex items-end gap-1 mb-6">
@@ -57,16 +65,16 @@ export function TabSaaS() {
 
           <ul className="space-y-3 mb-8">
             <li className="flex items-center gap-2 text-sm text-figaro-text-secondary">
-              <CheckCircle2 className="w-4 h-4 text-green-400" /> Agendamentos Ilimitados
+              <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" /> Agendamentos Ilimitados
             </li>
             <li className="flex items-center gap-2 text-sm text-figaro-text-secondary">
-              <CheckCircle2 className="w-4 h-4 text-green-400" /> Equipe de Barbeiros (Ilimitada)
+              <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" /> Equipe de Barbeiros (Ilimitada)
             </li>
             <li className="flex items-center gap-2 text-sm text-figaro-text-secondary">
-              <CheckCircle2 className="w-4 h-4 text-green-400" /> Lembretes Oficiais no WhatsApp
+              <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" /> Lembretes Oficiais no WhatsApp
             </li>
             <li className="flex items-center gap-2 text-sm text-figaro-text-secondary">
-              <CheckCircle2 className="w-4 h-4 text-green-400" /> Split de Pagamento
+              <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" /> Split de Pagamento
             </li>
           </ul>
 
@@ -79,12 +87,53 @@ export function TabSaaS() {
           </button>
         </div>
 
-        {/* Placeholder for higher tier if needed */}
-        <div className="glass-panel p-6 border-white/5 opacity-50 flex flex-col justify-center items-center text-center">
-          <Crown className="w-8 h-8 text-white/20 mb-3" />
-          <h3 className="text-lg font-bold text-white mb-2">Fígaro ENTERPRISE</h3>
-          <p className="text-xs text-figaro-text-secondary mb-4">Para redes e franquias com múltiplas unidades e necessidades fiscais avançadas.</p>
-          <span className="text-xs font-semibold text-[#11AFFA]">Em breve</span>
+        {/* FÍGARO ENTERPRISE */}
+        <div className={`glass-panel p-6 relative overflow-hidden group transition-all ${
+          isEnterprise 
+            ? 'border-[#11AFFA]/30 shadow-[0_0_20px_rgba(17,175,250,0.15)]' 
+            : 'border-white/10 hover:border-[#11AFFA]/20'
+        }`}>
+          {isEnterprise && (
+            <div className="absolute top-0 right-0 px-3 py-1 bg-[#11AFFA] text-black text-[10px] font-bold tracking-wider rounded-bl-lg uppercase">
+              Plano Atual
+            </div>
+          )}
+
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className="text-2xl font-bold text-white">Fígaro ENTERPRISE</h3>
+            <Zap className="w-5 h-5 text-[#11AFFA]" />
+          </div>
+          <div className="flex items-end gap-1 mb-6">
+            <span className="text-3xl font-bold text-[#11AFFA]">R$ 297</span>
+            <span className="text-sm text-figaro-text-secondary mb-1">/mês</span>
+          </div>
+
+          <ul className="space-y-3 mb-8">
+            <li className="flex items-center gap-2 text-sm text-figaro-text-secondary">
+              <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" /> Tudo do Fígaro PRO
+            </li>
+            <li className="flex items-center gap-2 text-sm text-white font-medium">
+              <Globe className="w-4 h-4 text-[#11AFFA] shrink-0" /> Gestão Multi-Filiais
+            </li>
+            <li className="flex items-center gap-2 text-sm text-white font-medium">
+              <Building2 className="w-4 h-4 text-[#11AFFA] shrink-0" /> Dashboard Consolidado da Rede
+            </li>
+            <li className="flex items-center gap-2 text-sm text-white font-medium">
+              <Crown className="w-4 h-4 text-[#11AFFA] shrink-0" /> Relatórios por Unidade
+            </li>
+          </ul>
+
+          <button 
+            onClick={() => alert('Fale com nosso comercial para Enterprise!')}
+            className={`w-full py-2.5 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
+              isEnterprise
+                ? 'bg-white/5 border border-[#11AFFA]/50 hover:bg-[#11AFFA] hover:text-black text-[#11AFFA]'
+                : 'bg-[#11AFFA] text-white hover:bg-[#11AFFA]/90 shadow-[0_0_15px_rgba(17,175,250,0.3)]'
+            }`}
+          >
+            <Building2 className="w-4 h-4" />
+            {isEnterprise ? 'Gerenciar Enterprise' : 'Quero para minha Rede'}
+          </button>
         </div>
       </div>
     </div>

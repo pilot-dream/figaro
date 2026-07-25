@@ -30,6 +30,17 @@ export interface User {
   gracePeriodEndsAt?: string
   caktoCustomerId?: string
   caktoSubscriptionId?: string
+
+  // Enterprise: Hierarquia Matriz/Filial
+  parentId?: string
+  branchName?: string
+}
+
+export interface Branch {
+  id: string
+  name: string
+  branchName?: string
+  slug?: string
 }
 
 export interface FinanceSummary {

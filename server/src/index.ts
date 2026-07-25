@@ -10,6 +10,7 @@ import whatsappRoutes from './routes/whatsapp.routes'
 import financeRoutes from './routes/finance.routes'
 import appointmentsRoutes from './routes/appointments.routes'
 import mrrRoutes from './routes/mrr.routes'
+import dashboardRoutes from './routes/dashboard.routes'
 import { securityHeaders, globalLimiter } from './middleware/security.middleware'
 import { handleCaktoWebhook } from './controllers/saas.webhook.controller'
 import { startReminderCron, processReminders } from './cron/reminder.cron'
@@ -40,6 +41,7 @@ app.use('/api/team', teamRoutes)
 app.use('/api/finance', financeRoutes)
 app.use('/api/appointments', appointmentsRoutes)
 app.use('/api/mrr', mrrRoutes)
+app.use('/api/dashboard', dashboardRoutes)
 
 // Webhooks
 app.post('/api/webhooks/cakto', handleCaktoWebhook)

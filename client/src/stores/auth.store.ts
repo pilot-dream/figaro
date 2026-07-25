@@ -133,6 +133,16 @@ async function fetchProfile(userId: string, email?: string): Promise<User> {
       whatsappReminder24h: data.whatsapp_reminder_24h ?? false,
       whatsappReminder2h: data.whatsapp_reminder_2h ?? false,
       whatsappTemplateBase: data.whatsapp_template_base || undefined,
+
+      // SaaS
+      subscriptionPlan: data.subscription_plan || 'FREE',
+      saasStatus: data.saas_status || 'TRIAL',
+      trialEndsAt: data.trial_ends_at || undefined,
+      gracePeriodEndsAt: data.grace_period_ends_at || undefined,
+
+      // Enterprise
+      parentId: data.parent_id || undefined,
+      branchName: data.branch_name || undefined,
     }
   }
 

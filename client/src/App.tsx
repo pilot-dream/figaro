@@ -15,6 +15,7 @@ import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { PageTransition } from '@/components/ui/PageTransition'
 import { DashboardSkeleton } from '@/components/ui/DashboardSkeleton'
 import { TrialCountdownBadge } from '@/components/dashboard/TrialCountdownBadge'
+import { BranchSwitcher } from '@/components/dashboard/BranchSwitcher'
 
 export default function App() {
   const { user, logout, initAuth, initialized } = useAuthStore()
@@ -58,6 +59,7 @@ export default function App() {
                 {user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER' ? 'PAINEL BARBEIRO' : 'ÁREA CLIENTE'}
               </span>
               <TrialCountdownBadge />
+              <BranchSwitcher />
             </div>
             <div className="flex items-center gap-3">
               {user.role === 'CLIENT' && (

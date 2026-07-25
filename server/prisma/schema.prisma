@@ -17,6 +17,10 @@ model User {
   ownerId              String?  @map("owner_id") @db.Uuid
   notes                String?
   specialty            String?
+
+  // Enterprise: Hierarquia Matriz → Filial (self-relation entre OWNERs)
+  parentId             String?  @map("parent_id") @db.Uuid
+  branchName           String?  @map("branch_name") // Nome da unidade (ex: "Unidade Centro")
   
   // Comissionamento (para BARBERS)
   commissionType       String   @default("PERCENTAGE") @map("commission_type") // 'PERCENTAGE' | 'FIXED'
@@ -48,6 +52,8 @@ model User {
   barberSlots   Appointment[] @relation("BarberAppointments")
   owner         User?         @relation("TeamMembers", fields: [ownerId], references: [id])
   teamMembers   User[]        @relation("TeamMembers")
+  parent        User?         @relation("BranchNetwork", fields: [parentId], references: [id])
+  branches      User[]        @relation("BranchNetwork")
   blockedTimes  BlockedTime[]
   clientWaitlists Waitlist[]  @relation("ClientWaitlist")
   barberWaitlists Waitlist[]  @relation("BarberWaitlist")
