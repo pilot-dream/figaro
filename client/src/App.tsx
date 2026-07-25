@@ -1,17 +1,18 @@
-import { useEffect } from 'react'
+import { useEffect, Suspense, lazy } from 'react'
 import { Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/auth.store'
 import { RequireAuth } from '@/components/auth/RequireAuth'
-import { LoginPage } from '@/pages/LoginPage'
-import { RegisterPage } from '@/pages/RegisterPage'
-import { MyAppointments } from '@/pages/MyAppointments'
-import { DashboardPage } from '@/pages/DashboardPage'
-import { BarberBookingPage } from '@/pages/BarberBookingPage'
-import { SubscriptionCheckout } from '@/pages/SubscriptionCheckout'
+const LoginPage = lazy(() => import('@/pages/LoginPage').then(m => ({ default: m.LoginPage })))
+const RegisterPage = lazy(() => import('@/pages/RegisterPage').then(m => ({ default: m.RegisterPage })))
+const MyAppointments = lazy(() => import('@/pages/MyAppointments').then(m => ({ default: m.MyAppointments })))
+const DashboardPage = lazy(() => import('@/pages/DashboardPage').then(m => ({ default: m.DashboardPage })))
+const BarberBookingPage = lazy(() => import('@/pages/BarberBookingPage').then(m => ({ default: m.BarberBookingPage })))
+const SubscriptionCheckout = lazy(() => import('@/pages/SubscriptionCheckout').then(m => ({ default: m.SubscriptionCheckout })))
 import { Clock, LogOut, Scissors } from 'lucide-react'
 import { ToastContainer } from '@/components/ui/Toast'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { PageTransition } from '@/components/ui/PageTransition'
+import { DashboardSkeleton } from '@/components/ui/DashboardSkeleton'
 
 export default function App() {
   const { user, logout, initAuth, initialized } = useAuthStore()
@@ -79,8 +80,9 @@ export default function App() {
         )}
 
         <PageTransition>
-          <Routes>
-          {/* Rotas Públicas */}
+          <Suspense fallback={<DashboardSkeleton />}>
+            <Routes>
+            {/* Rotas Públicas */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registro" element={<RegisterPage />} />
           <Route path="/:barberSlug/assinatura" element={<SubscriptionCheckout />} />
@@ -111,7 +113,8 @@ export default function App() {
               )
             }
           />
-          </Routes>
+            </Routes>
+          </Suspense>
         </PageTransition>
       </main>
       {/* Navigation bar for logged in CLIENT */}

@@ -153,7 +153,7 @@ model CustomerSubscription {
   clientId              String   @map("client_id") @db.Uuid
   planId                String   @map("plan_id") @db.Uuid
   status                String   @default("ACTIVE") // ACTIVE, PAST_DUE, CANCELED
-  gatewaySubscriptionId String?  @map("gateway_subscription_id")
+  gatewaySubscriptionId String?  @map("gateway_subscription_id") // Futuro ID da Cakto ou Stripe
   nextBillingDate       DateTime? @map("next_billing_date")
   createdAt             DateTime @default(now()) @map("created_at")
 

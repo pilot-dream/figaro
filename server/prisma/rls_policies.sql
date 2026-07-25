@@ -27,7 +27,7 @@ DROP POLICY IF EXISTS "Owner can read all appointments" ON public.appointments;
 CREATE POLICY "Owner can read all appointments"
   ON public.appointments
   FOR SELECT
-  USING (public.get_user_role() = 'OWNER');
+  USING (public.get_user_role() IN ('OWNER', 'MANAGER'));
 
 -- BARBER só pode ver agendamentos onde ELE é o barbeiro
 DROP POLICY IF EXISTS "Barber can read own appointments" ON public.appointments;
@@ -59,7 +59,7 @@ DROP POLICY IF EXISTS "Owner can update any appointment" ON public.appointments;
 CREATE POLICY "Owner can update any appointment"
   ON public.appointments
   FOR UPDATE
-  USING (public.get_user_role() = 'OWNER');
+  USING (public.get_user_role() IN ('OWNER', 'MANAGER'));
 
 DROP POLICY IF EXISTS "Barber can update own appointments" ON public.appointments;
 CREATE POLICY "Barber can update own appointments"
@@ -81,7 +81,7 @@ DROP POLICY IF EXISTS "Owner can read all waitlists" ON public.waitlists;
 CREATE POLICY "Owner can read all waitlists"
   ON public.waitlists
   FOR SELECT
-  USING (public.get_user_role() = 'OWNER');
+  USING (public.get_user_role() IN ('OWNER', 'MANAGER'));
 
 -- BARBER só vê a lista de espera DELE
 DROP POLICY IF EXISTS "Barber can read own waitlists" ON public.waitlists;
