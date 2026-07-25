@@ -11,6 +11,7 @@ import financeRoutes from './routes/finance.routes'
 import appointmentsRoutes from './routes/appointments.routes'
 import mrrRoutes from './routes/mrr.routes'
 import { securityHeaders, globalLimiter } from './middleware/security.middleware'
+import { handleCaktoWebhook } from './controllers/saas.webhook.controller'
 import { startReminderCron, processReminders } from './cron/reminder.cron'
 
 const app = express()
@@ -39,6 +40,9 @@ app.use('/api/team', teamRoutes)
 app.use('/api/finance', financeRoutes)
 app.use('/api/appointments', appointmentsRoutes)
 app.use('/api/mrr', mrrRoutes)
+
+// Webhooks
+app.post('/api/webhooks/cakto', handleCaktoWebhook)
 
 // Cron execution endpoint for Vercel Serverless
 app.get('/api/cron/reminders', async (req, res) => {

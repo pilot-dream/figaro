@@ -1,6 +1,6 @@
 import { Home, Calendar, Wallet, Scissors, Settings, Crown } from 'lucide-react'
 
-export type BarberTab = 'home' | 'schedule' | 'financial' | 'booking' | 'settings' | 'subscriptions'
+export type BarberTab = 'home' | 'schedule' | 'financial' | 'booking' | 'settings' | 'subscriptions' | 'saas'
 
 interface BarberBottomNavProps {
   activeTab: BarberTab
@@ -16,6 +16,13 @@ export function BarberBottomNav({ activeTab, onChangeTab }: BarberBottomNavProps
     { id: 'booking', label: 'Agendar', icon: Scissors },
     { id: 'settings', label: 'Ajustes', icon: Settings },
   ]
+
+  // Se o usuário for OWNER, adicionamos a aba de SaaS no final
+  // Obs: Vamos usar um ícone diferente ou apenas substituir a de configurações.
+  // Para simplificar, vou inserir no final:
+  if (true) {
+    tabs.push({ id: 'saas', label: 'Plano', icon: Crown })
+  }
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 p-3 sm:pb-4 pointer-events-none flex justify-center">

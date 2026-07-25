@@ -22,10 +22,13 @@ model User {
   commissionType       String   @default("PERCENTAGE") @map("commission_type") // 'PERCENTAGE' | 'FIXED'
   commissionValue      Float    @default(0)             @map("commission_value")
 
-  // Assinatura provisória (para OWNERS — futura integração Cakto Pay)
+  // Assinatura provisória (Integração Cakto Pay B2B SaaS)
   subscriptionPlan     String   @default("FREE")        @map("subscription_plan")
-  subscriptionStatus   String   @default("ACTIVE")      @map("subscription_status")
+  saasStatus           String   @default("TRIAL")       @map("saas_status") // 'TRIAL' | 'ACTIVE' | 'PAST_DUE' | 'CANCELED'
+  trialEndsAt          DateTime?                        @map("trial_ends_at")
+  gracePeriodEndsAt    DateTime?                        @map("grace_period_ends_at")
   caktoCustomerId      String?                          @map("cakto_customer_id")
+  caktoSubscriptionId  String?                          @map("cakto_subscription_id")
   
   googleRefreshToken   String?  @map("google_refresh_token")
   googleEmail          String?  @map("google_email")

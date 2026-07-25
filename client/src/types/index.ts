@@ -25,7 +25,11 @@ export interface User {
   commissionType?: 'PERCENTAGE' | 'FIXED'
   commissionValue?: number
   subscriptionPlan?: string
-  subscriptionStatus?: string
+  saasStatus?: 'TRIAL' | 'ACTIVE' | 'PAST_DUE' | 'CANCELED'
+  trialEndsAt?: string
+  gracePeriodEndsAt?: string
+  caktoCustomerId?: string
+  caktoSubscriptionId?: string
 }
 
 export interface FinanceSummary {

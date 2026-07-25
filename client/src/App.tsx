@@ -8,6 +8,7 @@ const MyAppointments = lazy(() => import('@/pages/MyAppointments').then(m => ({ 
 const DashboardPage = lazy(() => import('@/pages/DashboardPage').then(m => ({ default: m.DashboardPage })))
 const BarberBookingPage = lazy(() => import('@/pages/BarberBookingPage').then(m => ({ default: m.BarberBookingPage })))
 const SubscriptionCheckout = lazy(() => import('@/pages/SubscriptionCheckout').then(m => ({ default: m.SubscriptionCheckout })))
+const SubscriptionSuspended = lazy(() => import('@/pages/SubscriptionSuspended').then(m => ({ default: m.SubscriptionSuspended })))
 import { Clock, LogOut, Scissors } from 'lucide-react'
 import { ToastContainer } from '@/components/ui/Toast'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
@@ -85,6 +86,7 @@ export default function App() {
             {/* Rotas Públicas */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registro" element={<RegisterPage />} />
+          <Route path="/assinatura-suspensa" element={<SubscriptionSuspended />} />
           <Route path="/:barberSlug/assinatura" element={<SubscriptionCheckout />} />
           <Route path="/:slug" element={<BarberBookingPage />} />
 
