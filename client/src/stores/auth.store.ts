@@ -145,6 +145,7 @@ async function fetchProfile(userId: string, email?: string): Promise<User> {
   }
 }
 
+// @ts-ignore
 async function upsertProfileRow(
   id: string,
   name: string,

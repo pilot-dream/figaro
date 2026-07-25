@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import type { DashboardAppointment } from '@/components/dashboard/AppointmentCard'
 import type { User, FinanceSummary } from '@/types'
-import { DollarSign, Wallet, Users, Download, PieChart, TrendingUp, User as UserIcon } from 'lucide-react'
+import { DollarSign, Wallet, Users, Download, PieChart, TrendingUp } from 'lucide-react'
 
 interface TabFinancialProps {
   appointments: DashboardAppointment[]

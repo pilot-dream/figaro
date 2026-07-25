@@ -128,8 +128,7 @@ export function BarberBookingPage() {
         startTime: selectedSlot.startTime,
         clientName,
         clientPhone,
-        notes: clientNotes,
-        recurringType // TODO: Send to API when ready
+        notes: clientNotes
       })
       setCompleted(true)
     } catch {

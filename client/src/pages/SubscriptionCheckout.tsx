@@ -4,7 +4,7 @@ import { fetchBarberBySlug, fetchSubscriptionPlans, createSubscription, fetchTak
 import { GlassCard } from '@/components/ui/GlassCard'
 import { Button } from '@/components/ui/Button'
 import { useToastStore } from '@/stores/toast.store'
-import { Crown, Calendar, CreditCard, Check, ChevronRight, ArrowLeft } from 'lucide-react'
+import { Crown, Calendar, Check, ChevronRight, ArrowLeft } from 'lucide-react'
 
 type Step = 'PLAN' | 'SLOT' | 'PAYMENT' | 'SUCCESS'
 

@@ -1,5 +1,3 @@
-import React from 'react'
-
 export function DashboardSkeleton() {
   return (
     <div className="space-y-6 pb-28 animate-pulse w-full max-w-4xl mx-auto">

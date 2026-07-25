@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { Button } from '@/components/ui/Button'
 import type { User } from '@/types'
-import { Plus, Edit2, Trash2, ShieldAlert, Star, User as UserIcon, X, Save, Upload } from 'lucide-react'
+import { Plus, Edit2, Trash2, Star, User as UserIcon, X, Save, Upload } from 'lucide-react'
 import { uploadAvatar, supabase } from '@/lib/api'
 import { useToastStore } from '@/stores/toast.store'
 import { useConfirmStore } from '@/stores/confirm.store'
@@ -236,10 +236,10 @@ export function TeamSettings() {
               </div>
 
               <div className="flex gap-2 w-full mt-2">
-                <Button variant="outline" onClick={() => openEditModal(member)} className="flex-1 text-xs py-1.5 h-auto border-white/20 hover:border-white/50 text-white">
+                <Button variant="secondary" onClick={() => openEditModal(member)} className="flex-1 text-xs py-1.5 h-auto border-white/20 hover:border-white/50 text-white">
                   <Edit2 className="w-3.5 h-3.5 mr-1.5" /> Editar
                 </Button>
-                <Button variant="outline" onClick={() => handleDelete(member.id)} className="flex-1 text-xs py-1.5 h-auto border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50">
+                <Button variant="secondary" onClick={() => handleDelete(member.id)} className="flex-1 text-xs py-1.5 h-auto border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50">
                   <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Remover
                 </Button>
               </div>

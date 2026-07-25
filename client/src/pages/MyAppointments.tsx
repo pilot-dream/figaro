@@ -100,7 +100,7 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
           prev.map((a) => (a.id === id ? { ...a, status: 'CANCELLED' } : a))
         )
       } catch {
-        addToast('Erro ao cancelar agendamento', 'error')
+        useToastStore.getState().addToast('Erro ao cancelar agendamento', 'error')
       }
     }
   }
