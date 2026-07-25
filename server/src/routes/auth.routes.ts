@@ -21,106 +21,80 @@ function slugify(text: string): string {
     .replace(/--+/g, '-')
 }
 
-// POST /api/auth/register
+import { supabaseAdmin } from '../lib/supabaseAdmin'
+
+// POST /api/auth/register (Força CLIENT)
 router.post('/register', async (req, res, next) => {
   try {
-    const { name, email, password, role, phone, avatarUrl } = req.body
+    const { name, email, password, phone } = req.body
     if (!name || !email || !password) {
       return res.status(400).json({ error: 'Nome, email e senha são obrigatórios' })
     }
 
-    const existingUser = await prisma.user.findFirst({
-      where: { OR: [{ email }, { phone: phone || undefined }] },
+    // 1. Cria usuário no Supabase Auth
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      user_metadata: { name, phone }
     })
 
-    if (existingUser) {
-      return res.status(400).json({ error: 'Email ou telefone já cadastrado' })
+    if (authError || !authData.user) {
+      return res.status(400).json({ error: authError?.message || 'Erro ao criar usuário' })
     }
 
-    const passwordHash = await bcrypt.hash(password, 10)
-    const userRole = role === 'BARBER' ? 'BARBER' : 'CLIENT'
-    let slug: string | undefined = undefined
+    // A trigger no banco criará o perfil como CLIENT por padrão.
+    // Garantimos que a role é CLIENT no Prisma:
+    await prisma.user.update({
+      where: { id: authData.user.id },
+      data: { role: 'CLIENT' }
+    })
 
-    if (userRole === 'BARBER') {
-      let baseSlug = slugify(name)
-      let candidateSlug = baseSlug
-      let counter = 1
-      while (await prisma.user.findUnique({ where: { slug: candidateSlug } })) {
-        candidateSlug = `${baseSlug}-${counter}`
-        counter++
+    res.status(201).json({ success: true, user: authData.user })
+  } catch (error) {
+    next(error)
+  }
+})
+
+// POST /api/auth/register-owner (Força OWNER)
+router.post('/register-owner', async (req, res, next) => {
+  try {
+    const { name, email, password, phone } = req.body
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'Nome, email e senha são obrigatórios' })
+    }
+
+    // 1. Cria usuário no Supabase Auth
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      user_metadata: { name, phone, role: 'OWNER' } // Passamos a meta-data, a trigger ignora, mas nós corrigimos embaixo
+    })
+
+    if (authError || !authData.user) {
+      return res.status(400).json({ error: authError?.message || 'Erro ao criar conta de barbearia' })
+    }
+
+    // 2. Gerar slug único para o dono/barbearia
+    let baseSlug = slugify(name)
+    let candidateSlug = baseSlug
+    let counter = 1
+    while (await prisma.user.findUnique({ where: { slug: candidateSlug } })) {
+      candidateSlug = `${baseSlug}-${counter}`
+      counter++
+    }
+
+    // 3. Força a role OWNER e salva o slug
+    await prisma.user.update({
+      where: { id: authData.user.id },
+      data: { 
+        role: 'OWNER',
+        slug: candidateSlug
       }
-      slug = candidateSlug
-    }
-
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        phone,
-        passwordHash,
-        role: userRole,
-        slug,
-        avatarUrl: avatarUrl || (userRole === 'BARBER' ? 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80' : undefined),
-      },
     })
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role, slug: user.slug },
-      config.get('JWT_SECRET'),
-      { expiresIn: '7d' }
-    )
-
-    const { passwordHash: _, ...userWithoutPassword } = user
-    res.status(201).json({ token, user: userWithoutPassword })
-  } catch (error) {
-    next(error)
-  }
-})
-
-// POST /api/auth/login
-router.post('/login', authLimiter, async (req, res, next) => {
-  try {
-    const { email, password } = req.body
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email e senha são obrigatórios' })
-    }
-
-    const user = await prisma.user.findUnique({ where: { email } })
-    if (!user || !user.passwordHash) {
-      return res.status(401).json({ error: 'Credenciais inválidas' })
-    }
-
-    const validPassword = await bcrypt.compare(password, user.passwordHash)
-    if (!validPassword) {
-      return res.status(401).json({ error: 'Credenciais inválidas' })
-    }
-
-    const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role, slug: user.slug },
-      config.get('JWT_SECRET'),
-      { expiresIn: '7d' }
-    )
-
-    const { passwordHash: _, ...userWithoutPassword } = user
-    res.json({ token, user: userWithoutPassword })
-  } catch (error) {
-    next(error)
-  }
-})
-
-// GET /api/auth/me
-router.get('/me', requireAuth, async (req: AuthenticatedRequest, res, next) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.user!.id },
-    })
-
-    if (!user) {
-      return res.status(404).json({ error: 'Usuário não encontrado' })
-    }
-
-    const { passwordHash: _, ...userWithoutPassword } = user
-    res.json(userWithoutPassword)
+    res.status(201).json({ success: true, user: authData.user })
   } catch (error) {
     next(error)
   }

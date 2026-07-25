@@ -1,23 +1,52 @@
+import { useState, useEffect, useCallback } from 'react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { AppointmentCard, type DashboardAppointment } from '@/components/dashboard/AppointmentCard'
 import type { AppointmentStatus } from '@/types'
-import { DollarSign, Scissors, Users, Clock, Calendar as CalendarIcon, TrendingUp } from 'lucide-react'
+import { DollarSign, Scissors, Users, Clock, Calendar as CalendarIcon, TrendingUp, Filter } from 'lucide-react'
+import { RevenueChart } from '../RevenueChart'
+import { useAuthStore } from '@/stores/auth.store'
+import { fetchBarberAppointments, fetchMyTeam } from '@/lib/api'
+import { mapToDashboardAppointment } from '@/pages/DashboardPage'
+import type { User } from '@/types'
 
 interface TabHomeProps {
-  appointments: DashboardAppointment[]
-  selectedDate: string
-  onDateChange: (date: string) => void
   onSelectClient: (app: DashboardAppointment) => void
   onStatusChange: (id: string, status: AppointmentStatus) => void
 }
 
 export function TabHome({
-  appointments,
-  selectedDate,
-  onDateChange,
   onSelectClient,
   onStatusChange,
 }: TabHomeProps) {
+  const { user } = useAuthStore()
+  const [period, setPeriod] = useState<'today' | 'yesterday' | 'week' | 'month'>('today')
+  const [appointments, setAppointments] = useState<DashboardAppointment[]>([])
+  
+  const [barberFilter, setBarberFilter] = useState<string>('all')
+  const [barbers, setBarbers] = useState<User[]>([])
+
+  useEffect(() => {
+    if (user?.role === 'OWNER') {
+      fetchMyTeam().then(setBarbers)
+    } else if (user) {
+      setBarberFilter(user.id)
+    }
+  }, [user])
+
+  const loadAppointments = useCallback(async () => {
+    if (!user) return
+    const targetId = user.role === 'OWNER' ? barberFilter : user.id
+    try {
+      const data = await fetchBarberAppointments(targetId, undefined, period)
+      setAppointments(data.map(mapToDashboardAppointment))
+    } catch (err) {
+      console.error(err)
+    }
+  }, [user, period, barberFilter])
+
+  useEffect(() => {
+    loadAppointments()
+  }, [loadAppointments])
   // KPI Calculations
   const completed = appointments.filter((a) => a.status === 'COMPLETED')
   const confirmed = appointments.filter((a) => a.status === 'CONFIRMED')
@@ -43,14 +72,36 @@ export function TabHome({
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <CalendarIcon className="w-4 h-4 text-[#11AFFA]" />
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => onDateChange(e.target.value)}
+        <div className="flex items-center gap-3">
+          {user?.role === 'OWNER' && (
+            <div className="flex items-center gap-2">
+              <Filter className="w-4 h-4 text-[#11AFFA]" />
+              <select
+                value={barberFilter}
+                onChange={(e) => setBarberFilter(e.target.value)}
+                className="bg-white/5 border border-glass-border px-3 py-1.5 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-[#11AFFA] cursor-pointer"
+              >
+                <option value="all">Barbearia em Geral</option>
+                {barbers.map((b) => (
+                  <option key={b.id} value={b.id}>{b.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="w-4 h-4 text-[#11AFFA]" />
+          <select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value as any)}
             className="bg-white/5 border border-glass-border px-3 py-1.5 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-[#11AFFA] cursor-pointer"
-          />
+          >
+            <option value="today">Hoje</option>
+            <option value="yesterday">Ontem</option>
+            <option value="week">Esta Semana</option>
+            <option value="month">Este Mês</option>
+          </select>
+        </div>
         </div>
       </div>
 
@@ -113,8 +164,13 @@ export function TabHome({
             </div>
           </div>
           <p className="text-2xl font-black text-white">{pendingCount}</p>
-          <span className="text-[10px] text-figaro-text-secondary">Próximos horários</span>
+          <span className="text-[10px] text-figaro-text-secondary">Próximos horários do período</span>
         </GlassCard>
+      </div>
+
+      {/* Revenue Chart Section */}
+      <div className="pt-2">
+        <RevenueChart barberId={user?.role === 'OWNER' ? barberFilter : user?.id} />
       </div>
 
       {/* Upcoming Clients Summary */}
@@ -125,7 +181,7 @@ export function TabHome({
 
         {upcomingAppointments.length === 0 ? (
           <GlassCard className="p-8 text-center text-xs text-figaro-text-secondary">
-            Nenhum próximo cliente agendado para esta data.
+            Nenhum próximo cliente agendado para este período.
           </GlassCard>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

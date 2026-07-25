@@ -1,20 +1,24 @@
 import { Request, Response, NextFunction } from 'express'
-import jwt from 'jsonwebtoken'
-import { config } from '../config/env'
+import { PrismaClient } from '@prisma/client'
+import { supabaseAdmin } from '../lib/supabaseAdmin'
+
+const prisma = new PrismaClient()
 
 export interface AuthenticatedUser {
   id: string
   email: string
   role: string
   slug?: string
+  commissionType?: string
+  commissionValue?: number
 }
 
 export interface AuthenticatedRequest extends Request {
   user?: AuthenticatedUser
 }
 
-// 4. Autenticação e validação do JWT
-export function authMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+// 4. Autenticação e validação do JWT via Supabase Auth
+export async function authMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Token de autenticação não fornecido' })
@@ -22,11 +26,34 @@ export function authMiddleware(req: AuthenticatedRequest, res: Response, next: N
 
   const token = authHeader.split(' ')[1]
   try {
-    const decoded = jwt.verify(token, config.get('JWT_SECRET')) as AuthenticatedUser
-    req.user = decoded
+    const { data: { user }, error } = await supabaseAdmin.auth.getUser(token)
+    
+    if (error || !user) {
+      console.error('Supabase Auth Error:', error)
+      return res.status(401).json({ error: 'Token inválido ou expirado' })
+    }
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id }
+    })
+
+    if (!dbUser) {
+      console.error('User not found in DB:', user.id)
+      return res.status(401).json({ error: 'Usuário não encontrado no banco' })
+    }
+
+    req.user = {
+      id: dbUser.id,
+      email: user.email || '',
+      role: dbUser.role,
+      slug: dbUser.slug || undefined,
+      commissionType: dbUser.commissionType,
+      commissionValue: dbUser.commissionValue
+    }
+    
     next()
   } catch (error) {
-    return res.status(401).json({ error: 'Token inválido ou expirado' })
+    return res.status(401).json({ error: 'Erro ao validar token' })
   }
 }
 

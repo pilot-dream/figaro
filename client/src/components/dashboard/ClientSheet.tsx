@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { Button } from '@/components/ui/Button'
+import { useToastStore } from '@/stores/toast.store'
 import type { DashboardAppointment } from '@/components/dashboard/AppointmentCard'
 import { Phone, Save, X, History, AlertTriangle } from 'lucide-react'
 import { updateClientNotes } from '@/lib/api'
@@ -19,7 +20,7 @@ export function ClientSheet({ appointment, onClose, onSaveNotes }: ClientSheetPr
 
   const handleSave = async () => {
     if (!appointment.clientId) {
-      alert('Observação mantida para o atendimento.')
+      useToastStore.getState().addToast('Observação mantida para o atendimento.', 'info')
       onSaveNotes()
       onClose()
       return
@@ -31,7 +32,7 @@ export function ClientSheet({ appointment, onClose, onSaveNotes }: ClientSheetPr
       onSaveNotes()
       onClose()
     } catch {
-      alert('Erro ao salvar observação')
+      useToastStore.getState().addToast('Erro ao salvar observação', 'error')
     } finally {
       setSaving(false)
     }

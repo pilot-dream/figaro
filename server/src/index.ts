@@ -4,7 +4,14 @@ import { config } from './config/env'
 import { AvailabilityService } from './services/availability.service'
 import authRoutes from './routes/auth.routes'
 import barberRoutes from './routes/barber.routes'
+import teamRoutes from './routes/team.routes'
+import googleRoutes from './routes/google.routes'
+import whatsappRoutes from './routes/whatsapp.routes'
+import financeRoutes from './routes/finance.routes'
+import appointmentsRoutes from './routes/appointments.routes'
+import mrrRoutes from './routes/mrr.routes'
 import { securityHeaders, globalLimiter } from './middleware/security.middleware'
+import { startReminderCron } from './cron/reminder.cron'
 
 const app = express()
 const availabilityService = new AvailabilityService()
@@ -12,9 +19,9 @@ const availabilityService = new AvailabilityService()
 // 1. Helmet Security Headers
 app.use(securityHeaders)
 
-// 2. Restrição de CORS
+// 2. Restrição de CORS (Liberado para dev)
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: '*',
   optionsSuccessStatus: 200
 }))
 
@@ -25,7 +32,13 @@ app.use('/api', globalLimiter)
 
 // Mount routes
 app.use('/api/auth', authRoutes)
+app.use('/api/google', googleRoutes)
 app.use('/api/barbers', barberRoutes)
+app.use('/api/whatsapp', whatsappRoutes)
+app.use('/api/team', teamRoutes)
+app.use('/api/finance', financeRoutes)
+app.use('/api/appointments', appointmentsRoutes)
+app.use('/api/mrr', mrrRoutes)
 
 // Public global availability endpoint
 app.get('/api/availability', async (req, res, next) => {
@@ -62,6 +75,10 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 })
 
 const PORT = config.get('PORT')
+
+// Inicializar Cron Jobs
+startReminderCron()
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

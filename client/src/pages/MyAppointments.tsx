@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { Button } from '@/components/ui/Button'
+import { useToastStore } from '@/stores/toast.store'
+import { useConfirmStore } from '@/stores/confirm.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { fetchClientAppointments, updateAppointmentStatus, fetchBarbers, supabase } from '@/lib/api'
 import type { Appointment, User } from '@/types'
@@ -87,14 +89,18 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
   }
 
   const handleCancel = async (id: string) => {
-    if (confirm('Deseja realmente cancelar este agendamento?')) {
+    const confirmed = await useConfirmStore.getState().requestConfirm({
+      message: 'Deseja realmente cancelar este agendamento?',
+      confirmText: 'Sim, cancelar'
+    })
+    if (confirmed) {
       try {
         await updateAppointmentStatus(id, 'CANCELLED')
         setAppointments((prev) =>
           prev.map((a) => (a.id === id ? { ...a, status: 'CANCELLED' } : a))
         )
       } catch {
-        alert('Erro ao cancelar agendamento')
+        addToast('Erro ao cancelar agendamento', 'error')
       }
     }
   }

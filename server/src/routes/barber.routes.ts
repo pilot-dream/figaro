@@ -38,7 +38,8 @@ router.get('/:slug', async (req, res, next) => {
         avatarUrl: true,
         notes: true,
         phone: true,
-        email: true,
+        role: true,
+        ownerId: true,
       },
     })
 
@@ -46,8 +47,16 @@ router.get('/:slug', async (req, res, next) => {
       return res.status(404).json({ error: 'Barbeiro não encontrado' })
     }
 
+    const shopId = barber.ownerId || barber.id
+
     const services = await prisma.service.findMany({
-      where: { isActive: true },
+      where: { 
+        isActive: true,
+        OR: [
+          { barberId: shopId },
+          { barberId: null }
+        ]
+      },
       orderBy: { sortOrder: 'asc' },
     })
 

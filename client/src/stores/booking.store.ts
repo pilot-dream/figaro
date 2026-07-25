@@ -11,6 +11,7 @@ interface BookingState {
   clientPhone: string
   clientNotes: string
   payDeposit: boolean
+  recurringType: 'NONE' | 'BIWEEKLY' | 'MONTHLY'
 
   // Actions
   setStep: (step: 1 | 2 | 3 | 4) => void
@@ -19,6 +20,7 @@ interface BookingState {
   setSelectedDate: (date: string) => void
   setSelectedSlot: (slot: TimeSlot | null) => void
   setClientInfo: (info: { name?: string; phone?: string; notes?: string; payDeposit?: boolean }) => void
+  setRecurringType: (type: 'NONE' | 'BIWEEKLY' | 'MONTHLY') => void
   resetBooking: () => void
 }
 
@@ -32,6 +34,7 @@ export const useBookingStore = create<BookingState>((set) => ({
   clientPhone: '',
   clientNotes: '',
   payDeposit: false,
+  recurringType: 'NONE',
 
   setStep: (step) => set({ step }),
   toggleService: (service) =>
@@ -53,6 +56,7 @@ export const useBookingStore = create<BookingState>((set) => ({
       clientNotes: info.notes !== undefined ? info.notes : state.clientNotes,
       payDeposit: info.payDeposit !== undefined ? info.payDeposit : state.payDeposit,
     })),
+  setRecurringType: (type) => set({ recurringType: type }),
   resetBooking: () =>
     set({
       step: 1,
@@ -64,6 +68,7 @@ export const useBookingStore = create<BookingState>((set) => ({
       clientPhone: '',
       clientNotes: '',
       payDeposit: false,
+      recurringType: 'NONE',
     }),
 }))
 

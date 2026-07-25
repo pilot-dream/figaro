@@ -15,8 +15,8 @@ export function RequireAuth({ role }: RequireAuthProps) {
 
   if (role && user.role !== role) {
     // Redirect to proper dashboard based on user's actual role
-    if (user.role === 'BARBER' || user.role === 'MANAGER') {
-      return <Navigate to="/painel" replace />
+    if (user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER') {
+      return <Outlet />
     }
     return <Navigate to="/meus-agendamentos" replace />
   }

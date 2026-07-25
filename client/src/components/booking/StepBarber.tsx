@@ -95,6 +95,9 @@ export function StepBarber() {
                 />
                 <div>
                   <h4 className="font-semibold text-white text-sm">{barber.name}</h4>
+                  {barber.specialty && (
+                    <p className="text-xs font-semibold text-[var(--color-figaro-amber)] mt-0.5">{barber.specialty}</p>
+                  )}
                   <p className="text-xs text-figaro-text-secondary line-clamp-2 mt-1">{barber.notes}</p>
                 </div>
 

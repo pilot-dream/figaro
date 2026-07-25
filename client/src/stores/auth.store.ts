@@ -60,23 +60,31 @@ export const useAuthStore = create<AuthState>((set) => ({
   register: async ({ name, email, password, role, phone }) => {
     set({ loading: true })
     try {
-      const slug = role === 'BARBER'
-        ? name.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').replace(/[^\w-]+/g, '')
-        : null
-
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { name, role, phone, slug },
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+      
+      const endpoint = role === 'OWNER' ? '/auth/register-owner' : '/auth/register'
+      
+      const response = await fetch(`${API_URL}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
         },
+        body: JSON.stringify({ name, email, password, phone, role })
       })
 
-      if (error) throw new Error(error.message)
-      if (!data.user) throw new Error('Falha ao criar conta')
+      const data = await response.json()
 
-      // Ensure profile row exists in public.profiles table
-      const profile = await upsertProfileRow(data.user.id, name, email, role, phone, slug || undefined)
+      if (!response.ok) {
+        throw new Error(data.error || 'Falha ao criar conta')
+      }
+
+      // Após criar a conta no backend com sucesso (que já cria no Supabase Auth via Admin API),
+      // nós apenas fazemos o login usando as mesmas credenciais para obter a sessão.
+      const signInResult = await supabase.auth.signInWithPassword({ email, password })
+      if (signInResult.error) throw new Error(signInResult.error.message)
+      if (!signInResult.data.user) throw new Error('Usuário não encontrado após login')
+
+      const profile = await fetchProfile(signInResult.data.user.id, signInResult.data.user.email)
       set({ user: profile, loading: false })
       return profile
     } catch (err: any) {
@@ -101,7 +109,7 @@ async function fetchProfile(userId: string, email?: string): Promise<User> {
   if (data) {
     let slug = data.slug
     // Auto-repair missing slug for barbers
-    if (data.role === 'BARBER' && !slug) {
+    if ((data.role === 'BARBER' || data.role === 'MANAGER' || data.role === 'OWNER') && !slug) {
       slug = data.name.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').replace(/[^\w-]+/g, '')
       await supabase.from('profiles').update({ slug }).eq('id', userId)
     }
@@ -115,6 +123,16 @@ async function fetchProfile(userId: string, email?: string): Promise<User> {
       role: data.role as Role,
       avatarUrl: data.avatar_url || undefined,
       notes: data.notes || undefined,
+      googleEmail: data.google_email || undefined,
+      googleSyncEnabled: data.google_sync_enabled ?? false,
+      googleSyncBusyTimes: data.google_sync_busy_times ?? false,
+      
+      whatsappInstanceId: data.whatsapp_instance_id || undefined,
+      whatsappStatus: data.whatsapp_status || 'DISCONNECTED',
+      whatsappEnabled: data.whatsapp_enabled ?? false,
+      whatsappReminder24h: data.whatsapp_reminder_24h ?? false,
+      whatsappReminder2h: data.whatsapp_reminder_2h ?? false,
+      whatsappTemplateBase: data.whatsapp_template_base || undefined,
     }
   }
 
@@ -135,7 +153,8 @@ async function upsertProfileRow(
   phone: string,
   slug?: string
 ): Promise<User> {
-  const avatarUrl = role === 'BARBER'
+  const isStaff = role === 'BARBER' || role === 'MANAGER' || role === 'OWNER'
+  const avatarUrl = isStaff
     ? 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80'
     : undefined
 

@@ -3,8 +3,10 @@ import type { ReactNode } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { Button } from '@/components/ui/Button'
+import { useToastStore } from '@/stores/toast.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { fetchBarberBySlug, fetchAvailability, createAppointment } from '@/lib/api'
+import { useBookingStore } from '@/stores/booking.store'
 import type { User, Service, TimeSlot } from '@/types'
 import {
   Clock,
@@ -15,6 +17,8 @@ import {
   ShieldCheck,
   LogIn,
   UserPlus,
+  RefreshCw,
+  Crown
 } from 'lucide-react'
 import { getBrasiliaTodayStr, getBrasiliaNextDays, formatBrasiliaTime } from '@/lib/date'
 
@@ -60,6 +64,10 @@ export function BarberBookingPage() {
   const [submitting, setSubmitting] = useState(false)
   const [completed, setCompleted] = useState(false)
 
+  // Booking Store
+  const recurringType = useBookingStore(s => s.recurringType)
+  const setRecurringType = useBookingStore(s => s.setRecurringType)
+
   // Sync user info if auth loads after mount
   useEffect(() => {
     if (user) {
@@ -91,6 +99,10 @@ export function BarberBookingPage() {
       setSlotsLoading(true)
       fetchAvailability(selectedDate, totalDuration, barber.id)
         .then(setSlots)
+        .catch((err) => {
+          console.error('Error fetching availability:', err)
+          setSlots([]) // or we could set an error state
+        })
         .finally(() => setSlotsLoading(false))
     }
   }, [step, selectedDate, totalDuration, barber])
@@ -117,10 +129,11 @@ export function BarberBookingPage() {
         clientName,
         clientPhone,
         notes: clientNotes,
+        recurringType // TODO: Send to API when ready
       })
       setCompleted(true)
     } catch {
-      alert('Erro ao realizar agendamento')
+      useToastStore.getState().addToast('Erro ao realizar agendamento', 'error')
     } finally {
       setSubmitting(false)
     }
@@ -226,6 +239,24 @@ export function BarberBookingPage() {
         </div>
       </div>
 
+      {/* Subscription CTA Banner */}
+      <Link to={`/${barber.slug}/assinatura`} className="block">
+        <GlassCard className="p-4 border-[#11AFFA]/40 bg-[#11AFFA]/5 hover:bg-[#11AFFA]/10 transition-colors flex items-center justify-between group">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-[#11AFFA]/10 flex items-center justify-center">
+              <Crown className="w-6 h-6 text-[#11AFFA]" />
+            </div>
+            <div>
+              <h3 className="font-bold text-white text-sm">Clube Fígaro VIP</h3>
+              <p className="text-xs text-[#8C97A8]">Garanta horário fixo toda semana com desconto.</p>
+            </div>
+          </div>
+          <div className="px-4 py-2 rounded-lg bg-[#11AFFA] text-white text-xs font-bold shadow-[0_0_15px_rgba(17,175,250,0.3)] group-hover:scale-105 transition-transform">
+            Assinar
+          </div>
+        </GlassCard>
+      </Link>
+
       {/* Progress Steps Header */}
       <div className="flex items-center justify-between text-xs px-2">
         <span className={step >= 1 ? 'bg-[#11AFFA] text-white px-4 py-1.5 rounded-full font-semibold shadow-[0_0_12px_rgba(17,175,250,0.4)]' : 'bg-white/5 text-[#8C97A8] px-4 py-1.5 rounded-full border border-white/10'}>
@@ -306,7 +337,7 @@ export function BarberBookingPage() {
                   setSelectedDate(item.iso)
                   setSelectedSlot(null)
                 }}
-                className={`flex-shrink-0 w-16 p-3 rounded-2xl border text-center transition-all cursor-pointer ${
+                className={`flex-shrink-0 min-w-[72px] min-h-[72px] flex flex-col justify-center items-center p-2 rounded-2xl border text-center transition-all cursor-pointer ${
                   selectedDate === item.iso
                     ? 'bg-[var(--color-figaro-blue)] border-[var(--color-figaro-blue)] text-white shadow-lg'
                     : 'glass-panel text-figaro-text-secondary hover:text-white'
@@ -326,6 +357,24 @@ export function BarberBookingPage() {
                 <GlassCard key={i} className="h-10 animate-pulse bg-white/5" />
               ))}
             </div>
+          ) : slots.length === 0 ? (
+            <GlassCard className="p-6 text-center space-y-4 border-[var(--color-figaro-amber)]/30">
+               <AlertCircle className="w-8 h-8 text-[var(--color-figaro-amber)] mx-auto" />
+               <h4 className="font-bold text-white">Nenhum horário encontrado</h4>
+               <p className="text-xs text-figaro-text-secondary">Não há horários disponíveis para este dia. Mas não se preocupe, você pode entrar na lista de espera.</p>
+               <Button type="button" onClick={() => useToastStore.getState().addToast('Lista de espera confirmada!', 'success')} className="w-full bg-[var(--color-figaro-amber)] hover:bg-[#D99530] text-black border-none font-bold">
+                 Entrar na Lista de Espera
+               </Button>
+            </GlassCard>
+          ) : !slots.some(s => s.available) ? (
+            <GlassCard className="p-6 text-center space-y-4 border-[var(--color-figaro-amber)]/30">
+               <AlertCircle className="w-8 h-8 text-[var(--color-figaro-amber)] mx-auto" />
+               <h4 className="font-bold text-white">Agenda Esgotada</h4>
+               <p className="text-xs text-figaro-text-secondary">Não há mais horários disponíveis para este dia. Mas não se preocupe, você pode entrar na lista de espera.</p>
+               <Button type="button" onClick={() => useToastStore.getState().addToast('Lista de espera confirmada!', 'success')} className="w-full bg-[var(--color-figaro-amber)] hover:bg-[#D99530] text-black border-none font-bold">
+                 Entrar na Lista de Espera
+               </Button>
+            </GlassCard>
           ) : (
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
               {slots.map((slot) => {
@@ -336,7 +385,7 @@ export function BarberBookingPage() {
                     key={slot.startTime}
                     disabled={!slot.available}
                     onClick={() => setSelectedSlot(slot)}
-                    className={`p-3 rounded-xl border text-sm font-bold transition-all cursor-pointer ${
+                    className={`min-h-[52px] p-2 rounded-xl border text-sm font-bold transition-all cursor-pointer flex items-center justify-center ${
                       !slot.available
                         ? 'opacity-30 border-white/10 bg-white/5 line-through text-figaro-text-secondary'
                         : isSelected
@@ -461,6 +510,46 @@ export function BarberBookingPage() {
                   placeholder="Ex: Corte de tesoura..."
                   className="w-full px-4 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:outline-none focus:border-[var(--color-figaro-blue)] resize-none"
                 />
+              </div>
+
+              <div className="pt-2 border-t border-white/10">
+                <label className="text-xs font-semibold text-figaro-text-secondary block mb-3 flex items-center gap-1.5">
+                  <RefreshCw className="w-3.5 h-3.5" /> Repetir este agendamento?
+                </label>
+                <div className="flex bg-white/5 p-1 rounded-xl border border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => setRecurringType('NONE')}
+                    className={`flex-1 text-xs py-2 rounded-lg font-semibold transition-all ${
+                      recurringType === 'NONE' ? 'bg-white/10 text-white shadow-md' : 'text-[#8C97A8] hover:text-white'
+                    }`}
+                  >
+                    Não
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRecurringType('BIWEEKLY')}
+                    className={`flex-1 text-xs py-2 rounded-lg font-semibold transition-all ${
+                      recurringType === 'BIWEEKLY' ? 'bg-[#11AFFA]/20 text-[#11AFFA] shadow-md border border-[#11AFFA]/30' : 'text-[#8C97A8] hover:text-white'
+                    }`}
+                  >
+                    15 dias
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRecurringType('MONTHLY')}
+                    className={`flex-1 text-xs py-2 rounded-lg font-semibold transition-all ${
+                      recurringType === 'MONTHLY' ? 'bg-[#11AFFA]/20 text-[#11AFFA] shadow-md border border-[#11AFFA]/30' : 'text-[#8C97A8] hover:text-white'
+                    }`}
+                  >
+                    30 dias
+                  </button>
+                </div>
+                {recurringType !== 'NONE' && (
+                  <p className="text-[10px] text-[#11AFFA] mt-2 italic px-1">
+                    Garantimos seu horário automaticamente a cada {recurringType === 'BIWEEKLY' ? '15' : '30'} dias.
+                  </p>
+                )}
               </div>
             </GlassCard>
           )}

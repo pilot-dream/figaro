@@ -5,6 +5,7 @@ import { fetchAvailability } from '@/lib/api'
 import type { TimeSlot } from '@/types'
 import { useBookingStore, useBookingTotals } from '@/stores/booking.store'
 import { Calendar as CalendarIcon, Clock, Check, AlertCircle, Sparkles } from 'lucide-react'
+import { useToastStore } from '@/stores/toast.store'
 
 export function StepDateTime() {
   const {
@@ -168,7 +169,7 @@ export function StepDateTime() {
               <Button
                 variant="amber"
                 onClick={() => {
-                  alert('Você foi adicionado à Lista de Espera!')
+                  useToastStore.getState().addToast('Você foi adicionado à Lista de Espera!', 'success')
                   setShowWaitlistModal(false)
                 }}
               >

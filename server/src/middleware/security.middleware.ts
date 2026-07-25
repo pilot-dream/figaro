@@ -26,3 +26,15 @@ export const authLimiter = rateLimit({
     error: 'Muitas tentativas de login deste IP, tente novamente em 15 minutos.'
   }
 });
+
+// c) Limite estrito de agendamento público: Máximo de 5 agendamentos por IP a cada 15 minutos
+// Protege contra scripts que esgotem horários (overbooking malicioso)
+export const bookingLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: 'Limite de agendamentos atingido. Tente novamente em 15 minutos.'
+  }
+});

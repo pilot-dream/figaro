@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { Button } from '@/components/ui/Button'
-import { fetchServices } from '@/lib/api'
+import { fetchServices, supabase, uploadAvatar } from '@/lib/api'
 import type { Service, User } from '@/types'
+import { useToastStore } from '@/stores/toast.store'
+import { useConfirmStore } from '@/stores/confirm.store'
+import { EmptyState } from '@/components/ui/EmptyState'
 import {
   Share2,
   Check,
@@ -22,29 +25,142 @@ import {
   Save,
   Download,
   X,
+  MessageCircle,
+  Upload
 } from 'lucide-react'
+import { ModalSkeleton } from '@/components/ui/ModalSkeleton'
+
+const TeamSettings = lazy(() => 
+  import('./settings/TeamSettings').then(module => ({ default: module.TeamSettings }))
+)
+
+const AddServiceModal = lazy(() =>
+  import('./settings/AddServiceModal').then(module => ({ default: module.AddServiceModal }))
+)
 
 interface TabSettingsProps {
   barber: User
 }
 
-type SettingsSubTab = 'profile' | 'services' | 'hours' | 'payments'
+type SettingsSubTab = 'profile' | 'services' | 'hours' | 'payments' | 'integrations' | 'notifications' | 'team'
 
 export function TabSettings({ barber }: TabSettingsProps) {
+  const addToast = useToastStore((state) => state.addToast)
   const [activeSubTab, setActiveSubTab] = useState<SettingsSubTab>('profile')
   const [services, setServices] = useState<(Service & { isFeatured?: boolean; isCombo?: boolean })[]>([])
   const [copied, setCopied] = useState(false)
   const [showQrModal, setShowQrModal] = useState(false)
+  const [showWhatsappModal, setShowWhatsappModal] = useState(false)
+  
+  // Real WhatsApp Integration States
+  const [qrCodeBase64, setQrCodeBase64] = useState<string | null>(null)
+  const [instanceName, setInstanceName] = useState<string | null>(null)
+  const [isQrLoading, setIsQrLoading] = useState(false)
 
   // Profile Subtab Form State
   const [displayName, setDisplayName] = useState(barber.name || 'Filipe Lacerda')
-  const [bio, setBio] = useState('Especialista em degradê navalhado, barba terapia e corte tesoura.')
+  const [bio, setBio] = useState(barber.notes || 'Especialista em cortes clássicos e barboterapia.')
+
+  // WhatsApp Notifications State
+  const [whatsappEnabled, setWhatsappEnabled] = useState(barber.whatsappEnabled ?? false)
+  const [whatsappReminder24h, setWhatsappReminder24h] = useState(barber.whatsappReminder24h ?? false)
+  const [whatsappReminder2h, setWhatsappReminder2h] = useState(barber.whatsappReminder2h ?? false)
+  const [whatsappTemplate, setWhatsappTemplate] = useState(barber.whatsappTemplateBase || 'Olá {{client_name}}, lembrete do seu agendamento: {{services}} com {{barber_name}} às {{time}}.')
+
+  const handleUpdateWhatsApp = async (fields: Partial<{ whatsappEnabled: boolean; whatsappReminder24h: boolean; whatsappReminder2h: boolean; whatsappTemplateBase: string }>) => {
+    try {
+      await supabase.from('profiles').update({
+        whatsapp_enabled: fields.whatsappEnabled ?? whatsappEnabled,
+        whatsapp_reminder_24h: fields.whatsappReminder24h ?? whatsappReminder24h,
+        whatsapp_reminder_2h: fields.whatsappReminder2h ?? whatsappReminder2h,
+        whatsapp_template_base: fields.whatsappTemplateBase ?? whatsappTemplate
+      }).eq('id', barber.id)
+    } catch (err) {
+      console.error('Failed to update WhatsApp settings', err)
+    }
+  }
+
+  // Google Calendar Integration State
+  const [googleSyncEnabled, setGoogleSyncEnabled] = useState(barber.googleSyncEnabled ?? false)
+  const [googleSyncBusyTimes, setGoogleSyncBusyTimes] = useState(barber.googleSyncBusyTimes ?? false)
+  const [googleEmail, setGoogleEmail] = useState(barber.googleEmail)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('google_sync') === 'success' && params.get('refresh_token')) {
+      const email = params.get('email') || ''
+      const token = params.get('refresh_token') || ''
+      
+      // Update Supabase with the new tokens
+      supabase.from('profiles').update({
+        google_refresh_token: token,
+        google_email: email,
+        google_sync_enabled: true,
+        google_sync_busy_times: true
+      }).eq('id', barber.id).then(() => {
+        setGoogleEmail(email)
+        setGoogleSyncEnabled(true)
+        setGoogleSyncBusyTimes(true)
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname)
+      })
+    }
+  }, [barber.id])
+
+  const handleUpdateGoogleSettings = async (enabled: boolean, busyTimes: boolean) => {
+    setGoogleSyncEnabled(enabled)
+    setGoogleSyncBusyTimes(busyTimes)
+    try {
+      await supabase.from('profiles').update({
+        google_sync_enabled: enabled,
+        google_sync_busy_times: busyTimes
+      }).eq('id', barber.id)
+    } catch (err) {
+      console.error('Failed to update Google settings', err)
+    }
+  }
+
+  const handleDisconnectGoogle = async () => {
+    try {
+      await supabase.from('profiles').update({
+        google_refresh_token: null,
+        google_email: null,
+        google_sync_enabled: false,
+        google_sync_busy_times: false
+      }).eq('id', barber.id)
+      
+      setGoogleEmail(undefined)
+      setGoogleSyncEnabled(false)
+      setGoogleSyncBusyTimes(false)
+    } catch (err) {
+      console.error('Failed to disconnect Google Calendar', err)
+    }
+  }
   const [instagram, setInstagram] = useState('@filipe.navalha')
   const [avatarUrl, setAvatarUrl] = useState(
     barber.avatarUrl ||
       'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80'
   )
+  const [isUploading, setIsUploading] = useState(false)
   const [profileSaved, setProfileSaved] = useState(false)
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setIsUploading(true)
+    const url = await uploadAvatar(file)
+    setIsUploading(false)
+
+    if (url) {
+      setAvatarUrl(url)
+      // Salva imediatamente no banco para evitar perda ao trocar de aba
+      await supabase.from('profiles').update({ avatar_url: url }).eq('id', barber.id)
+      addToast('Foto de perfil atualizada com sucesso!', 'success')
+    } else {
+      addToast('Erro ao fazer upload da imagem', 'error')
+    }
+  }
 
   // Services Subtab State & Modal
   const [showServiceModal, setShowServiceModal] = useState(false)
@@ -187,9 +303,13 @@ export function TabSettings({ barber }: TabSettingsProps) {
     setIsCombo(false)
   }
 
-  const handleDeleteService = (id: string) => {
-    if (confirm('Deseja excluir este serviço?')) {
-      setServices((prev) => prev.filter((s) => s.id !== id))
+  const handleDeleteService = async (serviceId: string) => {
+    const confirmed = await useConfirmStore.getState().requestConfirm({
+      message: 'Deseja excluir este serviço?',
+      confirmText: 'Sim, excluir'
+    })
+    if (confirmed) {
+      setServices((prev) => prev.filter((s) => s.id !== serviceId))
     }
   }
 
@@ -210,10 +330,24 @@ export function TabSettings({ barber }: TabSettingsProps) {
     setShowServiceModal(true)
   }
 
-  const handleSaveProfile = (e: React.FormEvent) => {
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
-    setProfileSaved(true)
-    setTimeout(() => setProfileSaved(false), 3000)
+    
+    try {
+      await supabase.from('profiles').update({
+        name: displayName,
+        notes: bio,
+        avatar_url: avatarUrl
+        // instagram could be saved here if you add it to the schema
+      }).eq('id', barber.id)
+      
+      setProfileSaved(true)
+      addToast('Perfil atualizado com sucesso!', 'success')
+      setTimeout(() => setProfileSaved(false), 3000)
+    } catch (err) {
+      console.error('Erro ao salvar perfil', err)
+      addToast('Erro ao salvar o perfil. Tente novamente.', 'error')
+    }
   }
 
   const handleSaveHours = (e: React.FormEvent) => {
@@ -283,6 +417,41 @@ export function TabSettings({ barber }: TabSettingsProps) {
         >
           <DollarSign className="w-3.5 h-3.5" /> Pagamentos & Regras
         </button>
+
+        <button
+          onClick={() => setActiveSubTab('integrations')}
+          className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+            activeSubTab === 'integrations'
+              ? 'bg-[#11AFFA] text-white shadow-[0_0_15px_rgba(17,175,250,0.4)] font-semibold border border-[#11AFFA]'
+              : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+          }`}
+        >
+          <Calendar className="w-3.5 h-3.5" /> Integrações
+        </button>
+
+        <button
+          onClick={() => setActiveSubTab('notifications')}
+          className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+            activeSubTab === 'notifications'
+              ? 'bg-[#11AFFA] text-white shadow-[0_0_15px_rgba(17,175,250,0.4)] font-semibold border border-[#11AFFA]'
+              : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+          }`}
+        >
+          <MessageCircle className="w-3.5 h-3.5" /> Notificações
+        </button>
+
+        {barber.role === 'OWNER' && (
+          <button
+            onClick={() => setActiveSubTab('team')}
+            className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+              activeSubTab === 'team'
+                ? 'bg-[#11AFFA] text-white shadow-[0_0_15px_rgba(17,175,250,0.4)] font-semibold border border-[#11AFFA]'
+                : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+            }`}
+          >
+            <UserIcon className="w-3.5 h-3.5" /> Equipe
+          </button>
+        )}
       </div>
 
       {/* 2. SUB-ABA 1: LINK & PERFIL */}
@@ -350,13 +519,18 @@ export function TabSettings({ barber }: TabSettingsProps) {
                   className="w-16 h-16 rounded-full object-cover ring-2 ring-[#11AFFA] shadow-md"
                 />
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-[#8C97A8] block">URL da Foto de Perfil</label>
-                  <input
-                    type="text"
-                    value={avatarUrl}
-                    onChange={(e) => setAvatarUrl(e.target.value)}
-                    className="bg-white/5 border border-white/10 text-white text-xs rounded-xl px-3 py-2 w-full sm:w-80 outline-none focus:border-[#11AFFA]"
-                  />
+                  <label className="text-xs font-semibold text-[#8C97A8] block mb-2">Sua Foto de Perfil</label>
+                  <label className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs hover:border-[#11AFFA] cursor-pointer transition-colors w-fit">
+                    <Upload className="w-4 h-4" />
+                    {isUploading ? 'Enviando...' : 'Alterar Foto'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      disabled={isUploading}
+                      className="hidden"
+                    />
+                  </label>
                 </div>
               </div>
 
@@ -470,8 +644,29 @@ export function TabSettings({ barber }: TabSettingsProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {services.map((srv: any) => (
+          {services.length === 0 ? (
+            <div className="mt-8">
+              <EmptyState 
+                icon={Scissors}
+                title="Nenhum serviço cadastrado"
+                description="Você ainda não possui serviços ou combos cadastrados no seu catálogo."
+                actionLabel="Adicionar Serviço"
+                actionIcon={Plus}
+                onAction={() => {
+                  setEditingService(null)
+                  setName('')
+                  setPrice('')
+                  setDurationMin('30')
+                  setDescription('')
+                  setIsFeatured(false)
+                  setIsCombo(false)
+                  setShowServiceModal(true)
+                }}
+              />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {services.map((srv: any) => (
               <div
                 key={srv.id}
                 className="bg-white/[0.04] backdrop-blur-xl border border-white/10 hover:border-white/20 rounded-2xl p-5 shadow-lg transition-all relative group space-y-3 flex flex-col justify-between"
@@ -540,6 +735,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
               </div>
             ))}
           </div>
+          )}
         </div>
       )}
 
@@ -738,6 +934,121 @@ export function TabSettings({ barber }: TabSettingsProps) {
         </GlassCard>
       )}
 
+      {/* 6. SUB-ABA 5: INTEGRAÇÕES */}
+      {activeSubTab === 'integrations' && (
+        <GlassCard className="p-6 space-y-6">
+          <div className="border-b border-white/10 pb-3">
+            <h3 className="text-base font-bold text-white flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-[#11AFFA]" /> Integração Google Calendar
+            </h3>
+            <p className="text-xs text-[#8C97A8]">
+              Sincronize seus agendamentos do Fígaro com a sua agenda pessoal do Google
+            </p>
+          </div>
+
+          <div className="bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 rounded-2xl p-5 space-y-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-bold text-white text-sm mb-1">Sincronização com Google Agenda</h4>
+                <p className="text-xs text-[#8C97A8]">
+                  Status:{' '}
+                  {googleEmail ? (
+                    <span className="font-semibold text-[#2ED9A0]">Conectado como {googleEmail}</span>
+                  ) : (
+                    <span className="font-semibold text-white">Desconectado</span>
+                  )}
+                </p>
+              </div>
+              
+              {googleEmail ? (
+                <button 
+                  onClick={handleDisconnectGoogle}
+                  className="bg-white/10 text-white border border-white/20 font-bold px-4 py-2 rounded-xl text-xs hover:bg-white/20 hover:text-red-400 hover:border-red-500/30 transition-all shadow-lg flex items-center gap-2"
+                >
+                  Desconectar
+                </button>
+              ) : (
+                <button 
+                  onClick={async () => {
+                    try {
+                      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+                      const res = await fetch(`${API_URL}/google/auth-url?userId=${barber.id}`)
+                      if (!res.ok) {
+                        const errText = await res.text()
+                        addToast('Erro na API: ' + errText, 'error')
+                        return
+                      }
+                      const data = await res.json()
+                      if (data.url) {
+                        window.location.href = data.url
+                      } else {
+                        addToast('URL não retornada pela API', 'error')
+                      }
+                    } catch (err: any) {
+                      console.error('Failed to connect Google Calendar', err)
+                      addToast('Erro de Conexão (Verifique se o backend está rodando): ' + err.message, 'error')
+                    }
+                  }}
+                  className="bg-white text-black font-bold px-4 py-2 rounded-xl text-xs hover:bg-gray-200 transition-colors shadow-lg flex items-center gap-2"
+                >
+                  Conectar com Google Calendar
+                </button>
+              )}
+            </div>
+            
+            <div className="h-[1px] w-full bg-white/10" />
+
+            <div className={`space-y-4 ${!googleEmail ? 'opacity-50 pointer-events-none' : ''}`}>
+              <label className="flex items-center justify-between cursor-pointer group">
+                <div>
+                  <span className="text-sm font-semibold text-white block">Enviar novos agendamentos</span>
+                  <span className="text-xs text-[#8C97A8]">
+                    Agendamentos do Fígaro aparecerão automaticamente no seu Google Calendar.
+                  </span>
+                </div>
+                {/* iOS Switch Toggle */}
+                <button
+                  type="button"
+                  onClick={() => handleUpdateGoogleSettings(!googleSyncEnabled, googleSyncBusyTimes)}
+                  className={`w-10 h-6 rounded-full transition-colors relative cursor-pointer flex-shrink-0 ${
+                    googleSyncEnabled ? 'bg-[#11AFFA]' : 'bg-white/20'
+                  }`}
+                >
+                  <span
+                    className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-transform ${
+                      googleSyncEnabled ? 'left-5' : 'left-1'
+                    }`}
+                  />
+                </button>
+              </label>
+
+              <label className="flex items-center justify-between cursor-pointer group">
+                <div>
+                  <span className="text-sm font-semibold text-white block">Bloquear horários ocupados</span>
+                  <span className="text-xs text-[#8C97A8]">
+                    Eventos da sua agenda do Google vão bloquear horários no Fígaro.
+                  </span>
+                </div>
+                {/* iOS Switch Toggle */}
+                <button
+                  type="button"
+                  onClick={() => handleUpdateGoogleSettings(googleSyncEnabled, !googleSyncBusyTimes)}
+                  className={`w-10 h-6 rounded-full transition-colors relative cursor-pointer flex-shrink-0 ${
+                    googleSyncBusyTimes ? 'bg-[#11AFFA]' : 'bg-white/20'
+                  }`}
+                >
+                  <span
+                    className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-transform ${
+                      googleSyncBusyTimes ? 'left-5' : 'left-1'
+                    }`}
+                  />
+                </button>
+              </label>
+            </div>
+          </div>
+        </GlassCard>
+      )}
+
       {/* QR Code Modal */}
       {showQrModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
@@ -784,113 +1095,265 @@ export function TabSettings({ barber }: TabSettingsProps) {
 
       {/* Glass Modal for Adding / Editing Service */}
       {showServiceModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-[#0A0E14]/90 backdrop-blur-2xl border border-white/20 rounded-3xl p-6 shadow-2xl shadow-black/80 max-w-md w-full space-y-4">
-            <h3 className="font-bold text-white text-lg border-b border-white/10 pb-3">
-              {editingService
-                ? 'Editar Item'
-                : isCombo
-                ? 'Novo Combo Promocional'
-                : 'Novo Serviço'}
-            </h3>
+        <Suspense fallback={<ModalSkeleton />}>
+          <AddServiceModal
+            isOpen={showServiceModal}
+            onClose={() => setShowServiceModal(false)}
+            editingService={!!editingService}
+            isCombo={isCombo}
+            setIsCombo={setIsCombo}
+            name={name}
+            setName={setName}
+            price={price}
+            setPrice={setPrice}
+            durationMin={durationMin}
+            setDurationMin={setDurationMin}
+            description={description}
+            setDescription={setDescription}
+            isFeatured={isFeatured}
+            setIsFeatured={setIsFeatured}
+            handleSaveService={handleSaveService}
+          />
+        </Suspense>
+      )}
 
-            <form onSubmit={handleSaveService} className="space-y-4">
+      {/* 6. SUB-ABA 6: NOTIFICATIONS */}
+      {activeSubTab === 'notifications' && (
+        <div className="space-y-6">
+          <GlassCard className="p-6 border-[#11AFFA]/20 relative overflow-hidden space-y-6">
+            <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+              <div className="w-10 h-10 rounded-full bg-[#11AFFA]/10 border border-[#11AFFA]/30 flex items-center justify-center">
+                <MessageCircle className="w-5 h-5 text-[#11AFFA]" />
+              </div>
               <div>
-                <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">
-                  Nome do Serviço / Combo *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder={isCombo ? 'Ex: Combo Cabelo + Barba + Sobrancelha' : 'Ex: Corte Degradê Navalhado'}
-                  className="bg-white/5 border border-white/10 focus:border-[#11AFFA] focus:ring-1 focus:ring-[#11AFFA] text-white rounded-xl p-3 outline-none text-xs w-full"
-                />
+                <h3 className="text-base font-bold text-white tracking-tight">
+                  Automações de WhatsApp
+                </h3>
+                <p className="text-xs text-[#8C97A8]">
+                  Gerencie lembretes e confirmações enviadas automaticamente para seus clientes.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              {/* Status de Conexão e Toggle Habilitar Geral */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl gap-4">
+                <div>
+                  <h4 className="text-sm font-semibold text-white">Status da Conexão</h4>
+                  <p className="text-xs text-[#8C97A8]">
+                    {barber.whatsappStatus === 'CONNECTED' 
+                      ? 'Seu WhatsApp está conectado e pronto para enviar.' 
+                      : 'Conecte seu WhatsApp para enviar mensagens através do seu número.'}
+                  </p>
+                </div>
+                <div className="flex items-center gap-4">
+                  {barber.whatsappStatus === 'CONNECTED' ? (
+                    <span className="text-xs font-semibold px-2 py-1 bg-[#2ED9A0]/20 text-[#2ED9A0] border border-[#2ED9A0]/30 rounded flex items-center gap-1">
+                      <Check className="w-3 h-3" /> Conectado
+                    </span>
+                  ) : (
+                    <button 
+                      onClick={async () => {
+                        setShowWhatsappModal(true)
+                        setIsQrLoading(true)
+                        setQrCodeBase64(null)
+                        try {
+                          const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+                          const res = await fetch(`${API_URL}/whatsapp/instance/create`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ barberId: barber.id })
+                          })
+                          const data = await res.json()
+                          if (data.qrCodeBase64) {
+                            setQrCodeBase64(data.qrCodeBase64)
+                            setInstanceName(data.instanceName)
+                          }
+                        } catch (err) {
+                          console.error('Failed to create instance', err)
+                        } finally {
+                          setIsQrLoading(false)
+                        }
+                      }}
+                      className="text-xs font-semibold bg-[#2ED9A0] text-black px-4 py-2 rounded-lg shadow-[0_0_15px_rgba(46,217,160,0.3)] hover:scale-105 transition-all cursor-pointer"
+                    >
+                      Escanear QR Code
+                    </button>
+                  )}
+                  <label className="relative inline-flex items-center cursor-pointer ml-4">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={whatsappEnabled}
+                      onChange={(e) => {
+                        setWhatsappEnabled(e.target.checked)
+                        handleUpdateWhatsApp({ whatsappEnabled: e.target.checked })
+                      }}
+                    />
+                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ED9A0]"></div>
+                  </label>
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">
-                    Preço (R$) *
+              <div className={`space-y-4 transition-all ${!whatsappEnabled ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
+                {/* Lembrete 24h */}
+                <div className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl">
+                  <div>
+                    <h4 className="text-sm font-semibold text-white">Lembrete 24h antes</h4>
+                    <p className="text-xs text-[#8C97A8]">Avisa o cliente 1 dia antes do agendamento.</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={whatsappReminder24h}
+                      onChange={(e) => {
+                        setWhatsappReminder24h(e.target.checked)
+                        handleUpdateWhatsApp({ whatsappReminder24h: e.target.checked })
+                      }}
+                    />
+                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#11AFFA]"></div>
                   </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    required
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    placeholder="75.00"
-                    className="bg-white/5 border border-white/10 focus:border-[#11AFFA] focus:ring-1 focus:ring-[#11AFFA] text-white rounded-xl p-3 outline-none text-xs w-full font-mono"
-                  />
                 </div>
 
-                <div>
-                  <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">
-                    Duração (minutos) *
+                {/* Lembrete 2h */}
+                <div className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl">
+                  <div>
+                    <h4 className="text-sm font-semibold text-white">Lembrete 2h antes</h4>
+                    <p className="text-xs text-[#8C97A8]">Lembrete final logo antes do horário marcado.</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={whatsappReminder2h}
+                      onChange={(e) => {
+                        setWhatsappReminder2h(e.target.checked)
+                        handleUpdateWhatsApp({ whatsappReminder2h: e.target.checked })
+                      }}
+                    />
+                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#11AFFA]"></div>
                   </label>
-                  <select
-                    value={durationMin}
-                    onChange={(e) => setDurationMin(e.target.value)}
-                    className="bg-[#0A0E14] border border-white/10 focus:border-[#11AFFA] focus:ring-1 focus:ring-[#11AFFA] text-white rounded-xl p-3 outline-none text-xs w-full"
-                  >
-                    <option value="15">15 min</option>
-                    <option value="30">30 min</option>
-                    <option value="45">45 min</option>
-                    <option value="60">60 min (1h)</option>
-                    <option value="90">90 min (1h30)</option>
-                  </select>
+                </div>
+
+                {/* Template de Mensagem */}
+                <div className="pt-2 space-y-2">
+                  <label className="text-xs font-semibold text-[#8C97A8] block uppercase tracking-wider">
+                    Template Base da Mensagem
+                  </label>
+                  <textarea
+                    value={whatsappTemplate}
+                    onChange={(e) => setWhatsappTemplate(e.target.value)}
+                    onBlur={() => handleUpdateWhatsApp({ whatsappTemplateBase: whatsappTemplate })}
+                    rows={4}
+                    className="w-full bg-black/40 border border-white/10 text-white text-sm rounded-xl p-4 outline-none focus:border-[#11AFFA] resize-none"
+                    placeholder="Olá {{client_name}}, lembrete do seu agendamento..."
+                  />
+                  <p className="text-[10px] text-[#8C97A8]">
+                    Variáveis disponíveis: <code className="text-[#11AFFA] bg-[#11AFFA]/10 px-1 rounded">{"{{client_name}}"}</code>, <code className="text-[#11AFFA] bg-[#11AFFA]/10 px-1 rounded">{"{{barber_name}}"}</code>, <code className="text-[#11AFFA] bg-[#11AFFA]/10 px-1 rounded">{"{{services}}"}</code>, <code className="text-[#11AFFA] bg-[#11AFFA]/10 px-1 rounded">{"{{time}}"}</code>
+                  </p>
                 </div>
               </div>
+            </div>
+          </GlassCard>
+        </div>
+      )}
 
+      {/* 7. SUB-ABA 7: TEAM */}
+      {activeSubTab === 'team' && barber.role === 'OWNER' && (
+      <Suspense fallback={<ModalSkeleton />}>
+        <TeamSettings />
+      </Suspense>
+      )}
+
+      {/* WHATSAPP CONNECTION MODAL */}
+      {showWhatsappModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowWhatsappModal(false)}
+          />
+          <div className="relative w-full max-w-sm bg-[#121214] border border-[#2ED9A0]/30 rounded-3xl p-6 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <button
+              onClick={() => setShowWhatsappModal(false)}
+              className="absolute top-4 right-4 text-[#8C97A8] hover:text-white bg-white/5 rounded-full p-2 transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="text-center space-y-4">
+              <div className="mx-auto w-12 h-12 rounded-full bg-[#2ED9A0]/20 flex items-center justify-center">
+                <MessageCircle className="w-6 h-6 text-[#2ED9A0]" />
+              </div>
               <div>
-                <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">
-                  Descrição (opcional)
-                </label>
-                <textarea
-                  rows={3}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Detalhes dos itens inclusos neste serviço..."
-                  className="bg-white/5 border border-white/10 focus:border-[#11AFFA] focus:ring-1 focus:ring-[#11AFFA] text-white rounded-xl p-3 outline-none text-xs w-full resize-none"
-                />
+                <h3 className="text-xl font-bold text-white tracking-tight">
+                  Conectar Dispositivo
+                </h3>
+                <p className="text-sm text-[#8C97A8] mt-1">
+                  Abra o WhatsApp no seu celular, vá em Aparelhos Conectados e escaneie o código abaixo:
+                </p>
               </div>
 
-              {/* Toggles for Featured & Combo */}
-              <div className="flex items-center justify-between pt-1 text-xs">
-                <label className="flex items-center gap-2 text-white cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={isFeatured}
-                    onChange={(e) => setIsFeatured(e.target.checked)}
-                    className="w-4 h-4 rounded border-white/20 bg-white/5 text-[#11AFFA]"
+              {/* Real QR Code */}
+              <div className="mx-auto w-48 h-48 bg-white rounded-xl flex items-center justify-center p-2 opacity-90 relative overflow-hidden">
+                {isQrLoading ? (
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2ED9A0]"></div>
+                ) : qrCodeBase64 ? (
+                  <img 
+                    src={qrCodeBase64.startsWith('data:image') ? qrCodeBase64 : `data:image/png;base64,${qrCodeBase64}`} 
+                    alt="QR Code" 
+                    className="w-full h-full object-contain mix-blend-multiply" 
                   />
-                  Destacar na página pública
-                </label>
-
-                <label className="flex items-center gap-2 text-white cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={isCombo}
-                    onChange={(e) => setIsCombo(e.target.checked)}
-                    className="w-4 h-4 rounded border-white/20 bg-white/5 text-[#F2A93B]"
-                  />
-                  Este item é um Combo
-                </label>
+                ) : (
+                  <div className="text-xs text-gray-500 text-center px-4">
+                    Seu servidor Evolution API não respondeu com um QR Code.<br/><br/>
+                    Verifique o arquivo .env
+                  </div>
+                )}
               </div>
-
-              <div className="flex items-center justify-end gap-3 pt-2">
-                <Button variant="ghost" type="button" onClick={() => setShowServiceModal(false)}>
-                  Cancelar
-                </Button>
-                <button
-                  type="submit"
-                  className="bg-[#11AFFA] hover:bg-[#0B3B5C] text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg transition-all text-xs cursor-pointer"
-                >
-                  Salvar
-                </button>
-              </div>
-            </form>
+            </div>
+            
+            {/* Polling Effect embedded logic via simple button manual check for now, or you could do a real useEffect polling if needed */}
+            <div className="mt-6 pt-4 border-t border-white/10">
+              <Button
+                onClick={async () => {
+                  if (!instanceName) {
+                    // Fallback to MOCK if real instance failed
+                    try {
+                      await supabase.from('profiles').update({
+                        whatsapp_status: 'CONNECTED',
+                        whatsapp_instance_id: `inst_${barber.id}`
+                      }).eq('id', barber.id)
+                      addToast("Simulação: WhatsApp Conectado com Sucesso! Atualize a página.", 'success')
+                      setShowWhatsappModal(false)
+                    } catch (e) {}
+                    return
+                  }
+                  
+                  try {
+                    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+                    const res = await fetch(`${API_URL}/whatsapp/instance/status/${instanceName}`)
+                    const data = await res.json()
+                    
+                    if (data.state === 'CONNECTED') {
+                      await supabase.from('profiles').update({
+                        whatsapp_status: 'CONNECTED',
+                        whatsapp_instance_id: instanceName
+                      }).eq('id', barber.id)
+                      
+                      addToast("Conectado com Sucesso!", 'success')
+                      setShowWhatsappModal(false)
+                    } else {
+                      addToast(`Status atual: ${data.state}. Por favor, escaneie o código.`, 'info')
+                    }
+                  } catch (err) {
+                    console.error('Failed to check status', err)
+                  }
+                }}
+                className="w-full bg-[#2ED9A0] text-black hover:bg-[#20A67A]"
+              >
+                Já Escaneei (Verificar Status)
+              </Button>
+            </div>
           </div>
         </div>
       )}

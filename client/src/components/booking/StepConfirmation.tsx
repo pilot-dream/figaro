@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { Button } from '@/components/ui/Button'
+import { useToastStore } from '@/stores/toast.store'
 import { useBookingStore, useBookingTotals } from '@/stores/booking.store'
 import { createAppointment } from '@/lib/api'
 import { Scissors, Calendar, Clock, User, ShieldCheck, CheckCircle2 } from 'lucide-react'
@@ -48,18 +49,18 @@ export function StepConfirmation({ onComplete }: StepConfirmationProps) {
     try {
       await createAppointment({
         clientId: 'client-1',
-        barberId: selectedBarber?.id || '',
+        barberId: selectedBarber?.id || selectedSlot.barberId,
         serviceIds: selectedServices.map((s) => s.id),
         startTime: selectedSlot.startTime,
         clientName,
         clientPhone,
         notes: clientNotes,
       })
-      alert('Agendamento confirmado com sucesso! Enviamos os detalhes para o seu WhatsApp.')
+      useToastStore.getState().addToast('Agendamento confirmado com sucesso! Enviamos os detalhes para o seu WhatsApp.', 'success')
       resetBooking()
       onComplete()
     } catch {
-      alert('Erro ao confirmar agendamento. Tente novamente.')
+      useToastStore.getState().addToast('Erro ao confirmar agendamento. Tente novamente.', 'error')
     } finally {
       setSubmitting(false)
     }

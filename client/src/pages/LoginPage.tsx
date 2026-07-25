@@ -3,6 +3,7 @@ import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { Button } from '@/components/ui/Button'
 import { useAuthStore } from '@/stores/auth.store'
+import { useToastStore } from '@/stores/toast.store'
 import { Scissors, Lock, Mail, ArrowRight, Sparkles } from 'lucide-react'
 
 export function LoginPage() {
@@ -24,13 +25,13 @@ export function LoginPage() {
 
       if (redirect) {
         navigate(redirect)
-      } else if (user.role === 'BARBER' || user.role === 'MANAGER') {
+      } else if (user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER') {
         navigate('/painel')
       } else {
         navigate('/meus-agendamentos')
       }
     } catch (err: any) {
-      alert(err.message || 'Erro ao realizar login')
+      useToastStore.getState().addToast(err.message || 'Erro ao realizar login', 'error')
     } finally {
       setLoading(false)
     }

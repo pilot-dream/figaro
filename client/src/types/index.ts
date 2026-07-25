@@ -1,4 +1,4 @@
-export type Role = 'CLIENT' | 'BARBER' | 'MANAGER'
+export type Role = 'CLIENT' | 'BARBER' | 'OWNER'
 
 export interface User {
   id: string
@@ -8,7 +8,44 @@ export interface User {
   email?: string
   role: Role
   avatarUrl?: string
+  specialty?: string
   notes?: string
+  googleEmail?: string
+  googleSyncEnabled?: boolean
+  googleSyncBusyTimes?: boolean
+  
+  whatsappInstanceId?: string
+  whatsappStatus?: 'DISCONNECTED' | 'CONNECTING' | 'CONNECTED'
+  whatsappEnabled?: boolean
+  whatsappReminder24h?: boolean
+  whatsappReminder2h?: boolean
+  whatsappTemplateBase?: string
+
+  // Comissionamento e Assinatura
+  commissionType?: 'PERCENTAGE' | 'FIXED'
+  commissionValue?: number
+  subscriptionPlan?: string
+  subscriptionStatus?: string
+}
+
+export interface FinanceSummary {
+  grossRevenue: number
+  totalCommissions: number
+  netRevenue: number
+  totalAppointments: number
+  barberBreakdown?: BarberFinance[]
+  myCommission?: number
+}
+
+export interface BarberFinance {
+  barberId: string
+  barberName: string
+  avatarUrl?: string
+  totalRevenue: number
+  commissionType: string
+  commissionValue: number
+  commissionAmount: number
+  appointmentCount: number
 }
 
 export interface Service {
@@ -42,9 +79,10 @@ export interface Appointment {
 }
 
 export interface TimeSlot {
-  startTime: string
-  endTime: string
+  startTime: string // ISO string
+  endTime: string // ISO string
   available: boolean
+  barberId?: string // assigned barber if any
 }
 
 export interface BlockedTime {

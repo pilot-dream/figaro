@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { Button } from '@/components/ui/Button'
+import { useToastStore } from '@/stores/toast.store'
 import { useAuthStore } from '@/stores/auth.store'
 import type { Role } from '@/types'
 import { Scissors, Lock, Mail, User as UserIcon, Phone, ArrowRight } from 'lucide-react'
@@ -29,13 +30,13 @@ export function RegisterPage() {
 
       if (redirect) {
         navigate(redirect)
-      } else if (user.role === 'BARBER') {
+      } else if (user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER') {
         navigate('/painel')
       } else {
         navigate('/meus-agendamentos')
       }
     } catch (err: any) {
-      alert(err.message || 'Erro ao realizar cadastro')
+      useToastStore.getState().addToast(err.message || 'Erro ao realizar cadastro', 'error')
     } finally {
       setLoading(false)
     }
@@ -72,14 +73,14 @@ export function RegisterPage() {
           </button>
           <button
             type="button"
-            onClick={() => setRole('BARBER')}
+            onClick={() => setRole('OWNER')}
             className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-              role === 'BARBER'
+              role === 'OWNER'
                 ? 'bg-[var(--color-figaro-amber)] text-white shadow-md'
                 : 'text-figaro-text-secondary hover:text-white'
             }`}
           >
-            Sou Barbeiro
+            Minha Barbearia
           </button>
         </div>
 

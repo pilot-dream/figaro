@@ -1,19 +1,21 @@
 import { useEffect, useState, useCallback } from 'react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { useAuthStore } from '@/stores/auth.store'
+import { useToastStore } from '@/stores/toast.store'
 import { type DashboardAppointment } from '@/components/dashboard/AppointmentCard'
 import { ClientSheet } from '@/components/dashboard/ClientSheet'
 import { BlockTimeModal } from '@/components/dashboard/BlockTimeModal'
 import { BarberBottomNav, type BarberTab } from '@/components/dashboard/BarberBottomNav'
-
 import { TabHome } from '@/components/dashboard/tabs/TabHome'
+import { DashboardSkeleton } from '@/components/ui/DashboardSkeleton'
 import { TabSchedule } from '@/components/dashboard/tabs/TabSchedule'
 import { TabFinancial } from '@/components/dashboard/tabs/TabFinancial'
 import { TabBooking } from '@/components/dashboard/tabs/TabBooking'
 import { TabSettings } from '@/components/dashboard/tabs/TabSettings'
+import { TabSubscriptions } from '@/components/dashboard/tabs/TabSubscriptions'
 
 import type { AppointmentStatus } from '@/types'
-import { fetchBarberAppointments, updateAppointmentStatus, createBlockedTime, supabase } from '@/lib/api'
+import { fetchBarberAppointments, fetchSubscribers, updateAppointmentStatus, createBlockedTime, supabase } from '@/lib/api'
 import { getBrasiliaTodayStr } from '@/lib/date'
 
 export function DashboardPage() {
@@ -29,7 +31,43 @@ export function DashboardPage() {
     if (!user) return
     try {
       const data = await fetchBarberAppointments(user.id, selectedDate)
-      setAppointments(data.map(mapToDashboardAppointment))
+      let allAppointments = data.map(mapToDashboardAppointment)
+
+      // Merge MRR Subscriptions into the Barber Dashboard Agenda
+      try {
+        const subscribers = await fetchSubscribers()
+        const selectedDayOfWeek = new Date(`${selectedDate}T12:00:00-03:00`).getDay()
+
+        const activeSubsForDay = subscribers.filter(sub => 
+          sub.dayOfWeek === selectedDayOfWeek && sub.status === 'ACTIVE'
+        )
+
+        const mrrAppointments: DashboardAppointment[] = activeSubsForDay.map(sub => {
+          const [h, m] = sub.time.split(':').map(Number)
+          const endDate = new Date(2000, 0, 1, h + 1, m)
+          const endTimeStr = `${endDate.getHours().toString().padStart(2, '0')}:${endDate.getMinutes().toString().padStart(2, '0')}`
+
+          return {
+            id: sub.id,
+            clientId: undefined,
+            clientName: `${sub.clientName} (Clube)`,
+            clientPhone: 'Assinante VIP',
+            serviceName: sub.planName,
+            startTime: sub.time,
+            endTime: endTimeStr,
+            price: 0,
+            status: 'CONFIRMED' as AppointmentStatus,
+            notes: 'Agendamento recorrente automático via Clube Figaro VIP',
+            clientHistory: []
+          }
+        })
+
+        allAppointments = [...allAppointments, ...mrrAppointments]
+      } catch (err) {
+        console.error('Error fetching subscribers for agenda:', err)
+      }
+
+      setAppointments(allAppointments)
     } catch (err) {
       console.error('Failed to load appointments:', err)
     } finally {
@@ -68,19 +106,12 @@ export function DashboardPage() {
         prev.map((a) => (a.id === id ? { ...a, status: newStatus } : a))
       )
     } catch {
-      alert('Erro ao atualizar status')
+      useToastStore.getState().addToast('Erro ao atualizar status', 'error')
     }
   }
 
   if (loading) {
-    return (
-      <div className="py-20 text-center space-y-4 max-w-md mx-auto">
-        <GlassCard className="p-8 animate-pulse bg-white/5 space-y-3">
-          <div className="w-16 h-16 rounded-full bg-white/10 mx-auto" />
-          <div className="h-4 w-32 bg-white/10 mx-auto rounded" />
-        </GlassCard>
-      </div>
-    )
+    return <DashboardSkeleton />
   }
 
   return (
@@ -120,9 +151,6 @@ export function DashboardPage() {
         {/* Render Active Tab Content */}
         {activeTab === 'home' && (
           <TabHome
-            appointments={appointments}
-            selectedDate={selectedDate}
-            onDateChange={setSelectedDate}
             onSelectClient={setSelectedClient}
             onStatusChange={handleStatusChange}
           />
@@ -138,7 +166,7 @@ export function DashboardPage() {
           />
         )}
 
-        {activeTab === 'financial' && <TabFinancial appointments={appointments} />}
+        {activeTab === 'financial' && user && <TabFinancial appointments={appointments} user={user} />}
 
         {activeTab === 'booking' && user && (
           <TabBooking
@@ -150,6 +178,8 @@ export function DashboardPage() {
         )}
 
         {activeTab === 'settings' && user && <TabSettings barber={user} />}
+
+        {activeTab === 'subscriptions' && <TabSubscriptions />}
 
       {/* Liquid Glass Bottom Navigation Bar */}
       <BarberBottomNav activeTab={activeTab} onChangeTab={setActiveTab} />
@@ -182,7 +212,7 @@ export function DashboardPage() {
   )
 }
 
-function mapToDashboardAppointment(app: any): DashboardAppointment {
+export function mapToDashboardAppointment(app: any): DashboardAppointment {
   const serviceName =
     app.services && app.services.length > 0
       ? app.services.map((s: any) => s.name).join(' + ')

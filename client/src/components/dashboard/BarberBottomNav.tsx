@@ -1,6 +1,6 @@
-import { Home, Calendar, Wallet, Scissors, Settings } from 'lucide-react'
+import { Home, Calendar, Wallet, Scissors, Settings, Crown } from 'lucide-react'
 
-export type BarberTab = 'home' | 'schedule' | 'financial' | 'booking' | 'settings'
+export type BarberTab = 'home' | 'schedule' | 'financial' | 'booking' | 'settings' | 'subscriptions'
 
 interface BarberBottomNavProps {
   activeTab: BarberTab
@@ -12,6 +12,7 @@ export function BarberBottomNav({ activeTab, onChangeTab }: BarberBottomNavProps
     { id: 'home', label: 'Início', icon: Home },
     { id: 'schedule', label: 'Agenda', icon: Calendar },
     { id: 'financial', label: 'Financeiro', icon: Wallet },
+    { id: 'subscriptions', label: 'Clube', icon: Crown },
     { id: 'booking', label: 'Agendar', icon: Scissors },
     { id: 'settings', label: 'Ajustes', icon: Settings },
   ]
@@ -27,7 +28,7 @@ export function BarberBottomNav({ activeTab, onChangeTab }: BarberBottomNavProps
             <button
               key={tab.id}
               onClick={() => onChangeTab(tab.id)}
-              className={`relative flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all cursor-pointer ${
+              className={`relative flex flex-col items-center justify-center min-w-[56px] min-h-[56px] py-2 px-1 rounded-xl transition-all cursor-pointer ${
                 isActive
                   ? 'text-[var(--color-figaro-blue)] font-bold scale-105'
                   : 'text-figaro-text-secondary hover:text-white'

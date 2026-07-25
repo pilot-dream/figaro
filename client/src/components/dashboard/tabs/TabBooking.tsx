@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { Button } from '@/components/ui/Button'
 import { fetchServices, createAppointment, fetchAvailability } from '@/lib/api'
+import { useToastStore } from '@/stores/toast.store'
 import type { Service, TimeSlot, User } from '@/types'
 import { Lock, Check } from 'lucide-react'
 import { formatBrasiliaTime } from '@/lib/date'
@@ -30,21 +31,30 @@ export function TabBooking({
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null)
   const [loadingSlots, setLoadingSlots] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [teamMembers, setTeamMembers] = useState<User[]>([])
+  const [targetBarberId, setTargetBarberId] = useState<string>(barber.id)
 
   const totalDuration = selectedServices.reduce((acc, s) => acc + s.durationMin, 0) || 45
   const totalPrice = selectedServices.reduce((acc, s) => acc + s.price, 0)
 
   useEffect(() => {
     fetchServices().then(setServices)
-  }, [])
+    if (barber.role === 'OWNER') {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+      fetch(`${API_URL}/api/team`)
+        .then((res) => res.json())
+        .then(setTeamMembers)
+        .catch((err) => console.error(err))
+    }
+  }, [barber])
 
   useEffect(() => {
-    if (!barber) return
+    if (!targetBarberId) return
     setLoadingSlots(true)
-    fetchAvailability(dateStr, totalDuration, barber.id)
+    fetchAvailability(dateStr, totalDuration, targetBarberId)
       .then(setSlots)
       .finally(() => setLoadingSlots(false))
-  }, [dateStr, totalDuration, barber])
+  }, [dateStr, totalDuration, targetBarberId])
 
   const toggleService = (srv: Service) => {
     setSelectedServices((prev) =>
@@ -61,14 +71,14 @@ export function TabBooking({
     setSubmitting(true)
     try {
       await createAppointment({
-        barberId: barber.id,
+        barberId: targetBarberId,
         serviceIds: selectedServices.map((s) => s.id),
         startTime: selectedSlot.startTime,
         clientName,
         clientPhone,
         notes,
       })
-      alert('Encaixe rápido realizado com sucesso!')
+      useToastStore.getState().addToast('Encaixe rápido realizado com sucesso!', 'success')
       setClientName('')
       setClientPhone('')
       setNotes('')
@@ -76,7 +86,7 @@ export function TabBooking({
       setSelectedSlot(null)
       onAppointmentCreated()
     } catch {
-      alert('Erro ao realizar agendamento manual')
+      useToastStore.getState().addToast('Erro ao realizar agendamento manual', 'error')
     } finally {
       setSubmitting(false)
     }
@@ -105,6 +115,26 @@ export function TabBooking({
 
       {/* Manual Booking Form */}
       <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
+        {/* Barber Selection (For Owners) */}
+        {barber.role === 'OWNER' && teamMembers.length > 0 && (
+          <div className="space-y-3">
+            <label className="text-xs font-bold uppercase text-[var(--color-figaro-amber)] tracking-wider block">
+              Agenda do Profissional
+            </label>
+            <select
+              value={targetBarberId}
+              onChange={(e) => setTargetBarberId(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-[#11AFFA] outline-none appearance-none"
+            >
+              {teamMembers.map((m) => (
+                <option key={m.id} value={m.id} className="text-black">
+                  {m.name} {m.id === barber.id ? '(Você)' : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         {/* Step 1: Services */}
         <div className="space-y-3">
           <label className="text-xs font-bold uppercase text-[var(--color-figaro-blue)] tracking-wider block">

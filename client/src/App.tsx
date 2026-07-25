@@ -7,7 +7,11 @@ import { RegisterPage } from '@/pages/RegisterPage'
 import { MyAppointments } from '@/pages/MyAppointments'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { BarberBookingPage } from '@/pages/BarberBookingPage'
+import { SubscriptionCheckout } from '@/pages/SubscriptionCheckout'
 import { Clock, LogOut, Scissors } from 'lucide-react'
+import { ToastContainer } from '@/components/ui/Toast'
+import { ConfirmModal } from '@/components/ui/ConfirmModal'
+import { PageTransition } from '@/components/ui/PageTransition'
 
 export default function App() {
   const { user, logout, initAuth, initialized } = useAuthStore()
@@ -32,6 +36,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full bg-[#0A0E14] text-figaro-text-primary selection:bg-[var(--color-figaro-blue)] selection:text-white relative overflow-x-hidden">
+      <ToastContainer />
+      <ConfirmModal />
       {/* Full Viewport Viewport-Wide Ambient Glow Orbs */}
       <div className="fixed -top-40 -left-40 w-[600px] h-[600px] bg-[#11AFFA]/15 rounded-full blur-[140px] pointer-events-none z-0" />
       <div className="fixed -bottom-40 -right-40 w-[600px] h-[600px] bg-[#F2A93B]/10 rounded-full blur-[140px] pointer-events-none z-0" />
@@ -46,7 +52,7 @@ export default function App() {
               <Scissors className="w-5 h-5 text-[var(--color-figaro-blue)]" />
               <span className="font-bold text-white text-sm">FÍGARO</span>
               <span className="text-[10px] px-2 py-0.5 rounded font-mono font-bold uppercase bg-white/10 text-figaro-text-secondary">
-                {user.role === 'BARBER' ? 'PAINEL BARBEIRO' : 'ÁREA CLIENTE'}
+                {user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER' ? 'PAINEL BARBEIRO' : 'ÁREA CLIENTE'}
               </span>
             </div>
             <div className="flex items-center gap-3">
@@ -72,10 +78,12 @@ export default function App() {
           </div>
         )}
 
-        <Routes>
+        <PageTransition>
+          <Routes>
           {/* Rotas Públicas */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registro" element={<RegisterPage />} />
+          <Route path="/:barberSlug/assinatura" element={<SubscriptionCheckout />} />
           <Route path="/:slug" element={<BarberBookingPage />} />
 
           {/* Rotas Protegidas - CLIENTE */}
@@ -93,7 +101,7 @@ export default function App() {
             path="*"
             element={
               user ? (
-                user.role === 'BARBER' ? (
+                (user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER') ? (
                   <Navigate to="/painel" replace />
                 ) : (
                   <Navigate to="/meus-agendamentos" replace />
@@ -103,7 +111,8 @@ export default function App() {
               )
             }
           />
-        </Routes>
+          </Routes>
+        </PageTransition>
       </main>
       {/* Navigation bar for logged in CLIENT */}
       {user?.role === 'CLIENT' && (

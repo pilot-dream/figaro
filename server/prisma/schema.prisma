@@ -3,81 +3,191 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id           String   @id @default(cuid())
-  name         String
-  slug         String?  @unique
-  passwordHash String   @default("")
-  phone        String?  @unique
-  email        String?  @unique
-  role         String   @default("CLIENT") // "CLIENT", "BARBER", "MANAGER"
-  avatarUrl    String?
-  notes        String?
-  createdAt    DateTime @default(now())
+  id                   String   @id @db.Uuid
+  name                 String
+  slug                 String?  @unique
+  phone                String?
+  role                 String   @default("CLIENT")
+  avatarUrl            String?  @map("avatar_url")
+  ownerId              String?  @map("owner_id") @db.Uuid
+  notes                String?
+  specialty            String?
+  
+  // Comissionamento (para BARBERS)
+  commissionType       String   @default("PERCENTAGE") @map("commission_type") // 'PERCENTAGE' | 'FIXED'
+  commissionValue      Float    @default(0)             @map("commission_value")
 
-  // Relations
+  // Assinatura provisória (para OWNERS — futura integração Cakto Pay)
+  subscriptionPlan     String   @default("FREE")        @map("subscription_plan")
+  subscriptionStatus   String   @default("ACTIVE")      @map("subscription_status")
+  caktoCustomerId      String?                          @map("cakto_customer_id")
+  
+  googleRefreshToken   String?  @map("google_refresh_token")
+  googleEmail          String?  @map("google_email")
+  googleSyncEnabled    Boolean  @default(false) @map("google_sync_enabled")
+  googleSyncBusyTimes  Boolean  @default(false) @map("google_sync_busy_times")
+  
+  whatsappInstanceId   String?  @map("whatsapp_instance_id")
+  whatsappStatus       String?  @default("DISCONNECTED") @map("whatsapp_status")
+  whatsappEnabled      Boolean  @default(false) @map("whatsapp_enabled")
+  whatsappReminder24h  Boolean  @default(false) @map("whatsapp_reminder_24h")
+  whatsappReminder2h   Boolean  @default(false) @map("whatsapp_reminder_2h")
+  whatsappTemplateBase String?  @default("Olá {{client_name}}, lembrete do seu agendamento: {{services}} com {{barber_name}} às {{time}}.") @map("whatsapp_template_base")
+  
+  createdAt            DateTime @default(now()) @map("created_at")
+
   appointments  Appointment[] @relation("ClientAppointments")
   barberSlots   Appointment[] @relation("BarberAppointments")
+  owner         User?         @relation("TeamMembers", fields: [ownerId], references: [id])
+  teamMembers   User[]        @relation("TeamMembers")
   blockedTimes  BlockedTime[]
+  clientWaitlists Waitlist[]  @relation("ClientWaitlist")
+  barberWaitlists Waitlist[]  @relation("BarberWaitlist")
+  
+  subscriptions CustomerSubscription[] @relation("ClientSubscriptions")
+  clientRecurringSlots RecurringSlot[] @relation("ClientRecurringSlots")
+  barberRecurringSlots RecurringSlot[] @relation("BarberRecurringSlots")
+
+  @@map("profiles")
 }
 
 model Service {
-  id          String   @id @default(cuid())
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  barberId    String?  @map("barber_id") @db.Uuid
   name        String
   description String?
-  durationMin Int
+  durationMin Int      @map("duration_min")
   price       Float
-  isActive    Boolean  @default(true)
-  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true) @map("is_active")
+  sortOrder   Int      @default(0) @map("sort_order")
 
-  // Relations
   appointmentServices AppointmentService[]
+
+  @@map("services")
 }
 
 model Appointment {
-  id          String   @id @default(cuid())
-  clientId    String
-  barberId    String?
-  startTime   DateTime
-  endTime     DateTime
-  totalPrice  Float
-  status      String   @default("PENDING") // "PENDING", "CONFIRMED", "COMPLETED", "CANCELLED", "NO_SHOW"
-  clientNotes String?
-  createdAt   DateTime @default(now())
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId           String?  @map("client_id") @db.Uuid
+  barberId           String   @map("barber_id") @db.Uuid
+  startTime          DateTime @map("start_time")
+  endTime            DateTime @map("end_time")
+  totalPrice         Float    @map("total_price")
+  status             String   @default("PENDING")
+  clientName         String?  @map("client_name")
+  clientPhone        String?  @map("client_phone")
+  clientNotes        String?  @map("client_notes")
+  googleEventId      String?  @map("google_event_id")
+  wpConfirmationSent Boolean  @default(false) @map("wp_confirmation_sent")
+  wpReminder24hSent  Boolean  @default(false) @map("wp_reminder_24h_sent")
+  wpReminder2hSent   Boolean  @default(false) @map("wp_reminder_2h_sent")
+  createdAt          DateTime @default(now()) @map("created_at")
 
-  // Relations
-  client   User                 @relation("ClientAppointments", fields: [clientId], references: [id])
-  barber   User?                @relation("BarberAppointments", fields: [barberId], references: [id])
+  client   User?                @relation("ClientAppointments", fields: [clientId], references: [id])
+  barber   User                 @relation("BarberAppointments", fields: [barberId], references: [id])
   services AppointmentService[]
+
+  @@index([barberId, startTime])
+  @@map("appointments")
 }
 
 model AppointmentService {
-  appointmentId String
-  serviceId     String
-  appointment   Appointment @relation(fields: [appointmentId], references: [id])
-  service       Service     @relation(fields: [serviceId], references: [id])
+  appointmentId String @map("appointment_id") @db.Uuid
+  serviceId     String @map("service_id") @db.Uuid
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  service       Service     @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
   @@id([appointmentId, serviceId])
+  @@map("appointment_services")
 }
 
 model BlockedTime {
-  id        String   @id @default(cuid())
-  barberId  String
-  startTime DateTime
-  endTime   DateTime
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  barberId  String   @map("barber_id") @db.Uuid
+  startTime DateTime @map("start_time")
+  endTime   DateTime @map("end_time")
   reason    String?
-  barber    User     @relation(fields: [barberId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  barber    User     @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  @@map("blocked_times")
 }
 
 model Waitlist {
-  id          String   @id @default(cuid())
-  clientId    String
-  barberId    String?
-  serviceIds  String   // JSON array de IDs
-  desiredDate DateTime
-  createdAt   DateTime @default(now())
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId    String?  @map("client_id") @db.Uuid
+  barberId    String   @map("barber_id") @db.Uuid
+  date        String   // YYYY-MM-DD
+  status      String   @default("WAITING") // WAITING, NOTIFIED, CANCELLED
+  clientName  String   @map("client_name")
+  clientPhone String   @map("client_phone")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  client User? @relation("ClientWaitlist", fields: [clientId], references: [id])
+  barber User  @relation("BarberWaitlist", fields: [barberId], references: [id])
+
+  @@map("waitlists")
+}
+
+model SubscriptionPlan {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String
+  price         Float
+  cutsPerPeriod Int      @map("cuts_per_period")
+  description   String?
+  isActive      Boolean  @default(true) @map("is_active")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  subscriptions CustomerSubscription[]
+
+  @@map("subscription_plans")
+}
+
+model CustomerSubscription {
+  id                    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId              String   @map("client_id") @db.Uuid
+  planId                String   @map("plan_id") @db.Uuid
+  status                String   @default("ACTIVE") // ACTIVE, PAST_DUE, CANCELED
+  gatewaySubscriptionId String?  @map("gateway_subscription_id")
+  nextBillingDate       DateTime? @map("next_billing_date")
+  createdAt             DateTime @default(now()) @map("created_at")
+
+  client User             @relation("ClientSubscriptions", fields: [clientId], references: [id])
+  plan   SubscriptionPlan @relation(fields: [planId], references: [id])
+
+  @@map("customer_subscriptions")
+}
+
+model RecurringSlot {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId String   @map("customer_id") @db.Uuid
+  barberId   String   @map("barber_id") @db.Uuid
+  dayOfWeek  Int      @map("day_of_week") // 0 (Domingo) a 6 (Sábado)
+  time       String   // "17:00"
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  customer   User     @relation("ClientRecurringSlots", fields: [customerId], references: [id])
+  barber     User     @relation("BarberRecurringSlots", fields: [barberId], references: [id])
+  exceptions SlotException[]
+
+  @@map("recurring_slots")
+}
+
+model SlotException {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  recurringSlotId String   @map("recurring_slot_id") @db.Uuid
+  originalDate    String   @map("original_date") // "YYYY-MM-DD"
+  newDate         String?  @map("new_date")      // "YYYY-MM-DD", nulo se for cancelado
+  newTime         String?  @map("new_time")      // "18:00", nulo se for cancelado
+  status          String   @default("RESCHEDULED") // RESCHEDULED, CANCELED
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  recurringSlot RecurringSlot @relation(fields: [recurringSlotId], references: [id], onDelete: Cascade)
+
+  @@map("slot_exceptions")
 }

@@ -4,6 +4,35 @@ import type { Service, User, TimeSlot, Appointment, AppointmentStatus } from '@/
 export { supabase }
 
 // ==========================================
+// STORAGE API
+// ==========================================
+export async function uploadAvatar(file: File): Promise<string | null> {
+  try {
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`
+    const filePath = `avatars/${fileName}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file, { 
+        upsert: true,
+        cacheControl: '31536000' // 1 ano de cache agressivo para fotos de perfil
+      })
+
+    if (uploadError) {
+      console.error('Error uploading avatar:', uploadError.message)
+      return null
+    }
+
+    const { data } = supabase.storage.from('avatars').getPublicUrl(filePath)
+    return data.publicUrl
+  } catch (error) {
+    console.error('Error in uploadAvatar:', error)
+    return null
+  }
+}
+
+// ==========================================
 // SEED DEFAULT DATA IF SUPABASE TABLES ARE EMPTY
 // ==========================================
 const DEFAULT_SERVICES = [
@@ -91,7 +120,7 @@ export async function fetchBarbers(): Promise<User[]> {
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
-    .eq('role', 'BARBER')
+    .in('role', ['BARBER', 'OWNER'])
 
   if (error) {
     console.error('Error fetching barbers:', error.message)
@@ -99,6 +128,26 @@ export async function fetchBarbers(): Promise<User[]> {
   }
 
   return (data || []).map(mapUserFromDb)
+}
+
+export async function fetchMyTeam(): Promise<User[]> {
+  const { data: session } = await supabase.auth.getSession()
+  const token = session?.session?.access_token
+  if (!token) return []
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+  try {
+    const res = await fetch(`${API_URL}/api/team`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    if (!res.ok) throw new Error('Falha ao buscar equipe')
+    return res.json()
+  } catch (err) {
+    console.error(err)
+    return []
+  }
 }
 
 export async function fetchBarberBySlug(
@@ -128,7 +177,11 @@ function mapUserFromDb(row: any): User {
     phone: row.phone || undefined,
     role: row.role,
     avatarUrl: row.avatar_url || undefined,
+    specialty: row.specialty || undefined,
     notes: row.notes || undefined,
+    googleEmail: row.google_email || undefined,
+    googleSyncEnabled: row.google_sync_enabled ?? false,
+    googleSyncBusyTimes: row.google_sync_busy_times ?? false,
   }
 }
 
@@ -140,88 +193,28 @@ export async function fetchAvailability(
   rawDurationMin: number,
   barberId?: string
 ): Promise<TimeSlot[]> {
-  // Round up service duration to nearest multiple of 15 minutes (e.g., 26m, 38m, 44m -> 45m)
-  const durationMin = Math.ceil((rawDurationMin || 45) / 15) * 15
-
-  // ISO with Brasilia Offset (-03:00)
-  const startOfDay = new Date(`${dateStr}T00:00:00-03:00`).toISOString()
-  const endOfDay = new Date(`${dateStr}T23:59:59-03:00`).toISOString()
-
-  // 1. Fetch appointments for this date
-  let query = supabase
-    .from('appointments')
-    .select('start_time, end_time, status')
-    .gte('start_time', startOfDay)
-    .lte('start_time', endOfDay)
-    .neq('status', 'CANCELLED')
-
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+  let url = `${API_URL}/availability?date=${dateStr}&durationMin=${rawDurationMin}`
   if (barberId) {
-    query = query.eq('barber_id', barberId)
+    url += `&barberId=${barberId}`
   }
-
-  const { data: appData } = await query
-
-  // 2. Fetch blocked times for this date
-  let blockQuery = supabase
-    .from('blocked_times')
-    .select('start_time, end_time')
-    .gte('start_time', startOfDay)
-    .lte('start_time', endOfDay)
-
-  if (barberId) {
-    blockQuery = blockQuery.eq('barber_id', barberId)
+  
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error('Falha ao buscar disponibilidade')
   }
-
-  const { data: blockData } = await blockQuery
-
-  const busyIntervals = [
-    ...(appData || []).map((a) => ({
-      start: new Date(a.start_time).getTime(),
-      end: new Date(a.end_time).getTime(),
-    })),
-    ...(blockData || []).map((b) => ({
-      start: new Date(b.start_time).getTime(),
-      end: new Date(b.end_time).getTime(),
-    })),
-  ]
-
-  // Business Hours 09:00 to 20:00 in Horário de Brasília (-03:00)
-  const slots: TimeSlot[] = []
-  const baseTime = new Date(`${dateStr}T09:00:00-03:00`).getTime()
-  const closeTime = new Date(`${dateStr}T20:00:00-03:00`).getTime()
-
-  let currentCursor = baseTime
-
-  // Generate 15-minute grid slots (09:00, 09:15, 09:30, 09:45, 10:00, 10:15, 10:30...)
-  while (currentCursor + durationMin * 60000 <= closeTime) {
-    const slotStart = currentCursor
-    const slotEnd = slotStart + durationMin * 60000
-
-    // Strict overlap rule: proposed slot [slotStart, slotEnd) overlaps with busy interval [busy.start, busy.end)
-    // if slotStart < busy.end AND slotEnd > busy.start
-    const isOccupied = busyIntervals.some(
-      (busy) => slotStart < busy.end && slotEnd > busy.start
-    )
-
-    slots.push({
-      startTime: new Date(slotStart).toISOString(),
-      endTime: new Date(slotEnd).toISOString(),
-      available: !isOccupied,
-    })
-
-    // Advance by 15 minutes to guarantee exact 09:45, 10:00, 10:15... grid slots
-    currentCursor += 15 * 60000
-  }
-
-  return slots
+  return response.json()
 }
 
 // ==========================================
 // APPOINTMENTS API
 // ==========================================
+// ==========================================
+// APPOINTMENTS API
+// ==========================================
 export async function createAppointment(data: {
   clientId?: string
-  barberId: string
+  barberId?: string
   serviceIds: string[]
   startTime: string
   clientName: string
@@ -238,6 +231,10 @@ export async function createAppointment(data: {
 
   const startDate = new Date(data.startTime)
   const endDate = new Date(startDate.getTime() + totalDuration * 60000)
+
+  if (!data.barberId) {
+    throw new Error('ID do barbeiro é obrigatório para criar o agendamento.')
+  }
 
   const { data: app, error } = await supabase
     .from('appointments')
@@ -267,6 +264,25 @@ export async function createAppointment(data: {
     await supabase.from('appointment_services').insert(relations)
   }
 
+  // Attempt to sync with Google Calendar via backend API
+  try {
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+    await fetch(`${API_URL}/google/sync-event`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        appointmentId: app.id,
+        barberId: data.barberId,
+        summary: `Atendimento Fígaro: ${data.clientName}`,
+        description: `Telefone: ${data.clientPhone}\nNotas: ${data.notes || ''}`,
+        startTime: startDate.toISOString(),
+        endTime: endDate.toISOString(),
+      })
+    })
+  } catch (err) {
+    console.error('Non-fatal error syncing to Google Calendar:', err)
+  }
+
   return {
     id: app.id,
     clientId: app.client_id || undefined,
@@ -284,12 +300,52 @@ export async function createAppointment(data: {
 
 export async function fetchBarberAppointments(
   barberId: string,
-  dateStr: string // YYYY-MM-DD
+  dateStr?: string, // YYYY-MM-DD
+  period?: 'today' | 'yesterday' | 'week' | 'month'
 ): Promise<Appointment[]> {
-  const startOfDay = new Date(`${dateStr}T00:00:00-03:00`).toISOString()
-  const endOfDay = new Date(`${dateStr}T23:59:59-03:00`).toISOString()
+  let startOfDay: string;
+  let endOfDay: string;
 
-  const { data, error } = await supabase
+  if (period) {
+    let startDate = new Date()
+    let endDate = new Date()
+    
+    if (period === 'today') {
+      startDate.setHours(0, 0, 0, 0)
+      endDate.setHours(23, 59, 59, 999)
+    } else if (period === 'yesterday') {
+      startDate.setDate(startDate.getDate() - 1)
+      startDate.setHours(0, 0, 0, 0)
+      endDate = new Date(startDate)
+      endDate.setHours(23, 59, 59, 999)
+    } else if (period === 'week') {
+      const day = startDate.getDay()
+      const diff = startDate.getDate() - day + (day === 0 ? -6 : 1)
+      startDate = new Date(startDate.setDate(diff))
+      startDate.setHours(0, 0, 0, 0)
+      endDate = new Date(startDate)
+      endDate.setDate(startDate.getDate() + 6)
+      endDate.setHours(23, 59, 59, 999)
+    } else if (period === 'month') {
+      startDate.setDate(1)
+      startDate.setHours(0, 0, 0, 0)
+      endDate = new Date(startDate)
+      endDate.setMonth(startDate.getMonth() + 1)
+      endDate.setDate(0)
+      endDate.setHours(23, 59, 59, 999)
+    }
+    startOfDay = startDate.toISOString()
+    endOfDay = endDate.toISOString()
+  } else if (dateStr) {
+    startOfDay = new Date(`${dateStr}T00:00:00-03:00`).toISOString()
+    endOfDay = new Date(`${dateStr}T23:59:59-03:00`).toISOString()
+  } else {
+    const todayStr = new Date().toISOString().split('T')[0]
+    startOfDay = new Date(`${todayStr}T00:00:00-03:00`).toISOString()
+    endOfDay = new Date(`${todayStr}T23:59:59-03:00`).toISOString()
+  }
+
+  let query = supabase
     .from('appointments')
     .select(`
       *,
@@ -298,10 +354,15 @@ export async function fetchBarberAppointments(
         service:services(*)
       )
     `)
-    .eq('barber_id', barberId)
     .gte('start_time', startOfDay)
     .lte('start_time', endOfDay)
     .order('start_time', { ascending: true })
+
+  if (barberId !== 'all') {
+    query = query.eq('barber_id', barberId)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error('Error fetching barber appointments:', error.message)
@@ -376,6 +437,26 @@ export async function updateAppointmentStatus(
     console.error('Error updating appointment status:', error.message)
     throw new Error(error.message)
   }
+
+  // Sync cancellation to Google Calendar if status changed to CANCELLED
+  if (newStatus === 'CANCELLED') {
+    try {
+      const { data: appData } = await supabase.from('appointments').select('barber_id, google_event_id').eq('id', appointmentId).single()
+      if (appData?.google_event_id) {
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+        await fetch(`${API_URL}/google/cancel-event`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            barberId: appData.barber_id,
+            eventId: appData.google_event_id
+          })
+        })
+      }
+    } catch (err) {
+      console.error('Non-fatal error canceling Google Calendar event:', err)
+    }
+  }
 }
 
 export async function createBlockedTime(
@@ -408,4 +489,157 @@ export async function updateClientNotes(clientId: string, notes: string): Promis
   if (error) {
     console.error('Error updating client notes:', error.message)
   }
+}
+
+// ==========================================
+// MRR / CLUBE DE ASSINATURAS API
+// ==========================================
+export async function fetchSubscriptionPlans(): Promise<any[]> {
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+  const response = await fetch(`${API_URL}/mrr/plans`)
+  if (!response.ok) {
+    throw new Error('Falha ao buscar planos')
+  }
+  return response.json()
+}
+
+export async function createSubscription(data: {
+  barberId: string
+  planId: string
+  dayOfWeek: number
+  time: string
+}): Promise<any> {
+  const { data: session } = await supabase.auth.getSession()
+  const token = session?.session?.access_token
+  
+  if (!token) throw new Error('Not authenticated')
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+  const response = await fetch(`${API_URL}/mrr/subscribe`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(data)
+  })
+  
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.error || 'Falha ao processar assinatura')
+  }
+  
+  return response.json()
+}
+
+export async function createSubscriptionPlan(data: {
+  name: string
+  price: number
+  cutsPerPeriod: number
+  description: string
+}): Promise<any> {
+  const { data: session } = await supabase.auth.getSession()
+  const token = session?.session?.access_token
+  if (!token) throw new Error('Not authenticated')
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+  const response = await fetch(`${API_URL}/mrr/plans`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(data)
+  })
+  
+  if (!response.ok) {
+    const text = await response.text().catch(() => '')
+    try {
+      const errData = JSON.parse(text)
+      throw new Error(`Erro do servidor: ${errData.error || text}`)
+    } catch {
+      throw new Error(`Erro desconhecido (Status ${response.status}): ${text.substring(0, 100)}`)
+    }
+  }
+  return response.json()
+}
+
+export async function fetchSubscribers(): Promise<any[]> {
+  const { data: session } = await supabase.auth.getSession()
+  const token = session?.session?.access_token
+  if (!token) throw new Error('Not authenticated')
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+  const response = await fetch(`${API_URL}/mrr/subscribers`, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+  
+  if (!response.ok) throw new Error('Falha ao buscar assinantes')
+  return response.json()
+}
+
+export async function updateSubscriberStatus(subscriptionId: string, status: string): Promise<any> {
+  const { data: session } = await supabase.auth.getSession()
+  const token = session?.session?.access_token
+  if (!token) throw new Error('Not authenticated')
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+  const response = await fetch(`${API_URL}/mrr/subscribers/${subscriptionId}/status`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ status })
+  })
+  
+  if (!response.ok) throw new Error('Falha ao alterar status')
+  return response.json()
+}
+
+export async function deleteSubscription(subscriptionId: string): Promise<any> {
+  const { data: session } = await supabase.auth.getSession()
+  const token = session?.session?.access_token
+  if (!token) throw new Error('Not authenticated')
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+  const response = await fetch(`${API_URL}/mrr/subscribers/${subscriptionId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+  
+  if (!response.ok) throw new Error('Falha ao excluir assinatura')
+  return response.json()
+}
+
+export async function fetchTakenMrrSlots(barberId: string): Promise<{ dayOfWeek: number, time: string }[]> {
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+  const response = await fetch(`${API_URL}/mrr/taken-slots/${barberId}`)
+  
+  if (!response.ok) {
+    return []
+  }
+  return response.json()
+}
+
+export async function fetchRevenueChartData(barberId: string): Promise<{ name: string, faturamento: number }[]> {
+  const { data: session } = await supabase.auth.getSession()
+  const token = session?.session?.access_token
+  if (!token) throw new Error('Not authenticated')
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+  const response = await fetch(`${API_URL}/finance/chart-data?barberId=${barberId}`, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+  
+  if (!response.ok) {
+    return []
+  }
+  return response.json()
 }

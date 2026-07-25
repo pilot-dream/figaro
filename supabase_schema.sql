@@ -9,9 +9,20 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   name TEXT NOT NULL,
   slug TEXT UNIQUE,
   phone TEXT,
-  role TEXT NOT NULL DEFAULT 'CLIENT' CHECK (role IN ('CLIENT', 'BARBER', 'MANAGER')),
+  role TEXT NOT NULL DEFAULT 'CLIENT' CHECK (role IN ('CLIENT', 'BARBER', 'MANAGER', 'OWNER')),
   avatar_url TEXT,
   notes TEXT,
+  google_refresh_token TEXT,
+  google_email TEXT,
+  google_sync_enabled BOOLEAN DEFAULT false,
+  google_sync_busy_times BOOLEAN DEFAULT false,
+  whatsapp_instance_id TEXT,
+  whatsapp_status TEXT DEFAULT 'DISCONNECTED',
+  whatsapp_enabled BOOLEAN DEFAULT false,
+  whatsapp_reminder_24h BOOLEAN DEFAULT false,
+  whatsapp_reminder_2h BOOLEAN DEFAULT false,
+  whatsapp_template_base TEXT DEFAULT 'Olá {{client_name}}, lembrete do seu agendamento: {{services}} com {{barber_name}} às {{time}}.',
+  specialty TEXT,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -39,6 +50,10 @@ CREATE TABLE IF NOT EXISTS public.appointments (
   client_name TEXT,
   client_phone TEXT,
   client_notes TEXT,
+  google_event_id TEXT,
+  wp_confirmation_sent BOOLEAN DEFAULT false,
+  wp_reminder_24h_sent BOOLEAN DEFAULT false,
+  wp_reminder_2h_sent BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
