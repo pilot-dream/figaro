@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "client"
+    "client",
+    "server"
   ],
   "scripts": {
+    "postinstall": "cd server && npx prisma generate",
     "dev": "npm run dev --workspace=client",
     "build": "npm run build --workspace=client"
   }
