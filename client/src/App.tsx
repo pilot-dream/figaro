@@ -7,9 +7,10 @@ const RegisterPage = lazy(() => import('@/pages/RegisterPage').then(m => ({ defa
 const MyAppointments = lazy(() => import('@/pages/MyAppointments').then(m => ({ default: m.MyAppointments })))
 const DashboardPage = lazy(() => import('@/pages/DashboardPage').then(m => ({ default: m.DashboardPage })))
 const BarberBookingPage = lazy(() => import('@/pages/BarberBookingPage').then(m => ({ default: m.BarberBookingPage })))
+const GamificationSettingsPage = lazy(() => import('@/pages/GamificationSettingsPage').then(m => ({ default: m.GamificationSettingsPage })))
 const SubscriptionCheckout = lazy(() => import('@/pages/SubscriptionCheckout').then(m => ({ default: m.SubscriptionCheckout })))
 const SubscriptionSuspended = lazy(() => import('@/pages/SubscriptionSuspended').then(m => ({ default: m.SubscriptionSuspended })))
-import { Clock, LogOut, Scissors } from 'lucide-react'
+import { Clock, LogOut, Scissors, Sparkles } from 'lucide-react'
 import { ToastContainer } from '@/components/ui/Toast'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { PageTransition } from '@/components/ui/PageTransition'
@@ -53,8 +54,13 @@ export default function App() {
         {user && (
           <div className="flex items-center justify-between py-2 border-b border-white/10 mb-6">
             <div className="flex items-center gap-2">
-              <Scissors className="w-5 h-5 text-[var(--color-figaro-blue)]" />
-              <span className="font-bold text-white text-sm">FÍGARO</span>
+              <Link 
+                to={user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER' ? '/painel' : '/meus-agendamentos'}
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              >
+                <Scissors className="w-5 h-5 text-[var(--color-figaro-blue)]" />
+                <span className="font-bold text-white text-sm">FÍGARO</span>
+              </Link>
               <span className="text-[10px] px-2 py-0.5 rounded font-mono font-bold uppercase bg-white/10 text-figaro-text-secondary">
                 {user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER' ? 'PAINEL BARBEIRO' : 'ÁREA CLIENTE'}
               </span>
@@ -69,6 +75,15 @@ export default function App() {
                 >
                   <Clock className="w-3.5 h-3.5 text-[#11AFFA]" />
                   <span className="hidden sm:inline">Meus Agendamentos</span>
+                </Link>
+              )}
+              {(user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER') && (
+                <Link
+                  to="/gamificacao"
+                  className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs font-semibold text-[var(--color-figaro-amber)] hover:bg-white/10 flex items-center gap-1.5 transition-colors"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Gamificação</span>
                 </Link>
               )}
               <span className="text-xs text-figaro-text-secondary hidden sm:inline">
@@ -102,6 +117,7 @@ export default function App() {
           {/* Rotas Protegidas - BARBEIRO */}
           <Route element={<RequireAuth role="BARBER" />}>
             <Route path="/painel" element={<DashboardPage />} />
+            <Route path="/gamificacao" element={<GamificationSettingsPage />} />
           </Route>
 
           {/* Fallback */}
@@ -123,20 +139,6 @@ export default function App() {
           </Suspense>
         </PageTransition>
       </main>
-      {/* Navigation bar for logged in CLIENT */}
-      {user?.role === 'CLIENT' && (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#0A0E14]/80 backdrop-blur-xl border-t border-white/10 pb-safe">
-          <div className="max-w-md mx-auto p-3 flex items-center justify-around">
-            <Link
-              to="/meus-agendamentos"
-              className="flex-1 py-2 text-xs font-semibold flex flex-col items-center gap-1 text-[#11AFFA] drop-shadow-[0_0_8px_rgba(17,175,250,0.5)]"
-            >
-              <Clock className="w-5 h-5 mb-0.5" />
-              Meus Agendamentos
-            </Link>
-          </div>
-        </nav>
-      )}
     </div>
   )
 }

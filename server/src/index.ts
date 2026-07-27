@@ -11,9 +11,14 @@ import financeRoutes from './routes/finance.routes'
 import appointmentsRoutes from './routes/appointments.routes'
 import mrrRoutes from './routes/mrr.routes'
 import dashboardRoutes from './routes/dashboard.routes'
+import gamificationRoutes from './routes/gamification.routes'
 import { securityHeaders, globalLimiter } from './middleware/security.middleware'
 import { handleCaktoWebhook } from './controllers/saas.webhook.controller'
-import { startReminderCron, processReminders } from './cron/reminder.cron'
+import { processReminders } from './cron/reminder.cron'
+import { processWinbacks } from './cron/winback.cron'
+import { processBirthdays } from './cron/birthday.cron'
+import { processSummaries } from './cron/summary.cron'
+import { startCronJobs } from './cron/scheduler'
 
 const app = express()
 const availabilityService = new AvailabilityService()
@@ -42,11 +47,11 @@ app.use('/api/finance', financeRoutes)
 app.use('/api/appointments', appointmentsRoutes)
 app.use('/api/mrr', mrrRoutes)
 app.use('/api/dashboard', dashboardRoutes)
+app.use('/api/gamification', gamificationRoutes)
 
 // Webhooks
 app.post('/api/webhooks/cakto', handleCaktoWebhook)
 
-// Cron execution endpoint for Vercel Serverless
 app.get('/api/cron/reminders', async (req, res) => {
   try {
     await processReminders()
@@ -54,6 +59,27 @@ app.get('/api/cron/reminders', async (req, res) => {
   } catch (error) {
     console.error('Cron error:', error)
     res.status(500).json({ success: false, error: 'Failed to process reminders' })
+  }
+})
+
+app.get('/api/cron/daily-actions', async (req, res) => {
+  try {
+    await processWinbacks()
+    await processBirthdays()
+    res.json({ success: true, message: 'Daily actions processed successfully' })
+  } catch (error) {
+    console.error('Cron error:', error)
+    res.status(500).json({ success: false, error: 'Failed to process daily actions' })
+  }
+})
+
+app.get('/api/cron/summaries', async (req, res) => {
+  try {
+    await processSummaries()
+    res.json({ success: true, message: 'Summaries processed successfully' })
+  } catch (error) {
+    console.error('Cron error:', error)
+    res.status(500).json({ success: false, error: 'Failed to process summaries' })
   }
 })
 
@@ -74,6 +100,7 @@ app.get('/api/availability', async (req, res, next) => {
 
     res.json(slots)
   } catch (error) {
+    console.error('AVAILABILITY ERROR:', error)
     next(error)
   }
 })
@@ -96,7 +123,7 @@ const PORT = config.get('PORT') || 3001
 
 // Inicializar Cron Jobs apenas se não estiver no Vercel/Serverless
 if (process.env.NODE_ENV !== 'production' || process.env.RUN_LOCAL === 'true') {
-  startReminderCron()
+  startCronJobs()
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
   })

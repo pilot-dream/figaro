@@ -20,8 +20,8 @@ export function BarberBottomNav({ activeTab, onChangeTab }: BarberBottomNavProps
 
   const { user } = useAuthStore()
 
-  // Se o usuário for OWNER, adicionamos a aba de SaaS no final
-  if (user?.role === 'OWNER') {
+  // Se o usuário for OWNER ou BARBER (para testes), adicionamos a aba de SaaS no final
+  if (user?.role === 'OWNER' || user?.role === 'BARBER') {
     tabs.push({ id: 'saas', label: 'Plano', icon: Crown })
   }
 
