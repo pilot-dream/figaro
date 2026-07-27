@@ -90,7 +90,7 @@ export function LoginPage() {
           </div>
 
           <Button type="submit" size="lg" className="w-full mt-2" isLoading={loading}>
-            Entrar <ArrowRight className="w-4 h-4 ml-1" />
+            <span>Entrar</span> <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
         </form>
 

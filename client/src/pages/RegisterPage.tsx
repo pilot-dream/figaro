@@ -155,7 +155,7 @@ export function RegisterPage() {
           </div>
 
           <Button type="submit" size="lg" className="w-full mt-2" isLoading={loading}>
-            Cadastrar e Continuar <ArrowRight className="w-4 h-4 ml-1" />
+            <span>Cadastrar e Continuar</span> <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
         </form>
 
