@@ -1,17 +1,18 @@
-import { Request, Response, NextFunction } from 'express'
+import { Response, NextFunction } from 'express'
 import { prisma } from '../lib/prisma'
+import { AuthenticatedRequest } from './auth.middleware'
 
-export async function requireActiveSaaS(req: Request, res: Response, next: NextFunction) {
+export async function requireActiveSaaS(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     // A requisição já deve ter passado pelo authenticateToken (que popula req.user)
-    if (!req.user || !req.user.userId) {
+    if (!req.user || !req.user.id) {
       return res.status(401).json({ error: 'Unauthorized' })
     }
 
     // Buscamos o tenant raiz (OWNER) correspondente ao usuário logado
     // Se o usuário logado FOR o owner, pegamos ele mesmo. Se for BARBER/MANAGER, pegamos o ownerId dele.
     const user = await prisma.user.findUnique({
-      where: { id: req.user.userId },
+      where: { id: req.user.id },
       select: { role: true, ownerId: true }
     })
 
@@ -19,7 +20,7 @@ export async function requireActiveSaaS(req: Request, res: Response, next: NextF
       return res.status(401).json({ error: 'User not found' })
     }
 
-    const tenantId = user.role === 'OWNER' ? req.user.userId : user.ownerId
+    const tenantId = user.role === 'OWNER' ? req.user.id : user.ownerId
 
     if (!tenantId) {
       // Se não tem ownerId e não é Owner, algo está errado na modelagem. Mas deixamos passar por via das dúvidas ou barramos.

@@ -9,6 +9,8 @@ export interface AuthenticatedUser {
   email: string
   role: string
   slug?: string
+  name: string
+  branchName?: string
   commissionType?: string
   commissionValue?: number
   ownerId?: string
@@ -49,6 +51,8 @@ export async function authMiddleware(req: AuthenticatedRequest, res: Response, n
       id: dbUser.id,
       email: user.email || '',
       role: dbUser.role,
+      name: dbUser.name,
+      branchName: dbUser.branchName || undefined,
       slug: dbUser.slug || undefined,
       commissionType: dbUser.commissionType,
       commissionValue: dbUser.commissionValue,
