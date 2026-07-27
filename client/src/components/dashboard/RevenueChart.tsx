@@ -54,7 +54,7 @@ export function RevenueChart({ barberId = 'all' }: { barberId?: string }) {
               fontSize={12} 
               tickLine={false} 
               axisLine={false} 
-              tickFormatter={(value) => `R$${value}`}
+              tickFormatter={(value: number) => `R$${value}`}
             />
             <Tooltip 
               content={<CustomTooltip />} 
