@@ -6,7 +6,7 @@ class ConfigService {
   private readonly config: Map<string, string>
 
   constructor() {
-    this.validateRequiredVars(['PORT', 'DATABASE_URL', 'JWT_SECRET', 'SUPABASE_SERVICE_ROLE_KEY'])
+    this.validateRequiredVars(['DATABASE_URL', 'JWT_SECRET', 'SUPABASE_SERVICE_ROLE_KEY'])
     this.config = new Map()
     this.config.set('PORT', process.env.PORT || '3001')
     this.config.set('DATABASE_URL', process.env.DATABASE_URL!)

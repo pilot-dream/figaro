@@ -102,4 +102,4 @@ if (process.env.NODE_ENV !== 'production' || process.env.RUN_LOCAL === 'true') {
   })
 }
 
-export default app
+module.exports = app
