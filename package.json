@@ -7,7 +7,7 @@
     "server"
   ],
   "scripts": {
-    "postinstall": "cd server && npx prisma generate",
+    "postinstall": "cd server && npx prisma@5.22.0 generate",
     "dev": "npm run dev --workspace=client",
     "build": "npm run build --workspace=client"
   }
