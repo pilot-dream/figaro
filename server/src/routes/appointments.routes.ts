@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { PrismaClient } from '@prisma/client'
 import { validateRequest } from '../middleware/validateRequest'
-import { bookingLimiter } from '../middleware/security.middleware'
+import { bookingRateLimiter } from '../middleware/security.middleware'
 import { createBookingBodySchema, availabilityQuerySchema, barberSlugParamsSchema } from '../schemas/booking.schema'
 import { AvailabilityService } from '../services/availability.service'
 
@@ -17,7 +17,7 @@ const availabilityService = new AvailabilityService()
  */
 router.post(
   '/',
-  bookingLimiter,
+  bookingRateLimiter,
   validateRequest({ body: createBookingBodySchema }),
   async (req, res, next) => {
     try {

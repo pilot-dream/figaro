@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client'
 import { requireAuth } from '../middleware/auth.middleware'
 import type { AuthenticatedRequest } from '../middleware/auth.middleware'
 import bcrypt from 'bcryptjs'
+import { validateRequest } from '../middleware/validateRequest'
+import { createTeamMemberSchema } from '../schemas/team.schema'
 
 const router = Router()
 const prisma = new PrismaClient()
@@ -51,7 +53,7 @@ router.get('/', requireAuth, async (req: AuthenticatedRequest, res, next) => {
 import { supabaseAdmin } from '../lib/supabaseAdmin'
 
 // POST /api/team
-router.post('/', requireAuth, async (req: AuthenticatedRequest, res, next) => {
+router.post('/', requireAuth, validateRequest({ body: createTeamMemberSchema }), async (req: AuthenticatedRequest, res, next) => {
   try {
     const user = req.user!
     if (user.role !== 'OWNER' && user.role !== 'MANAGER') {
@@ -59,10 +61,6 @@ router.post('/', requireAuth, async (req: AuthenticatedRequest, res, next) => {
     }
 
     const { name, email, password, phone, avatarUrl, specialty, role, commissionType, commissionValue } = req.body
-    
-    if (!name || !email || !password) {
-      return res.status(400).json({ error: 'Nome, email e senha são obrigatórios' })
-    }
 
     // 1. Criar colaborador no Supabase Auth com senha temporária
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
