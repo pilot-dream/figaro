@@ -30,7 +30,7 @@ export const useBranchStore = create<BranchState>((set) => ({
   fetchBranches: async () => {
     set({ loading: true })
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+      const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
       const { supabase } = await import('@/lib/supabase')
       const { data: { session } } = await supabase.auth.getSession()
 
@@ -69,7 +69,7 @@ export const useBranchStore = create<BranchState>((set) => ({
   },
 
   createBranch: async (data: any) => {
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+    const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
     const { supabase } = await import('@/lib/supabase')
     const { data: { session } } = await supabase.auth.getSession()
 

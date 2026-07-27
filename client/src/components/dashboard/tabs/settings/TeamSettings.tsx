@@ -33,7 +33,7 @@ export function TeamSettings() {
       setLoading(true)
       const { data: session } = await supabase.auth.getSession()
       const token = session?.session?.access_token
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+      const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
       const response = await fetch(`${API_URL}/team`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -61,7 +61,7 @@ export function TeamSettings() {
       const { data: session } = await supabase.auth.getSession()
       const token = session?.session?.access_token
 
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+      const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
     
       if (editingMember) {
         // Update
@@ -113,7 +113,7 @@ export function TeamSettings() {
     if (!confirmed) return
     const { data: session } = await supabase.auth.getSession()
     const token = session?.session?.access_token
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+    const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
     try {
       const response = await fetch(`${API_URL}/team/${id}`, { 
         method: 'DELETE',

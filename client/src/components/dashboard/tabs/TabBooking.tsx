@@ -40,7 +40,7 @@ export function TabBooking({
   useEffect(() => {
     fetchServices().then(setServices)
     if (barber.role === 'OWNER') {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+      const API_URL = import.meta.env.PROD ? "" : (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace("/api", "") : "http://localhost:3001")
       fetch(`${API_URL}/api/team`)
         .then((res) => res.json())
         .then(setTeamMembers)

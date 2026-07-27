@@ -3,6 +3,8 @@ import type { Service, User, TimeSlot, Appointment, AppointmentStatus } from '@/
 
 export { supabase }
 
+export const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api");
+
 // ==========================================
 // STORAGE API
 // ==========================================
@@ -134,10 +136,8 @@ export async function fetchMyTeam(): Promise<User[]> {
   const { data: session } = await supabase.auth.getSession()
   const token = session?.session?.access_token
   if (!token) return []
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
   try {
-    const res = await fetch(`${API_URL}/api/team`, {
+    const res = await fetch(`${API_URL}/team`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -193,7 +193,6 @@ export async function fetchAvailability(
   rawDurationMin: number,
   barberId?: string
 ): Promise<TimeSlot[]> {
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
   let url = `${API_URL}/availability?date=${dateStr}&durationMin=${rawDurationMin}`
   if (barberId) {
     url += `&barberId=${barberId}`
@@ -266,7 +265,6 @@ export async function createAppointment(data: {
 
   // Attempt to sync with Google Calendar via backend API
   try {
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
     await fetch(`${API_URL}/google/sync-event`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -443,7 +441,6 @@ export async function updateAppointmentStatus(
     try {
       const { data: appData } = await supabase.from('appointments').select('barber_id, google_event_id').eq('id', appointmentId).single()
       if (appData?.google_event_id) {
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
         await fetch(`${API_URL}/google/cancel-event`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -495,7 +492,6 @@ export async function updateClientNotes(clientId: string, notes: string): Promis
 // MRR / CLUBE DE ASSINATURAS API
 // ==========================================
 export async function fetchSubscriptionPlans(): Promise<any[]> {
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
   const response = await fetch(`${API_URL}/mrr/plans`)
   if (!response.ok) {
     throw new Error('Falha ao buscar planos')
@@ -513,8 +509,6 @@ export async function createSubscription(data: {
   const token = session?.session?.access_token
   
   if (!token) throw new Error('Not authenticated')
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
   const response = await fetch(`${API_URL}/mrr/subscribe`, {
     method: 'POST',
     headers: {
@@ -541,8 +535,6 @@ export async function createSubscriptionPlan(data: {
   const { data: session } = await supabase.auth.getSession()
   const token = session?.session?.access_token
   if (!token) throw new Error('Not authenticated')
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
   const response = await fetch(`${API_URL}/mrr/plans`, {
     method: 'POST',
     headers: {
@@ -568,8 +560,6 @@ export async function fetchSubscribers(): Promise<any[]> {
   const { data: session } = await supabase.auth.getSession()
   const token = session?.session?.access_token
   if (!token) throw new Error('Not authenticated')
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
   const response = await fetch(`${API_URL}/mrr/subscribers`, {
     headers: {
       'Authorization': `Bearer ${token}`
@@ -584,8 +574,6 @@ export async function updateSubscriberStatus(subscriptionId: string, status: str
   const { data: session } = await supabase.auth.getSession()
   const token = session?.session?.access_token
   if (!token) throw new Error('Not authenticated')
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
   const response = await fetch(`${API_URL}/mrr/subscribers/${subscriptionId}/status`, {
     method: 'PUT',
     headers: {
@@ -603,8 +591,6 @@ export async function deleteSubscription(subscriptionId: string): Promise<any> {
   const { data: session } = await supabase.auth.getSession()
   const token = session?.session?.access_token
   if (!token) throw new Error('Not authenticated')
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
   const response = await fetch(`${API_URL}/mrr/subscribers/${subscriptionId}`, {
     method: 'DELETE',
     headers: {
@@ -617,7 +603,6 @@ export async function deleteSubscription(subscriptionId: string): Promise<any> {
 }
 
 export async function fetchTakenMrrSlots(barberId: string): Promise<{ dayOfWeek: number, time: string }[]> {
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
   const response = await fetch(`${API_URL}/mrr/taken-slots/${barberId}`)
   
   if (!response.ok) {
@@ -630,8 +615,6 @@ export async function fetchRevenueChartData(barberId: string): Promise<{ name: s
   const { data: session } = await supabase.auth.getSession()
   const token = session?.session?.access_token
   if (!token) throw new Error('Not authenticated')
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
   const response = await fetch(`${API_URL}/finance/chart-data?barberId=${barberId}`, {
     headers: {
       'Authorization': `Bearer ${token}`

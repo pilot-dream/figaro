@@ -60,7 +60,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   register: async ({ name, email, password, role, phone }) => {
     set({ loading: true })
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+      const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
       
       const endpoint = role === 'OWNER' ? '/auth/register-owner' : '/auth/register'
       

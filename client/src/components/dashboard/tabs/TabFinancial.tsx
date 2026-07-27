@@ -18,7 +18,7 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
     const fetchFinance = async () => {
       setLoading(true)
       try {
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+        const API_URL = import.meta.env.PROD ? "" : (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace("/api", "") : "http://localhost:3001")
         const response = await fetch(`${API_URL}/api/finance/summary?period=${periodFilter}`, {
           headers: {
             'Authorization': `Bearer ${(await import('@/lib/supabase')).supabase.auth.getSession().then(s => s.data.session?.access_token)}`

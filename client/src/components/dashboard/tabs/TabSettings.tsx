@@ -971,7 +971,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                 <button 
                   onClick={async () => {
                     try {
-                      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+                      const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
                       const res = await fetch(`${API_URL}/google/auth-url?userId=${barber.id}`)
                       if (!res.ok) {
                         const errText = await res.text()
@@ -1158,7 +1158,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                         setIsQrLoading(true)
                         setQrCodeBase64(null)
                         try {
-                          const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+                          const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
                           const res = await fetch(`${API_URL}/whatsapp/instance/create`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -1330,7 +1330,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                   }
                   
                   try {
-                    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+                    const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
                     const res = await fetch(`${API_URL}/whatsapp/instance/status/${instanceName}`)
                     const data = await res.json()
                     
