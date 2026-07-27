@@ -92,11 +92,14 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   res.status(status).json({ error: safeMessage })
 })
 
-const PORT = config.get('PORT')
+const PORT = config.get('PORT') || 3001
 
-// Inicializar Cron Jobs
-startReminderCron()
+// Inicializar Cron Jobs apenas se não estiver no Vercel/Serverless
+if (process.env.NODE_ENV !== 'production' || process.env.RUN_LOCAL === 'true') {
+  startReminderCron()
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+  })
+}
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+export default app
