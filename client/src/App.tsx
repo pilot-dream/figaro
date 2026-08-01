@@ -1,5 +1,5 @@
 import { useEffect, Suspense, lazy } from 'react'
-import { Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/stores/auth.store'
 import { RequireAuth } from '@/components/auth/RequireAuth'
 const LoginPage = lazy(() => import('@/pages/LoginPage').then(m => ({ default: m.LoginPage })))
@@ -24,6 +24,8 @@ import { BranchSwitcher } from '@/components/dashboard/BranchSwitcher'
 export default function App() {
   const { user, logout, initAuth, initialized } = useAuthStore()
   const navigate = useNavigate()
+  const location = useLocation()
+  const isPublicRoute = ['/login', '/registro'].includes(location.pathname)
 
   useEffect(() => {
     initAuth()
@@ -49,7 +51,11 @@ export default function App() {
       {/* Ambient Glow Orbs Removed as per request to destroy blue background */}
       {/* Main Container conditionally constrained */}
       <main className={`relative z-10 w-full min-h-screen bg-[#0A0E14] shadow-[0_0_40px_rgba(0,0,0,0.5)] ${
-        user && ['BARBER', 'MANAGER', 'OWNER'].includes(user.role) ? 'max-w-[1920px] mx-auto border-x-0' : 'max-w-xl mx-auto border-x border-white/5'
+        isPublicRoute 
+          ? '' 
+          : user && ['BARBER', 'MANAGER', 'OWNER'].includes(user.role) 
+            ? 'max-w-[1920px] mx-auto border-x-0' 
+            : 'max-w-xl mx-auto border-x border-white/5'
       }`}>
         {/* Simple User Header Bar when authenticated */}
         {user && (
