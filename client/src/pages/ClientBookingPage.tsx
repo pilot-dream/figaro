@@ -43,7 +43,7 @@ class LocalErrorBoundary extends Component<{children: ReactNode}, {hasError: boo
   }
 }
 
-export function BarberBookingPage() {
+export function ClientBookingPage() {
   const { slug } = useParams<{ slug: string }>()
   const { user } = useAuthStore()
   const navigate = useNavigate()
@@ -135,22 +135,26 @@ export function BarberBookingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A0E14] text-white py-20 flex justify-center">
-        <div className="w-16 h-16 border-4 border-amber-400 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
+        <div className="px-4 py-20 flex justify-center">
+          <div className="w-16 h-16 border-4 border-amber-400 border-t-transparent rounded-full animate-spin" />
+        </div>
       </div>
     )
   }
 
   if (notFound || !barber) {
     return (
-      <div className="min-h-screen bg-[#0A0E14] text-white py-20 flex justify-center items-center px-4">
-        <div className="p-8 space-y-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl max-w-sm text-center">
-          <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
-          <h2 className="text-white font-bold text-lg">Barbeiro não encontrado</h2>
-          <p className="text-[#8C97A8] text-sm">Verifique o link ou faça login.</p>
-          <Link to="/login" className="block mt-4 bg-gradient-to-r from-amber-200 to-amber-500 text-black font-semibold rounded-xl py-3 text-sm">
-            Ir para Login
-          </Link>
+      <div className="min-h-screen w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
+        <div className="px-4 py-20 flex justify-center items-center">
+          <div className="p-8 space-y-4 bg-white/5 backdrop-blur-md border border-white/10 text-center">
+            <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
+            <h2 className="text-white font-bold text-lg">Barbeiro não encontrado</h2>
+            <p className="text-[#8C97A8] text-sm">Verifique o link ou faça login.</p>
+            <Link to="/login" className="block mt-4 bg-gradient-to-r from-amber-200 to-amber-500 text-black font-semibold rounded-xl py-3 text-sm">
+              Ir para Login
+            </Link>
+          </div>
         </div>
       </div>
     )
@@ -158,29 +162,31 @@ export function BarberBookingPage() {
 
   if (completed) {
     return (
-      <div className="min-h-screen bg-[#0A0E14] text-white py-12 px-4 flex flex-col items-center">
-        <div className="p-8 text-center space-y-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl max-w-md w-full">
-          <div className="w-20 h-20 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center mx-auto border border-green-500/30">
-            <CheckCircle2 className="w-12 h-12" />
+      <div className="min-h-screen w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
+        <div className="px-4 py-12 flex flex-col items-center">
+          <div className="p-8 text-center space-y-6 bg-white/5 backdrop-blur-md border border-white/10 w-full">
+            <div className="w-20 h-20 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center mx-auto border border-green-500/30">
+              <CheckCircle2 className="w-12 h-12" />
+            </div>
+            <div>
+              <h2 className="text-white font-bold text-2xl">Agendamento Confirmado!</h2>
+              <p className="text-[#8C97A8] text-sm mt-2">
+                Detalhes enviados para seu WhatsApp.
+              </p>
+            </div>
+            
+            <button
+              onClick={() => {
+                setCompleted(false)
+                setStep(1)
+                setSelectedServices([])
+                setSelectedSlot(null)
+              }}
+              className="w-full bg-gradient-to-r from-amber-200 to-amber-500 text-black font-semibold rounded-xl py-4"
+            >
+              Realizar Novo Agendamento
+            </button>
           </div>
-          <div>
-            <h2 className="text-white font-bold text-2xl">Agendamento Confirmado!</h2>
-            <p className="text-[#8C97A8] text-sm mt-2">
-              Detalhes enviados para seu WhatsApp.
-            </p>
-          </div>
-          
-          <button
-            onClick={() => {
-              setCompleted(false)
-              setStep(1)
-              setSelectedServices([])
-              setSelectedSlot(null)
-            }}
-            className="w-full bg-gradient-to-r from-amber-200 to-amber-500 text-black font-semibold rounded-xl py-4"
-          >
-            Realizar Novo Agendamento
-          </button>
         </div>
       </div>
     )
@@ -189,8 +195,8 @@ export function BarberBookingPage() {
   return (
     <LocalErrorBoundary>
       {/* 1. Main Wrapper STRICTLY matched */}
-      <div className="min-h-screen bg-[#0A0E14] text-white pb-32">
-        <div className="max-w-md mx-auto px-4 pt-6 space-y-6">
+      <div className="min-h-screen w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
+        <div className="px-4 pt-6 space-y-6">
           
           {/* Header */}
           <div className="flex items-center justify-between">
@@ -403,20 +409,17 @@ export function BarberBookingPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-3 gap-3">
-                  {slots.map((slot) => {
+                  {slots.filter(slot => slot.available).map((slot) => {
                     const isSelected = selectedSlot?.startTime === slot.startTime
                     const timeStr = formatBrasiliaTime(slot.startTime)
                     return (
                       <button
                         key={slot.startTime}
-                        disabled={!slot.available}
                         onClick={() => setSelectedSlot(slot)}
-                        className={`h-12 rounded-xl text-sm font-bold transition-all flex items-center justify-center ${
-                          !slot.available
-                            ? 'opacity-30 bg-white/5 backdrop-blur-md border border-white/10 line-through text-[#8C97A8]'
-                            : isSelected
+                        className={`h-12 rounded-xl text-sm font-bold transition-all flex items-center justify-center cursor-pointer ${
+                          isSelected
                             ? 'bg-gradient-to-r from-amber-200 to-amber-500 text-black shadow-lg shadow-amber-500/20'
-                            : 'bg-white/5 backdrop-blur-md border border-white/10 text-white'
+                            : 'bg-white/5 backdrop-blur-md border border-white/10 text-white hover:border-amber-400 hover:bg-white/10'
                         }`}
                       >
                         {timeStr}
@@ -445,7 +448,7 @@ export function BarberBookingPage() {
               <h3 className="text-white font-bold text-lg">Finalizar Agendamento</h3>
               
               {!user ? (
-                <div className="p-6 space-y-4 text-center bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl">
+                <div className="p-6 space-y-4 text-center bg-white/5 backdrop-blur-md border border-white/10">
                   <div className="w-12 h-12 rounded-full bg-amber-400/20 text-amber-400 flex items-center justify-center mx-auto border border-amber-400/30">
                     <LogIn className="w-6 h-6" />
                   </div>
@@ -466,7 +469,7 @@ export function BarberBookingPage() {
                   </div>
                 </div>
               ) : (
-                <div className="p-6 space-y-5 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl">
+                <div className="p-6 space-y-5 bg-white/5 backdrop-blur-md border border-white/10">
                   <div className="bg-white/5 backdrop-blur-md border border-white/10 p-4 rounded-2xl flex flex-col gap-2">
                     <span className="text-amber-400 font-semibold text-xs flex items-center gap-2">
                       <ShieldCheck className="w-4 h-4" /> Conectado como {user.name}

@@ -34,6 +34,32 @@ export async function uploadAvatar(file: File): Promise<string | null> {
   }
 }
 
+export async function uploadImage(file: File, bucketName: string = 'avatars'): Promise<string | null> {
+  try {
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`
+    const filePath = `images/${fileName}`
+
+    const { error: uploadError } = await supabase.storage
+      .from(bucketName)
+      .upload(filePath, file, { 
+        upsert: true,
+        cacheControl: '31536000'
+      })
+
+    if (uploadError) {
+      console.error('Error uploading image:', uploadError.message)
+      return null
+    }
+
+    const { data } = supabase.storage.from(bucketName).getPublicUrl(filePath)
+    return data.publicUrl
+  } catch (error) {
+    console.error('Error in uploadImage:', error)
+    return null
+  }
+}
+
 // ==========================================
 // SEED DEFAULT DATA IF SUPABASE TABLES ARE EMPTY
 // ==========================================
@@ -112,7 +138,42 @@ function mapServiceFromDb(row: any): Service {
     price: Number(row.price),
     isActive: row.is_active,
     sortOrder: row.sort_order,
+    imageUrl: row.image_url || undefined,
   }
+}
+
+export async function saveService(service: Partial<Service>): Promise<Service> {
+  const isNew = !service.id || service.id.startsWith('srv-')
+  
+  const payload = {
+    barber_id: service.barberId,
+    name: service.name,
+    description: service.description,
+    duration_min: service.durationMin,
+    price: service.price,
+    is_active: service.isActive,
+    sort_order: service.sortOrder,
+    image_url: service.imageUrl,
+  }
+
+  let query = supabase.from('services')
+  
+  if (isNew) {
+    // Insert
+    const { data, error } = await query.insert(payload).select('*').single()
+    if (error) throw new Error(error.message)
+    return mapServiceFromDb(data)
+  } else {
+    // Update
+    const { data, error } = await query.update(payload).eq('id', service.id).select('*').single()
+    if (error) throw new Error(error.message)
+    return mapServiceFromDb(data)
+  }
+}
+
+export async function deleteService(id: string): Promise<void> {
+  const { error } = await supabase.from('services').delete().eq('id', id)
+  if (error) throw new Error(error.message)
 }
 
 // ==========================================
@@ -193,16 +254,126 @@ export async function fetchAvailability(
   rawDurationMin: number,
   barberId?: string
 ): Promise<TimeSlot[]> {
-  let url = `${API_URL}/availability?date=${dateStr}&durationMin=${rawDurationMin}`
-  if (barberId) {
-    url += `&barberId=${barberId}`
+  if (!barberId) return []
+
+  const [year, month, day] = dateStr.split('-').map(Number)
+  const targetDate = new Date(year, month - 1, day) // Local time midnight
+
+  // Fetch Barber Config
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('business_hours, slot_interval')
+    .eq('id', barberId)
+    .single()
+
+  let slotInterval = 15
+  let dayConfig: any = null
+
+  if (profile) {
+    if (profile.slot_interval) slotInterval = profile.slot_interval
+    
+    if (profile.business_hours && Array.isArray(profile.business_hours)) {
+      const dayIndexMap: Record<number, number> = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 0: 6 }
+      const jsDay = targetDate.getDay()
+      dayConfig = profile.business_hours[dayIndexMap[jsDay]]
+    }
+  }
+
+  if (!dayConfig) {
+    dayConfig = { active: true, open: '09:00', close: '20:00', lunch: '12:00 - 13:00' }
+  }
+
+  if (!dayConfig.active) {
+    return [] // Fully booked / closed
+  }
+
+  // Generate Base Slots
+  const slots: TimeSlot[] = []
+  const [startHour, startMin] = dayConfig.open.split(':').map(Number)
+  const [endHour, endMin] = dayConfig.close.split(':').map(Number)
+
+  let current = new Date(targetDate)
+  current.setHours(startHour, startMin, 0, 0)
+
+  const end = new Date(targetDate)
+  end.setHours(endHour, endMin, 0, 0)
+
+  while (current < end) {
+    const next = new Date(current.getTime() + slotInterval * 60000)
+    slots.push({
+      startTime: new Date(current),
+      endTime: new Date(next),
+      available: true
+    })
+    current = next
+  }
+
+  // Fetch Appointments
+  const nextDay = new Date(targetDate)
+  nextDay.setDate(nextDay.getDate() + 1)
+  
+  const { data: appointments } = await supabase
+    .from('appointments')
+    .select('start_time, end_time')
+    .eq('barber_id', barberId)
+    .gte('start_time', targetDate.toISOString())
+    .lt('start_time', nextDay.toISOString())
+    .neq('status', 'CANCELLED')
+
+  // Fetch Blocked Times
+  const { data: blockedTimes } = await supabase
+    .from('blocked_times')
+    .select('start_time, end_time')
+    .eq('barber_id', barberId)
+    .gte('start_time', targetDate.toISOString())
+    .lt('start_time', nextDay.toISOString())
+
+  const allBlocks: { start: Date, end: Date }[] = []
+  
+  if (appointments) {
+    appointments.forEach(a => allBlocks.push({ start: new Date(a.start_time), end: new Date(a.end_time) }))
   }
   
-  const response = await fetch(url)
-  if (!response.ok) {
-    throw new Error('Falha ao buscar disponibilidade')
+  if (blockedTimes) {
+    blockedTimes.forEach(b => allBlocks.push({ start: new Date(b.start_time), end: new Date(b.end_time) }))
   }
-  return response.json()
+
+  // Add Lunch Break
+  if (dayConfig.lunch && dayConfig.lunch.includes('-')) {
+    const [lunchStart, lunchEnd] = dayConfig.lunch.split('-').map((s: string) => s.trim())
+    const [lStartHour, lStartMin] = lunchStart.split(':').map(Number)
+    const [lEndHour, lEndMin] = lunchEnd.split(':').map(Number)
+    
+    const lunchStartTime = new Date(targetDate)
+    lunchStartTime.setHours(lStartHour, lStartMin, 0, 0)
+    
+    const lunchEndTime = new Date(targetDate)
+    lunchEndTime.setHours(lEndHour, lEndMin, 0, 0)
+    
+    allBlocks.push({ start: lunchStartTime, end: lunchEndTime })
+  }
+
+  const now = new Date()
+
+  return slots.map(slot => {
+    const slotEnd = new Date(slot.startTime.getTime() + rawDurationMin * 60000)
+    
+    const collides = allBlocks.some(block => 
+      (slot.startTime >= block.start && slot.startTime < block.end) ||
+      (slotEnd > block.start && slotEnd <= block.end) ||
+      (slot.startTime <= block.start && slotEnd >= block.end)
+    )
+
+    const businessEnd = new Date(targetDate)
+    businessEnd.setHours(endHour, endMin, 0, 0)
+
+    const isPast = slot.startTime < now
+
+    return {
+      ...slot,
+      available: !collides && slotEnd <= businessEnd && !isPast
+    }
+  })
 }
 
 // ==========================================

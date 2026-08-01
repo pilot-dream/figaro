@@ -90,21 +90,21 @@ export function TabSaaS() {
         {/* FÍGARO ENTERPRISE */}
         <div className={`glass-panel p-6 relative overflow-hidden group transition-all ${
           isEnterprise 
-            ? 'border-[#11AFFA]/30 shadow-[0_0_20px_rgba(17,175,250,0.15)]' 
-            : 'border-white/10 hover:border-[#11AFFA]/20'
+            ? 'border-amber-500/30 shadow-amber-500/30' 
+            : 'border-white/10 hover:border-amber-500/20'
         }`}>
           {isEnterprise && (
-            <div className="absolute top-0 right-0 px-3 py-1 bg-[#11AFFA] text-black text-[10px] font-bold tracking-wider rounded-bl-lg uppercase">
+            <div className="absolute top-0 right-0 px-3 py-1 bg-amber-500 text-black text-[10px] font-bold tracking-wider rounded-bl-lg uppercase">
               Plano Atual
             </div>
           )}
 
           <div className="flex items-center gap-2 mb-2">
             <h3 className="text-2xl font-bold text-white">Fígaro ENTERPRISE</h3>
-            <Zap className="w-5 h-5 text-[#11AFFA]" />
+            <Zap className="w-5 h-5 text-amber-500" />
           </div>
           <div className="flex items-end gap-1 mb-6">
-            <span className="text-3xl font-bold text-[#11AFFA]">R$ 297</span>
+            <span className="text-3xl font-bold text-amber-500">R$ 297</span>
             <span className="text-sm text-figaro-text-secondary mb-1">/mês</span>
           </div>
 
@@ -113,13 +113,13 @@ export function TabSaaS() {
               <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" /> Tudo do Fígaro PRO
             </li>
             <li className="flex items-center gap-2 text-sm text-white font-medium">
-              <Globe className="w-4 h-4 text-[#11AFFA] shrink-0" /> Gestão Multi-Filiais
+              <Globe className="w-4 h-4 text-amber-500 shrink-0" /> Gestão Multi-Filiais
             </li>
             <li className="flex items-center gap-2 text-sm text-white font-medium">
-              <Building2 className="w-4 h-4 text-[#11AFFA] shrink-0" /> Dashboard Consolidado da Rede
+              <Building2 className="w-4 h-4 text-amber-500 shrink-0" /> Dashboard Consolidado da Rede
             </li>
             <li className="flex items-center gap-2 text-sm text-white font-medium">
-              <Crown className="w-4 h-4 text-[#11AFFA] shrink-0" /> Relatórios por Unidade
+              <Crown className="w-4 h-4 text-amber-500 shrink-0" /> Relatórios por Unidade
             </li>
           </ul>
 
@@ -127,8 +127,8 @@ export function TabSaaS() {
             onClick={() => alert('Fale com nosso comercial para Enterprise!')}
             className={`w-full py-2.5 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
               isEnterprise
-                ? 'bg-white/5 border border-[#11AFFA]/50 hover:bg-[#11AFFA] hover:text-black text-[#11AFFA]'
-                : 'bg-[#11AFFA] text-white hover:bg-[#11AFFA]/90 shadow-[0_0_15px_rgba(17,175,250,0.3)]'
+                ? 'bg-white/5 border border-amber-500/50 hover:bg-amber-500 hover:text-black text-amber-500'
+                : 'bg-amber-500 text-white hover:bg-amber-500/90 shadow-amber-500/30'
             }`}
           >
             <Building2 className="w-4 h-4" />

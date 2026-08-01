@@ -8,6 +8,7 @@ export interface User {
   email?: string
   role: Role
   avatarUrl?: string
+  bannerImageUrl?: string
   specialty?: string
   notes?: string
   googleEmail?: string
@@ -34,6 +35,11 @@ export interface User {
   // Enterprise: Hierarquia Matriz/Filial
   parentId?: string
   branchName?: string
+  
+  businessHours?: any
+  slotInterval?: number
+  loyaltyPoints?: number
+  tier?: 'BRONZE' | 'SILVER' | 'GOLD' | 'BLACK'
 }
 
 export interface Branch {
@@ -74,6 +80,7 @@ export interface Service {
   price: number
   isActive: boolean
   sortOrder: number
+  imageUrl?: string
 }
 
 export type AppointmentStatus = 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW'

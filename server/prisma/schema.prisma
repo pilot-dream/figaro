@@ -14,6 +14,7 @@ model User {
   phone                String?
   role                 String   @default("CLIENT")
   avatarUrl            String?  @map("avatar_url")
+  bannerImageUrl       String?  @map("banner_image_url")
   ownerId              String?  @map("owner_id") @db.Uuid
   notes                String?
   specialty            String?
@@ -47,6 +48,9 @@ model User {
   whatsappReminder2h   Boolean  @default(false) @map("whatsapp_reminder_2h")
   whatsappTemplateBase String?  @default("Olá {{client_name}}, lembrete do seu agendamento: {{services}} com {{barber_name}} às {{time}}.") @map("whatsapp_template_base")
   
+  businessHours        Json?    @map("business_hours")
+  slotInterval         Int      @default(15) @map("slot_interval")
+  
   createdAt            DateTime @default(now()) @map("created_at")
 
   appointments  Appointment[] @relation("ClientAppointments")
@@ -75,6 +79,7 @@ model Service {
   price       Float
   isActive    Boolean  @default(true) @map("is_active")
   sortOrder   Int      @default(0) @map("sort_order")
+  imageUrl    String?  @map("image_url")
 
   appointmentServices AppointmentService[]
 

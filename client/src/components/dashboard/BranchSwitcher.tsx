@@ -36,9 +36,9 @@ export function BranchSwitcher() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0A0E14]/90 backdrop-blur-md border border-white/10 hover:border-[#11AFFA]/30 transition-all cursor-pointer group"
+        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0A0E14]/90 backdrop-blur-md border border-white/10 hover:border-amber-500/30 transition-all cursor-pointer group"
       >
-        <Building2 className="w-3.5 h-3.5 text-[#11AFFA]" />
+        <Building2 className="w-3.5 h-3.5 text-amber-500" />
         <span className="text-[11px] font-semibold text-white max-w-[100px] truncate">
           {currentLabel}
         </span>
@@ -59,13 +59,13 @@ export function BranchSwitcher() {
             onClick={() => { setSelectedBranch(null); setOpen(false) }}
             className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-left transition-colors ${
               !selectedBranch
-                ? 'bg-[#11AFFA]/10 text-[#11AFFA]'
+                ? 'bg-amber-500/10 text-amber-500'
                 : 'text-figaro-text-secondary hover:bg-white/5 hover:text-white'
             }`}
           >
             <Globe className="w-4 h-4 shrink-0" />
             <span className="text-xs font-medium flex-1">Toda a Rede</span>
-            {!selectedBranch && <Check className="w-3.5 h-3.5 text-[#11AFFA]" />}
+            {!selectedBranch && <Check className="w-3.5 h-3.5 text-amber-500" />}
           </button>
 
           <div className="border-t border-white/5" />
@@ -82,7 +82,7 @@ export function BranchSwitcher() {
                   onClick={() => { setSelectedBranch(branch); setOpen(false) }}
                   className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-left transition-colors ${
                     isSelected
-                      ? 'bg-[#11AFFA]/10 text-[#11AFFA]'
+                      ? 'bg-amber-500/10 text-amber-500'
                       : 'text-figaro-text-secondary hover:bg-white/5 hover:text-white'
                   }`}
                 >
@@ -95,7 +95,7 @@ export function BranchSwitcher() {
                       <span className="text-[9px] text-amber-400 font-bold uppercase tracking-wider">Matriz</span>
                     )}
                   </div>
-                  {isSelected && <Check className="w-3.5 h-3.5 text-[#11AFFA] shrink-0" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-amber-500 shrink-0" />}
                 </button>
               )
             })}

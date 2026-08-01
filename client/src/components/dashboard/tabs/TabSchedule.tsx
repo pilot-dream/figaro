@@ -59,7 +59,7 @@ export function TabSchedule({
                 onClick={() => setFilterStatus(opt.id)}
                 className={`rounded-full px-3.5 py-1.5 text-xs transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-[#11AFFA] text-white shadow-[0_0_15px_rgba(17,175,250,0.4)] font-semibold border border-[#11AFFA]'
+                    ? 'bg-amber-500 text-white shadow-amber-500/30 font-semibold border border-amber-500'
                     : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
                 }`}
               >
@@ -70,7 +70,7 @@ export function TabSchedule({
 
           {/* Styled Date Picker Pill Inline */}
           <div className="flex items-center gap-2 bg-white/[0.05] border border-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-inner">
-            <CalendarIcon className="w-4 h-4 text-[#11AFFA] drop-shadow-[0_0_8px_rgba(17,175,250,0.8)]" />
+            <CalendarIcon className="w-4 h-4 text-amber-500 drop-shadow-amber-500/30" />
             <input
               type="date"
               value={selectedDate}
@@ -84,7 +84,7 @@ export function TabSchedule({
       {/* Schedule Timeline List */}
       {sorted.length === 0 ? (
         <GlassCard className="p-12 text-center space-y-4 border border-white/10 max-w-md mx-auto my-8">
-          <div className="w-16 h-16 rounded-full bg-[#11AFFA]/10 border border-[#11AFFA]/20 flex items-center justify-center mx-auto text-[#11AFFA] shadow-[0_0_15px_rgba(17,175,250,0.2)]">
+          <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto text-amber-500 shadow-amber-500/30">
             <Scissors className="w-8 h-8" />
           </div>
           <div className="space-y-1">

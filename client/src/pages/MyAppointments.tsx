@@ -1,13 +1,12 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { GlassCard } from '@/components/ui/GlassCard'
-import { Button } from '@/components/ui/Button'
 import { useToastStore } from '@/stores/toast.store'
 import { useConfirmStore } from '@/stores/confirm.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { fetchClientAppointments, updateAppointmentStatus, fetchBarbers, supabase } from '@/lib/api'
 import type { Appointment, User } from '@/types'
-import { Calendar, Clock, Scissors, XCircle, CheckCircle2, Star, X, ArrowRight, UserCheck, RotateCw } from 'lucide-react'
+import { Calendar, Clock, Scissors, XCircle, CheckCircle2, ChevronLeft, UserCheck, X, ArrowRight, Home, Wallet, User as UserIcon } from 'lucide-react'
+import { ClientBottomNav } from '@/components/dashboard/ClientBottomNav'
 import { formatBrasiliaTime, formatBrasiliaDate } from '@/lib/date'
 
 export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) {
@@ -116,172 +115,142 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
   const upcoming = appointments.filter((a) => a.status === 'CONFIRMED' || a.status === 'PENDING')
   const history = appointments.filter((a) => a.status !== 'CONFIRMED' && a.status !== 'PENDING')
 
-  // Requirement 1: Filter ONLY recent barbers the client has previously booked with
-  const recentBarberIds = Array.from(
-    new Set(appointments.map((a) => a.barberId).filter(Boolean))
-  )
-  const recentBarbers = barbers.filter((b) => recentBarberIds.includes(b.id))
-
-  // If client has previous history with barbers, show ONLY recent ones by default
-  const displayedBarbers =
-    recentBarbers.length > 0 && !showAllBarbers ? recentBarbers : barbers
+  const displayedBarbers = barbers
 
   return (
-    <div className="space-y-6 pb-24 max-w-2xl mx-auto">
+    <div className="min-h-screen w-full bg-[#0A0E14] text-white pb-24 overflow-x-hidden">
+      
       {/* Header */}
-      <div className="flex items-center justify-between py-2 border-b border-white/10 pb-4">
-        <div>
-          <h2 className="text-xl font-bold text-white tracking-tight">Meus Agendamentos</h2>
-          <p className="text-xs text-figaro-text-secondary">Acompanhe seus horários em tempo real no Supabase</p>
-        </div>
-        <Button size="sm" onClick={() => setShowSelectBarberModal(true)}>
-          <Scissors className="w-3.5 h-3.5" /> Novo Agendamento
-        </Button>
+      <div className="px-6 pt-12 pb-6 flex items-center">
+        <h1 className="text-2xl font-bold text-white">Meus Agendamentos</h1>
       </div>
 
-      {/* Upcoming Section */}
-      <div className="space-y-4">
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--color-figaro-blue)] flex items-center gap-2">
-          <Clock className="w-4 h-4" /> Próximo Atendimento
+      <div className="px-4 mt-2">
+        <button 
+          onClick={() => setShowSelectBarberModal(true)}
+          className="w-full mb-6 bg-gradient-to-r from-amber-200 to-amber-500 text-black font-semibold rounded-xl py-3 text-sm flex justify-center items-center gap-2"
+        >
+          <Scissors className="w-4 h-4" /> Novo Agendamento
+        </button>
+
+        {/* Upcoming Section */}
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-[#8C97A8] mb-4 pl-1">
+          Próximo Atendimento
         </h3>
 
         {loading ? (
-          <div className="h-40 animate-pulse bg-white/5 rounded-3xl border border-white/10 backdrop-blur-xl" />
+          <div className="h-32 animate-pulse bg-white/5 rounded-2xl border border-white/10" />
         ) : upcoming.length === 0 ? (
-          <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-3xl p-8 text-center shadow-xl">
-            <div className="w-16 h-16 rounded-full bg-[#11AFFA]/10 text-[#11AFFA] border border-[#11AFFA]/30 shadow-[0_0_15px_rgba(17,175,250,0.3)] flex items-center justify-center mx-auto mb-4">
-              <Calendar className="w-8 h-8" />
-            </div>
-            <div className="space-y-2 mb-6">
-              <h3 className="text-lg font-bold text-white">Você não possui agendamentos ativos no momento.</h3>
-              <p className="text-sm text-[#8C97A8]">
-                {recentBarbers.length > 0
-                  ? 'Agende novamente com um dos seus barbeiros recentes.'
-                  : 'Escolha um profissional para realizar seu primeiro agendamento.'}
-              </p>
-            </div>
-            <button 
-              onClick={() => setShowSelectBarberModal(true)}
-              className="bg-[#11AFFA] hover:bg-[#0B3B5C] text-white font-bold px-6 py-3 rounded-xl shadow-[0_0_20px_rgba(17,175,250,0.4)] transition-all w-full md:w-auto"
-            >
-              Agendar Horário
-            </button>
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center mb-8">
+            <Calendar className="w-10 h-10 text-[#8C97A8] mx-auto mb-3" />
+            <h3 className="text-white font-bold mb-1">Nenhum agendamento ativo</h3>
+            <p className="text-sm text-[#8C97A8]">
+              Você não possui horários marcados no momento.
+            </p>
           </div>
         ) : (
-          upcoming.map((app) => {
-            const serviceName = app.services && app.services.length > 0
-              ? app.services.map((s) => s.name).join(' + ')
-              : 'Atendimento'
-            const barberName = app.barber?.name || 'Barbeiro'
-            const dateFormatted = formatBrasiliaDate(app.startTime, { day: '2-digit', month: 'short' })
-            const timeFormatted = formatBrasiliaTime(app.startTime)
+          <div className="space-y-4 mb-8">
+            {upcoming.map((app) => {
+              const serviceName = app.services && app.services.length > 0
+                ? app.services.map((s) => s.name).join(' + ')
+                : 'Atendimento'
+              const barberName = app.barber?.name || 'Barbeiro'
+              const dateFormatted = formatBrasiliaDate(app.startTime, { day: '2-digit', month: 'short' })
+              const timeFormatted = formatBrasiliaTime(app.startTime)
 
-            return (
-              <div 
-                key={app.id} 
-                className="bg-gradient-to-br from-white/[0.08] to-white/[0.02] backdrop-blur-2xl border border-[#11AFFA]/40 rounded-3xl p-6 shadow-[0_0_30px_rgba(17,175,250,0.15)] relative overflow-hidden space-y-5"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Scissors className="w-5 h-5 text-white/50" />
-                    <span className="text-sm font-medium text-white/80">Próximo Serviço</span>
+              return (
+                <div 
+                  key={app.id} 
+                  className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 mb-4"
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h4 className="text-white font-bold text-lg">{dateFormatted} às {timeFormatted}</h4>
+                      <p className="text-xs text-[#8C97A8] mt-1 flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5" /> Faltam: {getCountdown(app.startTime)}
+                      </p>
+                    </div>
+                    <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
+                      app.status === 'CONFIRMED' 
+                        ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                        : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                    }`}>
+                      {app.status === 'CONFIRMED' ? 'Confirmado' : 'Pendente'}
+                    </span>
                   </div>
-                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-[#11AFFA] text-white shadow-[0_0_10px_rgba(17,175,250,0.5)] animate-pulse border border-[#11AFFA]/50">
-                    {app.status === 'CONFIRMED' ? 'Confirmado' : 'Pendente'}
-                  </span>
-                </div>
 
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full border-2 border-[#11AFFA] p-0.5 shadow-[0_0_15px_rgba(17,175,250,0.3)]">
-                    <img 
-                      src={app.barber?.avatarUrl || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80'} 
-                      alt={barberName}
-                      className="w-full h-full rounded-full object-cover"
-                    />
+                  <div className="bg-[#0A0E14]/50 rounded-xl p-3 mb-4 flex items-center gap-3 border border-white/5">
+                    <div className="w-10 h-10 rounded-full border border-white/10 overflow-hidden">
+                      <img 
+                        src={app.barber?.avatarUrl || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80'} 
+                        alt={barberName}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h5 className="font-semibold text-white text-sm">{serviceName}</h5>
+                      <p className="text-xs text-[#8C97A8]">com {barberName}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-bold text-white text-lg">{barberName}</h4>
-                    <p className="text-sm text-[#11AFFA] font-semibold">{serviceName}</p>
-                    <p className="text-xs text-[#8C97A8] font-medium mt-0.5">R$ {app.totalPrice.toFixed(2)}</p>
-                  </div>
-                </div>
 
-                {/* Real-time Countdown & Date Time */}
-                <div className="bg-black/30 border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center gap-1">
-                  <div className="text-2xl font-black text-white font-mono tracking-wide drop-shadow-md">
-                    {dateFormatted} - {timeFormatted}
-                  </div>
-                  <div className="text-xs font-semibold text-[#8C97A8] flex items-center gap-2">
-                    <Clock className="w-3.5 h-3.5" />
-                    Faltam: <span className="text-[#11AFFA]">{getCountdown(app.startTime)}</span>
+                  <div className="flex items-center gap-3">
+                    <button 
+                      onClick={() => handleSelectBarber(app.barber?.slug)}
+                      className="flex-1 border border-white/10 text-gray-300 font-medium rounded-xl py-2.5 text-xs transition-colors hover:bg-white/5"
+                    >
+                      Reagendar
+                    </button>
+                    <button 
+                      onClick={() => handleCancel(app.id)}
+                      className="flex-1 border border-white/10 text-[#F0553F] font-medium rounded-xl py-2.5 text-xs transition-colors hover:bg-[#F0553F]/10"
+                    >
+                      Cancelar
+                    </button>
                   </div>
                 </div>
-
-                <div className="pt-2 flex items-center gap-3">
-                  <button 
-                    onClick={() => handleSelectBarber(app.barber?.slug)}
-                    className="flex-1 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl px-4 py-2.5 text-sm border border-white/10 transition-colors"
-                  >
-                    Reagendar / Alterar
-                  </button>
-                  <button 
-                    onClick={() => handleCancel(app.id)}
-                    className="text-[#F0553F] hover:bg-[#F0553F]/10 font-medium rounded-xl px-4 py-2.5 text-sm transition-colors border border-transparent hover:border-[#F0553F]/20"
-                  >
-                    Cancelar
-                  </button>
-                </div>
-              </div>
-            )
-          })
+              )
+            })}
+          </div>
         )}
-      </div>
 
-      {/* History Section */}
-      <div className="space-y-4 pt-4">
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-figaro-text-secondary">
+        {/* History Section */}
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-[#8C97A8] mb-4 pl-1">
           Histórico Passado
         </h3>
 
         {history.length === 0 ? (
-          <p className="text-xs text-[#8C97A8] italic">Nenhum histórico anterior.</p>
+          <p className="text-sm text-[#8C97A8] italic text-center py-4">Nenhum histórico anterior.</p>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {history.map((app) => {
               const serviceName = app.services && app.services.length > 0
                 ? app.services.map((s) => s.name).join(' + ')
                 : 'Atendimento'
               const dateFormatted = formatBrasiliaDate(app.startTime, { day: '2-digit', month: 'short' })
+              const timeFormatted = formatBrasiliaTime(app.startTime)
 
               return (
                 <div 
                   key={app.id} 
-                  className="bg-white/[0.03] backdrop-blur-md border border-white/10 hover:border-white/20 rounded-2xl p-4 transition-all flex items-center justify-between group"
+                  className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex items-center justify-between"
                 >
-                  <div className="space-y-1">
+                  <div>
                     <h5 className="font-semibold text-white text-sm">{serviceName}</h5>
-                    <p className="text-xs text-[#8C97A8]">
-                      {app.barber?.name || 'Barbeiro'} • {dateFormatted}
+                    <p className="text-xs text-[#8C97A8] mt-0.5">
+                      {dateFormatted} às {timeFormatted} • {app.barber?.name || 'Barbeiro'}
                     </p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div>
                     {app.status === 'COMPLETED' && (
-                      <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-[#2ED9A0] bg-[#2ED9A0]/10 border border-[#2ED9A0]/20 font-bold px-2 py-1 rounded-full">
+                      <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-wider text-green-400 bg-green-500/10 border border-green-500/20 font-bold px-2 py-1 rounded-full">
                         <CheckCircle2 className="w-3 h-3" /> Concluído
                       </span>
                     )}
                     {app.status === 'CANCELLED' && (
-                      <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-[#F0553F] bg-[#F0553F]/10 border border-[#F0553F]/20 font-bold px-2 py-1 rounded-full">
+                      <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-wider text-[#F0553F] bg-[#F0553F]/10 border border-[#F0553F]/20 font-bold px-2 py-1 rounded-full">
                         <XCircle className="w-3 h-3" /> Cancelado
                       </span>
                     )}
-                    <button 
-                      onClick={() => handleSelectBarber(app.barber?.slug)}
-                      className="text-[#11AFFA] hover:bg-[#11AFFA]/10 p-2 rounded-xl transition-all opacity-70 group-hover:opacity-100"
-                      title="Agendar novamente"
-                    >
-                      <RotateCw className="w-4 h-4" />
-                    </button>
                   </div>
                 </div>
               )
@@ -290,100 +259,68 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
         )}
       </div>
 
-      {/* Modal for Selecting Recent Barbers */}
+      {/* Modal for Selecting Recent Barbers - adapted to Full Screen Dark Mode */}
       {showSelectBarberModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <GlassCard className="w-full max-w-lg p-6 space-y-6 border-[var(--color-figaro-blue)]/40 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b border-white/10 pb-4">
-              <div>
-                <h3 className="font-bold text-white text-lg flex items-center gap-2">
-                  <UserCheck className="w-5 h-5 text-[var(--color-figaro-amber)]" />
-                  {recentBarbers.length > 0 && !showAllBarbers
-                    ? 'Seus Barbeiros Recentes'
-                    : 'Escolha o Barbeiro'}
-                </h3>
-                <p className="text-xs text-figaro-text-secondary mt-0.5">
-                  {recentBarbers.length > 0 && !showAllBarbers
-                    ? 'Exibindo apenas os profissionais que já atenderam você.'
-                    : 'Selecione o profissional com quem deseja agendar seu horário.'}
-                </p>
-              </div>
-              <button
-                onClick={() => {
-                  setShowSelectBarberModal(false)
-                  setShowAllBarbers(false)
-                }}
-                className="p-1 rounded-full text-figaro-text-secondary hover:text-white cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
+        <div className="fixed inset-0 min-h-screen w-full bg-[#0A0E14] z-50 overflow-y-auto pb-24">
+          <div className="flex items-center px-4 py-4 mt-2 border-b border-white/10">
+            <button
+              onClick={() => {
+                setShowSelectBarberModal(false)
+                setShowAllBarbers(false)
+              }}
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors mr-4"
+            >
+              <ChevronLeft className="w-6 h-6 text-white" />
+            </button>
+            <div>
+              <h3 className="font-bold text-white text-lg">
+                Escolha o Profissional
+              </h3>
             </div>
+          </div>
 
-            <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
-              {displayedBarbers.map((b) => {
-                const isRecent = recentBarberIds.includes(b.id)
-                return (
-                  <GlassCard
-                    key={b.id}
-                    variant="interactive"
-                    onClick={() => {
-                      setShowSelectBarberModal(false)
-                      setShowAllBarbers(false)
-                      handleSelectBarber(b.slug)
-                    }}
-                    className={`p-4 flex items-center justify-between border transition-all ${
-                      isRecent
-                        ? 'border-[var(--color-figaro-amber)] bg-[var(--color-figaro-amber)]/10'
-                        : 'border-glass-border'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={
-                          b.avatarUrl ||
-                          'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80'
-                        }
-                        alt={b.name}
-                        className="w-12 h-12 rounded-full object-cover border border-white/20 shadow-md"
-                      />
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-white text-sm">{b.name}</h4>
-                          {isRecent && (
-                            <span className="text-[9px] px-2 py-0.5 rounded bg-[var(--color-figaro-amber)]/20 text-[var(--color-figaro-amber)] border border-[var(--color-figaro-amber)]/30 font-bold uppercase">
-                              Seu Barbeiro
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-xs text-figaro-text-secondary line-clamp-1">{b.notes || 'Especialista Fígaro'}</p>
-                        <div className="flex items-center gap-1 text-[11px] text-[var(--color-figaro-amber)] mt-0.5">
-                          <Star className="w-3 h-3 fill-current" />
-                          <span className="text-white font-semibold">5.0</span>
-                        </div>
-                      </div>
-                    </div>
-                    <Button size="sm" variant={isRecent ? 'amber' : 'primary'}>
-                      Agendar <ArrowRight className="w-3.5 h-3.5 ml-1" />
-                    </Button>
-                  </GlassCard>
-                )
-              })}
-            </div>
-
-            {recentBarbers.length > 0 && !showAllBarbers && barbers.length > recentBarbers.length && (
-              <div className="border-t border-white/10 pt-3 text-center">
-                <button
-                  type="button"
-                  onClick={() => setShowAllBarbers(true)}
-                  className="text-xs text-[var(--color-figaro-blue)] hover:underline font-semibold cursor-pointer"
+          <div className="p-4 space-y-4">
+            {displayedBarbers.map((b) => {
+              return (
+                <div
+                  key={b.id}
+                  onClick={() => {
+                    setShowSelectBarberModal(false)
+                    setShowAllBarbers(false)
+                    handleSelectBarber(b.slug)
+                  }}
+                  className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all hover:bg-white/10"
                 >
-                  Ver outros profissionais da barbearia ({barbers.length})
-                </button>
-              </div>
-            )}
-          </GlassCard>
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={
+                        b.avatarUrl ||
+                        'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80'
+                      }
+                      alt={b.name}
+                      className="w-14 h-14 rounded-full object-cover border border-white/20"
+                    />
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-bold text-white text-base">{b.name}</h4>
+                      </div>
+                      <p className="text-xs text-[#8C97A8] mt-0.5 line-clamp-1">{b.notes || 'Especialista Fígaro'}</p>
+                    </div>
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                    <ArrowRight className="w-4 h-4 text-white" />
+                  </div>
+                </div>
+              )
+            })}
+
+
+          </div>
         </div>
       )}
+
+      {/* Premium Dark Mode Bottom Nav */}
+      <ClientBottomNav onActionClick={() => setShowSelectBarberModal(true)} />
     </div>
   )
 }

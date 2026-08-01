@@ -94,7 +94,7 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
               onClick={() => setPeriodFilter('today')}
               className={`px-3.5 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${
                 periodFilter === 'today'
-                  ? 'bg-[#11AFFA] text-white shadow-[0_0_12px_rgba(17,175,250,0.4)] font-semibold border border-[#11AFFA]'
+                  ? 'bg-amber-500 text-white shadow-amber-500/30 font-semibold border border-amber-500'
                   : 'text-[#8C97A8] hover:text-white'
               }`}
             >
@@ -104,7 +104,7 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
               onClick={() => setPeriodFilter('week')}
               className={`px-3.5 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${
                 periodFilter === 'week'
-                  ? 'bg-[#11AFFA] text-white shadow-[0_0_12px_rgba(17,175,250,0.4)] font-semibold border border-[#11AFFA]'
+                  ? 'bg-amber-500 text-white shadow-amber-500/30 font-semibold border border-amber-500'
                   : 'text-[#8C97A8] hover:text-white'
               }`}
             >
@@ -114,7 +114,7 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
               onClick={() => setPeriodFilter('month')}
               className={`px-3.5 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${
                 periodFilter === 'month'
-                  ? 'bg-[#11AFFA] text-white shadow-[0_0_12px_rgba(17,175,250,0.4)] font-semibold border border-[#11AFFA]'
+                  ? 'bg-amber-500 text-white shadow-amber-500/30 font-semibold border border-amber-500'
                   : 'text-[#8C97A8] hover:text-white'
               }`}
             >
@@ -124,7 +124,7 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
 
           <button
             onClick={handleExport}
-            className="bg-[#11AFFA] hover:bg-[#0B3B5C] text-white font-semibold text-xs rounded-xl px-4 py-2 shadow-lg shadow-[rgba(17,175,250,0.3)] flex items-center gap-2 border border-[#11AFFA]/40 transition-all cursor-pointer"
+            className="bg-amber-500 hover:bg-[#0B3B5C] text-white font-semibold text-xs rounded-xl px-4 py-2 shadow-lg shadow-amber-500/30 flex items-center gap-2 border border-amber-500/40 transition-all cursor-pointer"
           >
             <Download className="w-4 h-4" /> Exportar
           </button>
@@ -144,11 +144,11 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
             <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl relative overflow-hidden space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs uppercase font-bold text-[#8C97A8] tracking-wider">Faturamento Bruto</span>
-                <div className="w-10 h-10 rounded-full bg-[#11AFFA]/20 border border-[#11AFFA]/30 text-[#11AFFA] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-500 flex items-center justify-center">
                   <DollarSign className="w-5 h-5" />
                 </div>
               </div>
-              <h3 className="text-[#11AFFA] font-mono text-3xl font-extrabold drop-shadow-[0_0_15px_rgba(17,175,250,0.4)]">
+              <h3 className="text-amber-500 font-mono text-3xl font-extrabold drop-shadow-amber-500/30">
                 R$ {(financeData.grossRevenue || 0).toFixed(2)}
               </h3>
               <span className="text-xs text-[#8C97A8] block">Total gerado pela barbearia</span>
@@ -252,7 +252,7 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
             <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl relative overflow-hidden space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs uppercase font-bold text-[#8C97A8] tracking-wider">Ticket Médio</span>
-                <div className="w-10 h-10 rounded-full bg-[#11AFFA]/20 border border-[#11AFFA]/30 text-[#11AFFA] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-500 flex items-center justify-center">
                   <TrendingUp className="w-5 h-5" />
                 </div>
               </div>
@@ -288,7 +288,7 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
                   <h5 className="font-semibold text-white text-sm">{name}</h5>
                   <span className="text-xs text-[#8C97A8]">{stat.count} cortes efetuados</span>
                 </div>
-                <span className="font-mono font-bold text-[#11AFFA] text-base">
+                <span className="font-mono font-bold text-amber-500 text-base">
                   R$ {stat.total.toFixed(2)}
                 </span>
               </div>

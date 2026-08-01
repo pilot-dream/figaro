@@ -26,14 +26,14 @@ export function TabNetwork() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Building2 className="w-6 h-6 text-[#11AFFA]" />
+            <Building2 className="w-6 h-6 text-amber-500" />
             Minha Rede
           </h2>
           <p className="text-sm text-figaro-text-secondary mt-1">Gerencie a matriz e suas filiais</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-[#11AFFA] text-black font-semibold rounded-lg hover:bg-[#11AFFA]/90 transition-all shadow-[0_0_15px_rgba(17,175,250,0.3)] text-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-black font-semibold rounded-lg hover:bg-amber-500/90 transition-all shadow-amber-500/30 text-sm"
         >
           <Plus className="w-4 h-4" />
           Nova Filial
@@ -48,7 +48,7 @@ export function TabNetwork() {
             <div 
               key={branch.id} 
               className={`glass-panel p-5 relative overflow-hidden group transition-all border ${
-                isMatriz ? 'border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.05)]' : 'border-white/10 hover:border-[#11AFFA]/30'
+                isMatriz ? 'border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.05)]' : 'border-white/10 hover:border-amber-500/30'
               }`}
             >
               {isMatriz && (
@@ -57,7 +57,7 @@ export function TabNetwork() {
                 </div>
               )}
               {!isMatriz && (
-                <div className="absolute top-0 right-0 px-3 py-1 bg-[#11AFFA]/10 text-[#11AFFA] text-[10px] font-bold tracking-wider rounded-bl-lg uppercase">
+                <div className="absolute top-0 right-0 px-3 py-1 bg-amber-500/10 text-amber-500 text-[10px] font-bold tracking-wider rounded-bl-lg uppercase">
                   Filial
                 </div>
               )}

@@ -6,6 +6,7 @@ import { type DashboardAppointment } from '@/components/dashboard/AppointmentCar
 import { ClientSheet } from '@/components/dashboard/ClientSheet'
 import { BlockTimeModal } from '@/components/dashboard/BlockTimeModal'
 import { BarberBottomNav, type BarberTab } from '@/components/dashboard/BarberBottomNav'
+import { DesktopSidebar } from '@/components/dashboard/DesktopSidebar'
 import { TabHome } from '@/components/dashboard/tabs/TabHome'
 import { DashboardSkeleton } from '@/components/ui/DashboardSkeleton'
 import { TabSchedule } from '@/components/dashboard/tabs/TabSchedule'
@@ -126,10 +127,16 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="space-y-6 pb-28">
-      {/* Top Welcome Header Banner */}
-        <GlassCard glow className="p-4 border-[#11AFFA]/30 flex items-center justify-between">
-          <div className="flex items-center gap-3.5">
+    <div className="flex w-full min-h-screen">
+      {/* Sidebar Desktop */}
+      <DesktopSidebar activeTab={activeTab} onChangeTab={setActiveTab} />
+      
+      {/* Main Content */}
+      <div className="flex-1 w-full md:pl-64">
+        <div className="space-y-6 pb-28 pt-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+          {/* Top Welcome Header Banner (Hidden on Desktop since Sidebar has it) */}
+          <GlassCard glow className="p-4 border-amber-500/30 flex md:hidden items-center justify-between">
+            <div className="flex items-center gap-3.5">
             {/* Avatar with Blue Ring & Glow */}
             <img
               src={
@@ -137,7 +144,7 @@ export function DashboardPage() {
                 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80'
               }
               alt={user?.name}
-              className="w-12 h-12 rounded-full object-cover ring-2 ring-[#11AFFA] ring-offset-2 ring-offset-[#0A0E14] shadow-[0_0_15px_rgba(17,175,250,0.4)]"
+              className="w-12 h-12 rounded-full object-cover ring-2 ring-[#11AFFA] ring-offset-2 ring-offset-[#0A0E14] shadow-amber-500/30"
             />
             <div>
               <span className="text-[10px] font-extrabold text-[var(--color-figaro-amber)] uppercase tracking-wider block">
@@ -200,18 +207,18 @@ export function DashboardPage() {
       <BarberBottomNav activeTab={activeTab} onChangeTab={setActiveTab} />
 
       {/* Client History Drawer */}
-      {selectedClient && (
-        <ClientSheet
-          appointment={selectedClient}
-          onClose={() => setSelectedClient(null)}
-          onSaveNotes={loadAppointments}
-        />
-      )}
-
-      {/* Block Time Modal */}
+      <ClientSheet 
+        isOpen={!!selectedClient}
+        onClose={() => setSelectedClient(null)}
+        appointment={selectedClient}
+        onStatusChange={handleStatusChange}
+      />
+      
       {showBlockModal && (
-        <BlockTimeModal
+        <BlockTimeModal 
+          isOpen={showBlockModal}
           onClose={() => setShowBlockModal(false)}
+          date={selectedDate}
           onBlock={async (reason, time) => {
             if (user) {
               const times = time.split(' - ')
@@ -223,6 +230,8 @@ export function DashboardPage() {
           }}
         />
       )}
+        </div>
+      </div>
     </div>
   )
 }

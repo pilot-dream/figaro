@@ -72,7 +72,12 @@ export const useAuthStore = create<AuthState>((set) => ({
         body: JSON.stringify({ name, email, password, phone, role })
       })
 
-      const data = await response.json()
+      let data: any = {};
+      try {
+        data = await response.json()
+      } catch (err) {
+        throw new Error(`Erro inesperado do servidor (${response.status}). Verifique os logs do backend.`)
+      }
 
       if (!response.ok) {
         throw new Error(data.error || 'Falha ao criar conta')

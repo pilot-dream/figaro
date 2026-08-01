@@ -14,8 +14,49 @@ export class AvailabilityService {
     const [year, month, day] = date.split('-').map(Number);
     const targetDate = new Date(year, month - 1, day); // Ensures midnight in LOCAL time
 
+    let slotInterval = 15
+    let dayConfig: any = null
+    let barber: any = null
+
+    if (barberId) {
+      barber = await prisma.user.findUnique({
+        where: { id: barberId },
+        select: { businessHours: true, slotInterval: true, googleSyncBusyTimes: true, googleRefreshToken: true }
+      })
+      
+      if (barber) {
+        if (barber.slotInterval) slotInterval = barber.slotInterval
+        
+        if (barber.businessHours && Array.isArray(barber.businessHours)) {
+          // Frontend array order: Mon, Tue, Wed, Thu, Fri, Sat, Sun
+          // getDay(): 0=Sun, 1=Mon, ..., 6=Sat
+          const dayIndexMap: Record<number, number> = {
+            1: 0, // Mon
+            2: 1, // Tue
+            3: 2, // Wed
+            4: 3, // Thu
+            5: 4, // Fri
+            6: 5, // Sat
+            0: 6  // Sun
+          }
+          const jsDay = targetDate.getDay()
+          const mappedIndex = dayIndexMap[jsDay]
+          dayConfig = barber.businessHours[mappedIndex]
+        }
+      }
+    }
+    
+    // Fallback if no config
+    if (!dayConfig) {
+      dayConfig = { active: true, open: '09:00', close: '20:00', lunch: '12:00 - 13:00' }
+    }
+
+    if (!dayConfig.active) {
+      return [] // Fully booked / closed
+    }
+
     // Generate all possible slots for the day
-    const allSlots = this.generateSlots(targetDate, 15)
+    const allSlots = this.generateSlots(targetDate, slotInterval, dayConfig.open, dayConfig.close)
 
     // Find conflicting appointments
     const whereClause: any = {
@@ -53,21 +94,14 @@ export class AvailabilityService {
 
     // Fetch Google Calendar busy slots if enabled
     let googleBusyTimes: any[] = []
-    if (barberId) {
-      const barber = await prisma.user.findUnique({
-        where: { id: barberId },
-        select: { googleSyncBusyTimes: true, googleRefreshToken: true }
-      })
-
-      if (barber?.googleSyncBusyTimes && barber.googleRefreshToken) {
-        const { googleCalendarService } = await import('./googleCalendar.service')
-        const busySlots = await googleCalendarService.getBusySlots(barber.googleRefreshToken, date)
-        
-        googleBusyTimes = busySlots.map(slot => ({
-          startTime: new Date(slot.start || ''),
-          endTime: new Date(slot.end || '')
-        })).filter(slot => !isNaN(slot.startTime.getTime()) && !isNaN(slot.endTime.getTime()))
-      }
+    if (barber?.googleSyncBusyTimes && barber.googleRefreshToken) {
+      const { googleCalendarService } = await import('./googleCalendar.service')
+      const busySlots = await googleCalendarService.getBusySlots(barber.googleRefreshToken, date)
+      
+      googleBusyTimes = busySlots.map(slot => ({
+        startTime: new Date(slot.start || ''),
+        endTime: new Date(slot.end || '')
+      })).filter(slot => !isNaN(slot.startTime.getTime()) && !isNaN(slot.endTime.getTime()))
     }
 
     // Fetch Recurring Slots (MRR) for the day
@@ -128,8 +162,24 @@ export class AvailabilityService {
       }
     }
 
+    // Add lunch break to blocked times
+    let lunchBlockedTimes: any[] = []
+    if (dayConfig.lunch && dayConfig.lunch.includes('-')) {
+      const [lunchStart, lunchEnd] = dayConfig.lunch.split('-').map((s: string) => s.trim())
+      const [lStartHour, lStartMin] = lunchStart.split(':').map(Number)
+      const [lEndHour, lEndMin] = lunchEnd.split(':').map(Number)
+      
+      const lunchStartTime = new Date(targetDate)
+      lunchStartTime.setHours(lStartHour, lStartMin, 0, 0)
+      
+      const lunchEndTime = new Date(targetDate)
+      lunchEndTime.setHours(lEndHour, lEndMin, 0, 0)
+      
+      lunchBlockedTimes.push({ startTime: lunchStartTime, endTime: lunchEndTime })
+    }
+
     // Combine local blocked times with google busy times and MRR recurring slots
-    const allBlockedTimes = [...blockedTimes, ...googleBusyTimes, ...recurringBlockedTimes]
+    const allBlockedTimes = [...blockedTimes, ...googleBusyTimes, ...recurringBlockedTimes, ...lunchBlockedTimes]
 
     const now = new Date()
 
@@ -144,8 +194,8 @@ export class AvailabilityService {
       )
       
       // Also check if slot + service duration exceeds business hours
-      const businessEndHours = parseInt(this.businessHours.end.split(':')[0])
-      const businessEndMins = parseInt(this.businessHours.end.split(':')[1])
+      const businessEndHours = parseInt(dayConfig.close.split(':')[0])
+      const businessEndMins = parseInt(dayConfig.close.split(':')[1])
       const businessEnd = new Date(targetDate)
       businessEnd.setHours(businessEndHours, businessEndMins, 0, 0)
       
@@ -159,10 +209,10 @@ export class AvailabilityService {
     })
   }
 
-  private generateSlots(date: Date, intervalMin: number): TimeSlot[] {
+  private generateSlots(date: Date, intervalMin: number, openTime: string, closeTime: string): TimeSlot[] {
     const slots: TimeSlot[] = []
-    const [startHour, startMin] = this.businessHours.start.split(':').map(Number)
-    const [endHour, endMin] = this.businessHours.end.split(':').map(Number)
+    const [startHour, startMin] = openTime.split(':').map(Number)
+    const [endHour, endMin] = closeTime.split(':').map(Number)
 
     let current = new Date(date)
     current.setHours(startHour, startMin, 0, 0)
