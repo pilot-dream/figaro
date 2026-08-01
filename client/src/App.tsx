@@ -6,12 +6,17 @@ const LoginPage = lazy(() => import('@/pages/LoginPage').then(m => ({ default: m
 const RegisterPage = lazy(() => import('@/pages/RegisterPage').then(m => ({ default: m.RegisterPage })))
 const MyAppointments = lazy(() => import('@/pages/MyAppointments').then(m => ({ default: m.MyAppointments })))
 const DashboardPage = lazy(() => import('@/pages/DashboardPage').then(m => ({ default: m.DashboardPage })))
+<<<<<<< HEAD
 const ClientBookingPage = lazy(() => import('@/pages/ClientBookingPage').then(m => ({ default: m.ClientBookingPage })))
 const ClientWalletPage = lazy(() => import('@/pages/ClientWalletPage').then(m => ({ default: m.ClientWalletPage })))
 const ClientProfilePage = lazy(() => import('@/pages/ClientProfilePage').then(m => ({ default: m.ClientProfilePage })))
+=======
+const BarberBookingPage = lazy(() => import('@/pages/BarberBookingPage').then(m => ({ default: m.BarberBookingPage })))
+const GamificationSettingsPage = lazy(() => import('@/pages/GamificationSettingsPage').then(m => ({ default: m.GamificationSettingsPage })))
+>>>>>>> 2c66e495d18b24d1b68fb39494b408c60b4d541c
 const SubscriptionCheckout = lazy(() => import('@/pages/SubscriptionCheckout').then(m => ({ default: m.SubscriptionCheckout })))
 const SubscriptionSuspended = lazy(() => import('@/pages/SubscriptionSuspended').then(m => ({ default: m.SubscriptionSuspended })))
-import { Clock, LogOut, Scissors } from 'lucide-react'
+import { Clock, LogOut, Scissors, Sparkles } from 'lucide-react'
 import { ToastContainer } from '@/components/ui/Toast'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { PageTransition } from '@/components/ui/PageTransition'
@@ -56,7 +61,13 @@ export default function App() {
               ['BARBER', 'MANAGER', 'OWNER'].includes(user.role) ? 'hidden' : 'max-w-xl mx-auto'
             }`}>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-white text-sm">FÍGARO</span>
+              <Link 
+                to={['BARBER', 'MANAGER', 'OWNER'].includes(user.role) ? '/painel' : '/meus-agendamentos'}
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              >
+                <Scissors className="w-5 h-5 text-amber-500" />
+                <span className="font-bold text-white text-sm">FÍGARO</span>
+              </Link>
               <span className="text-[10px] px-2 py-0.5 rounded font-mono font-bold uppercase bg-white/10 text-figaro-text-secondary">
                 {user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER' ? 'PAINEL BARBEIRO' : 'ÁREA CLIENTE'}
               </span>
@@ -64,14 +75,27 @@ export default function App() {
               <BranchSwitcher />
             </div>
             <div className="flex items-center gap-3">
-              {/* Profile Avatar instead of Logout */}
+              {/* Gamification and Appointments Links */}
+              {user.role === 'CLIENT' && (
+                <Link
+                  to="/meus-agendamentos"
+                  className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs font-semibold text-white hover:bg-white/10 flex items-center gap-1.5 transition-colors"
+                >
+                  <Clock className="w-3.5 h-3.5 text-[#11AFFA]" />
+                  <span className="hidden sm:inline">Meus Agendamentos</span>
+                </Link>
+              )}
+              {(user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER') && (
+                <Link
+                  to="/gamificacao"
+                  className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs font-semibold text-[var(--color-figaro-amber)] hover:bg-white/10 flex items-center gap-1.5 transition-colors"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Gamificação</span>
+                </Link>
+              )}
+              {/* Profile Avatar */}
               <button
-                onClick={() => {
-                  if (user.role === 'CLIENT') {
-                    // Requires useNavigate in App.tsx (it's already imported but need to get hook instance if possible, wait! App.tsx doesn't have useNavigate called inside component! Wait, it has useNavigate imported, but let's check if `const navigate = useNavigate()` exists in App.tsx)
-                    // Let's use <Link> instead to be safe, or window.location.href, wait <Link> is better.
-                  }
-                }}
                 className="w-9 h-9 rounded-full overflow-hidden border-2 border-white/10 hover:border-amber-400 transition-colors cursor-pointer"
               >
                 <Link to={user.role === 'CLIENT' ? "/perfil" : "/painel/configuracoes"}>
@@ -109,6 +133,7 @@ export default function App() {
           {/* Rotas Protegidas - BARBEIRO */}
           <Route element={<RequireAuth role="BARBER" />}>
             <Route path="/painel" element={<DashboardPage />} />
+            <Route path="/gamificacao" element={<GamificationSettingsPage />} />
           </Route>
 
           {/* Fallback */}
@@ -130,7 +155,10 @@ export default function App() {
           </Suspense>
         </PageTransition>
       </main>
+<<<<<<< HEAD
       {/* Old Client Nav Removed as it conflicted with the new Premium Bottom Nav */}
+=======
+>>>>>>> 2c66e495d18b24d1b68fb39494b408c60b4d541c
     </div>
   )
 }

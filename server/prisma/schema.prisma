@@ -7,6 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum CustomerTier {
+  NOVATO
+  FIEL
+  VIP
+  NAVALHA_DE_OURO
+}
+
+enum ReferralStatus {
+  PENDING
+  REWARDED
+}
+
 model User {
   id                   String   @id @db.Uuid
   name                 String
@@ -50,7 +62,18 @@ model User {
   
   businessHours        Json?    @map("business_hours")
   slotInterval         Int      @default(15) @map("slot_interval")
-  
+
+  // Gamification & Fidelidade
+  birthDate            DateTime? @map("birth_date")
+  firstVisitAt         DateTime? @map("first_visit_at")
+  lastVisitAt          DateTime? @map("last_visit_at")
+  visitCount           Int       @default(0) @map("visit_count")
+  totalSpent           Float     @default(0) @map("total_spent")
+  pointsBalance        Int       @default(0) @map("points_balance")
+  tier                 CustomerTier @default(NOVATO)
+  marketingOptIn       Boolean   @default(false) @map("marketing_opt_in")
+  referralCode         String?   @unique @map("referral_code")
+  referredById         String?   @db.Uuid @map("referred_by_id")
   createdAt            DateTime @default(now()) @map("created_at")
 
   appointments  Appointment[] @relation("ClientAppointments")
@@ -66,6 +89,15 @@ model User {
   subscriptions CustomerSubscription[] @relation("ClientSubscriptions")
   clientRecurringSlots RecurringSlot[] @relation("ClientRecurringSlots")
   barberRecurringSlots RecurringSlot[] @relation("BarberRecurringSlots")
+
+  // Gamification Relations
+  referredBy         User?     @relation("Referrals", fields: [referredById], references: [id])
+  referralsMade      User[]    @relation("Referrals")
+  
+  gamificationConfig GamificationConfig? @relation("TenantGamification")
+  
+  referralsGiven     ReferralHistory[] @relation("ReferrerHistory")
+  referralReceived   ReferralHistory?  @relation("ReferredHistory")
 
   @@map("profiles")
 }
@@ -205,4 +237,34 @@ model SlotException {
   recurringSlot RecurringSlot @relation(fields: [recurringSlotId], references: [id], onDelete: Cascade)
 
   @@map("slot_exceptions")
+}
+
+model GamificationConfig {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId            String   @unique @map("tenant_id") @db.Uuid
+  pointsPerCurrency   Float    @default(1.0) @map("points_per_currency")
+  signupDiscountValue Float    @default(0)   @map("signup_discount_value")
+  referralRewardValue Float    @default(0)   @map("referral_reward_value")
+  enableBirthdays     Boolean  @default(true) @map("enable_birthdays")
+  enableWinBacks      Boolean  @default(true) @map("enable_win_backs")
+  enableReferrals     Boolean  @default(true) @map("enable_referrals")
+  createdAt           DateTime @default(now()) @map("created_at")
+
+  tenant              User     @relation("TenantGamification", fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@map("gamification_configs")
+}
+
+model ReferralHistory {
+  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  referrerId  String         @map("referrer_id") @db.Uuid
+  referredId  String         @unique @map("referred_id") @db.Uuid
+  status      ReferralStatus @default(PENDING)
+  createdAt   DateTime       @default(now()) @map("created_at")
+  rewardedAt  DateTime?      @map("rewarded_at")
+
+  referrer    User           @relation("ReferrerHistory", fields: [referrerId], references: [id], onDelete: Cascade)
+  referred    User           @relation("ReferredHistory", fields: [referredId], references: [id], onDelete: Cascade)
+
+  @@map("referral_history")
 }

@@ -1,4 +1,5 @@
-import { Home, Calendar, Wallet, Scissors, Settings } from 'lucide-react'
+import { Home, Calendar, Wallet, Scissors, Settings, Crown, Building2 } from 'lucide-react'
+import { useAuthStore } from '@/stores/auth.store'
 
 export type BarberTab = 'home' | 'schedule' | 'financial' | 'booking' | 'settings' | 'subscriptions' | 'saas' | 'network'
 
@@ -17,6 +18,17 @@ export function BarberBottomNav({ activeTab, onChangeTab }: BarberBottomNavProps
     { id: 'settings' as BarberTab, label: 'Perfil', icon: Settings },
   ]
 
+  const { user } = useAuthStore()
+
+  // Se o usuário for OWNER ou BARBER (para testes), adicionamos a aba de SaaS no final
+  if (user?.role === 'OWNER' || user?.role === 'BARBER') {
+    tabs.push({ id: 'saas', label: 'Plano', icon: Crown })
+  }
+
+  // Se o usuário for OWNER e plano ENTERPRISE, adicionamos a aba Rede
+  if (user?.role === 'OWNER' && user?.subscriptionPlan === 'ENTERPRISE') {
+    tabs.push({ id: 'network', label: 'Rede', icon: Building2 })
+  }
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 pt-2 md:hidden">
       <nav className="bg-[#0A0E14]/85 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/80 flex items-center justify-between px-6 py-1.5 max-w-lg mx-auto rounded-full relative">

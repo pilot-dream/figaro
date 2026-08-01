@@ -1,4 +1,5 @@
 import { Appointment, User, Service } from '@prisma/client'
+import { prisma } from '../lib/prisma'
 
 // Variáveis de ambiente configuráveis para Evolution API
 const WA_API_URL = process.env.WA_API_URL || 'http://localhost:8080'
@@ -212,5 +213,37 @@ export const whatsappService = {
     const text = `⏰ *LEMBRETE FINAL*\n\n${parseTemplate(template, appointment)}\n\nEstamos te esperando em breve! Se precisar remarcar ou cancelar, entre em contato imediatamente.`
     
     return await this.sendWhatsAppMessage(instanceName, appointment.client?.phone, text)
+  },
+
+  /**
+   * Envia uma mensagem baseada em template (Aniversários, Win-back, Resumos)
+   */
+  async sendTemplateMessage(tenantId: string, toPhone: string, templateName: string, variables: Record<string, string>) {
+    // Busca os dados do tenant para pegar a instância
+    const tenant = await prisma.user.findUnique({
+      where: { id: tenantId },
+      select: { whatsappInstanceId: true, whatsappEnabled: true }
+    });
+
+    if (!tenant?.whatsappEnabled || !tenant?.whatsappInstanceId) {
+      console.log(`[Evolution API] Pulo: Barbearia (${tenantId}) sem WhatsApp ativo. Template: ${templateName}`);
+      return false;
+    }
+
+    console.log(`\n[Evolution API] Simulando disparo...`);
+    console.log(`Para: ${toPhone}`);
+    console.log(`Instância: ${tenant.whatsappInstanceId}`);
+    console.log(`Template: ${templateName}`);
+    console.log(`Variáveis:`, variables);
+    console.log(`\n`);
+
+    // Futura integração real com Axios
+    // await axios.post(`${WA_API_URL}/message/sendText/${tenant.whatsappInstanceId}`, {
+    //   number: toPhone,
+    //   options: { delay: 1200, presence: 'composing' },
+    //   textMessage: { text: "Conteúdo montado..." }
+    // }, { headers: { apikey: WA_API_TOKEN } })
+
+    return true;
   }
 }
