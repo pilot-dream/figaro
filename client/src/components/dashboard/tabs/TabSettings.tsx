@@ -872,7 +872,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
 
             {/* Days Table */}
             <div className="space-y-2 text-xs">
-              {weekDays.map((item, idx) => (
+              {weekDays.map((item: any, idx: number) => (
                 <div
                   key={item.day}
                   className={`p-3.5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all ${

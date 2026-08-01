@@ -6,14 +6,11 @@ const LoginPage = lazy(() => import('@/pages/LoginPage').then(m => ({ default: m
 const RegisterPage = lazy(() => import('@/pages/RegisterPage').then(m => ({ default: m.RegisterPage })))
 const MyAppointments = lazy(() => import('@/pages/MyAppointments').then(m => ({ default: m.MyAppointments })))
 const DashboardPage = lazy(() => import('@/pages/DashboardPage').then(m => ({ default: m.DashboardPage })))
-<<<<<<< HEAD
 const ClientBookingPage = lazy(() => import('@/pages/ClientBookingPage').then(m => ({ default: m.ClientBookingPage })))
 const ClientWalletPage = lazy(() => import('@/pages/ClientWalletPage').then(m => ({ default: m.ClientWalletPage })))
 const ClientProfilePage = lazy(() => import('@/pages/ClientProfilePage').then(m => ({ default: m.ClientProfilePage })))
-=======
 const BarberBookingPage = lazy(() => import('@/pages/BarberBookingPage').then(m => ({ default: m.BarberBookingPage })))
 const GamificationSettingsPage = lazy(() => import('@/pages/GamificationSettingsPage').then(m => ({ default: m.GamificationSettingsPage })))
->>>>>>> 2c66e495d18b24d1b68fb39494b408c60b4d541c
 const SubscriptionCheckout = lazy(() => import('@/pages/SubscriptionCheckout').then(m => ({ default: m.SubscriptionCheckout })))
 const SubscriptionSuspended = lazy(() => import('@/pages/SubscriptionSuspended').then(m => ({ default: m.SubscriptionSuspended })))
 import { Clock, LogOut, Scissors, Sparkles } from 'lucide-react'
@@ -155,10 +152,7 @@ export default function App() {
           </Suspense>
         </PageTransition>
       </main>
-<<<<<<< HEAD
       {/* Old Client Nav Removed as it conflicted with the new Premium Bottom Nav */}
-=======
->>>>>>> 2c66e495d18b24d1b68fb39494b408c60b4d541c
     </div>
   )
 }

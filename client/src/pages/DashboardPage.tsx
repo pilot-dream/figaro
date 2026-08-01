@@ -207,18 +207,17 @@ export function DashboardPage() {
       <BarberBottomNav activeTab={activeTab} onChangeTab={setActiveTab} />
 
       {/* Client History Drawer */}
-      <ClientSheet 
-        isOpen={!!selectedClient}
-        onClose={() => setSelectedClient(null)}
-        appointment={selectedClient}
-        onStatusChange={handleStatusChange}
-      />
+      {selectedClient && (
+        <ClientSheet
+          appointment={selectedClient}
+          onClose={() => setSelectedClient(null)}
+          onSaveNotes={loadAppointments}
+        />
+      )}
       
       {showBlockModal && (
         <BlockTimeModal 
-          isOpen={showBlockModal}
           onClose={() => setShowBlockModal(false)}
-          date={selectedDate}
           onBlock={async (reason, time) => {
             if (user) {
               const times = time.split(' - ')

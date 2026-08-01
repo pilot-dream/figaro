@@ -288,7 +288,7 @@ export async function fetchAvailability(
   }
 
   // Generate Base Slots
-  const slots: TimeSlot[] = []
+  const slots: { startTime: Date, endTime: Date, available: boolean }[] = []
   const [startHour, startMin] = dayConfig.open.split(':').map(Number)
   const [endHour, endMin] = dayConfig.close.split(':').map(Number)
 
@@ -370,7 +370,8 @@ export async function fetchAvailability(
     const isPast = slot.startTime < now
 
     return {
-      ...slot,
+      startTime: slot.startTime.toISOString(),
+      endTime: slot.endTime.toISOString(),
       available: !collides && slotEnd <= businessEnd && !isPast
     }
   })
