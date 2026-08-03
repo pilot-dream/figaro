@@ -30,6 +30,7 @@ export default function App() {
   const isPublicRoute = ['/login', '/registro'].includes(location.pathname)
   
   const [hasNewNotifications, setHasNewNotifications] = useState(true)
+  const [showNotificationsMenu, setShowNotificationsMenu] = useState(false)
 
   useEffect(() => {
     initAuth()
@@ -85,19 +86,42 @@ export default function App() {
               {/* Gamification and Appointments Links */}
               {user.role === 'CLIENT' && (
                 <>
-                  <button
-                    onClick={() => {
-                      setHasNewNotifications(false)
-                      addToast('Nenhuma nova notificação.', 'info')
-                    }}
-                    title="Notificações"
-                    className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer relative"
-                  >
-                    <Bell className="w-4 h-4" />
-                    {hasNewNotifications && (
-                      <span className="absolute top-2 right-2.5 w-1.5 h-1.5 bg-[#F0553F] rounded-full border border-[#0A0E14]"></span>
+                  <div className="relative">
+                    <button
+                      onClick={() => {
+                        setHasNewNotifications(false)
+                        setShowNotificationsMenu(!showNotificationsMenu)
+                      }}
+                      title="Notificações"
+                      className={`w-9 h-9 rounded-full border text-white flex items-center justify-center transition-colors cursor-pointer relative ${showNotificationsMenu ? 'bg-white/10 border-white/20' : 'bg-white/5 border-white/10 hover:bg-white/10'}`}
+                    >
+                      <Bell className="w-4 h-4" />
+                      {hasNewNotifications && (
+                        <span className="absolute top-2 right-2.5 w-1.5 h-1.5 bg-[#F0553F] rounded-full border border-[#0A0E14]"></span>
+                      )}
+                    </button>
+
+                    {/* Notifications Dropdown */}
+                    {showNotificationsMenu && (
+                      <>
+                        <div 
+                          className="fixed inset-0 z-40" 
+                          onClick={() => setShowNotificationsMenu(false)}
+                        />
+                        <div className="absolute top-12 right-0 w-72 bg-[#121214] border border-white/10 rounded-2xl p-4 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                          <div className="flex items-center justify-between mb-4 border-b border-white/5 pb-2">
+                            <h4 className="font-bold text-white text-sm">Notificações</h4>
+                          </div>
+                          <div className="flex flex-col items-center justify-center py-6 text-center space-y-3">
+                            <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center border border-white/5">
+                              <Bell className="w-5 h-5 text-gray-500" />
+                            </div>
+                            <p className="text-xs text-gray-400 font-medium">Nenhuma nova notificação</p>
+                          </div>
+                        </div>
+                      </>
                     )}
-                  </button>
+                  </div>
                   <button
                     onClick={async () => {
                       await logout();
