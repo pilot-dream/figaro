@@ -108,15 +108,15 @@ export default function App() {
                           className="fixed inset-0 z-40" 
                           onClick={() => setShowNotificationsMenu(false)}
                         />
-                        <div className="absolute top-12 right-0 w-72 bg-[#121214] border border-white/10 rounded-2xl p-4 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200 z-50">
-                          <div className="flex items-center justify-between mb-4 border-b border-white/5 pb-2">
-                            <h4 className="font-bold text-white text-sm">Notificações</h4>
+                        <div className="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-[#121214] border border-white/10 rounded-3xl p-6 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                          <div className="flex items-center justify-between mb-4 border-b border-white/5 pb-3">
+                            <h4 className="font-bold text-white text-base">Notificações</h4>
                           </div>
-                          <div className="flex flex-col items-center justify-center py-6 text-center space-y-3">
-                            <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center border border-white/5">
-                              <Bell className="w-5 h-5 text-gray-500" />
+                          <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
+                            <div className="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center border border-white/5">
+                              <Bell className="w-6 h-6 text-gray-500" />
                             </div>
-                            <p className="text-xs text-gray-400 font-medium">Nenhuma nova notificação</p>
+                            <p className="text-sm text-gray-400 font-medium">Nenhuma nova notificação</p>
                           </div>
                         </div>
                       </>
