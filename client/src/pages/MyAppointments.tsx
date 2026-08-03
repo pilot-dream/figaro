@@ -133,7 +133,7 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
     <div className="min-h-screen w-full bg-[#0A0E14] text-white pb-24 overflow-x-hidden">
       
       {/* Header */}
-      <div className="px-6 pt-12 pb-6 flex items-center">
+      <div className="px-6 pt-6 pb-6 flex items-center">
         <h1 className="text-2xl font-bold text-white">Meus Agendamentos</h1>
       </div>
 
