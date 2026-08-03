@@ -13,7 +13,7 @@ const BarberBookingPage = lazy(() => import('@/pages/BarberBookingPage').then(m 
 const GamificationSettingsPage = lazy(() => import('@/pages/GamificationSettingsPage').then(m => ({ default: m.GamificationSettingsPage })))
 const SubscriptionCheckout = lazy(() => import('@/pages/SubscriptionCheckout').then(m => ({ default: m.SubscriptionCheckout })))
 const SubscriptionSuspended = lazy(() => import('@/pages/SubscriptionSuspended').then(m => ({ default: m.SubscriptionSuspended })))
-import { Clock, LogOut, Scissors, Sparkles } from 'lucide-react'
+import { Clock, LogOut, Scissors, Sparkles, Bell } from 'lucide-react'
 import { ToastContainer } from '@/components/ui/Toast'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { PageTransition } from '@/components/ui/PageTransition'
@@ -80,16 +80,24 @@ export default function App() {
             <div className="flex items-center gap-3">
               {/* Gamification and Appointments Links */}
               {user.role === 'CLIENT' && (
-                <button
-                  onClick={async () => {
-                    await logout();
-                    window.location.reload();
-                  }}
-                  title="Sair"
-                  className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer"
-                >
-                  <LogOut className="w-4 h-4 text-[#F0553F]" />
-                </button>
+                <>
+                  <button
+                    className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer relative"
+                  >
+                    <Bell className="w-4 h-4" />
+                    <span className="absolute top-2 right-2.5 w-1.5 h-1.5 bg-[#F0553F] rounded-full border border-[#0A0E14]"></span>
+                  </button>
+                  <button
+                    onClick={async () => {
+                      await logout();
+                      window.location.reload();
+                    }}
+                    title="Sair"
+                    className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4 text-[#F0553F]" />
+                  </button>
+                </>
               )}
               {(user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER') && (
                 <Link
