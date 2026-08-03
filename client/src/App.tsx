@@ -144,17 +144,19 @@ export default function App() {
                 </Link>
               )}
               {/* Profile Avatar */}
-              <button
-                className="w-9 h-9 rounded-full overflow-hidden border-2 border-white/10 hover:border-amber-400 transition-colors cursor-pointer"
-              >
-                <Link to={user.role === 'CLIENT' ? "/perfil" : "/painel/configuracoes"}>
-                  <img 
-                    src={user.avatarUrl || `https://ui-avatars.com/api/?name=${user.name || 'User'}&background=1a1c23&color=fbbf24`} 
-                    alt="Perfil" 
-                    className="w-full h-full object-cover"
-                  />
-                </Link>
-              </button>
+              {user.role !== 'CLIENT' && (
+                <button
+                  className="w-9 h-9 rounded-full overflow-hidden border-2 border-white/10 hover:border-amber-400 transition-colors cursor-pointer"
+                >
+                  <Link to="/painel/configuracoes">
+                    <img 
+                      src={user.avatarUrl || `https://ui-avatars.com/api/?name=${user.name || 'User'}&background=1a1c23&color=fbbf24`} 
+                      alt="Perfil" 
+                      className="w-full h-full object-cover"
+                    />
+                  </Link>
+                </button>
+              )}
             </div>
           </div>
           {/* Spacer so the fixed topbar doesn't cover content (only if not hidden) */}
