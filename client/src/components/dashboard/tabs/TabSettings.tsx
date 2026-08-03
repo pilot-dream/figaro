@@ -26,7 +26,9 @@ import {
   Download,
   X,
   MessageCircle,
-  Upload
+  Upload,
+  LogOut,
+  Crown
 } from 'lucide-react'
 import { ModalSkeleton } from '@/components/ui/ModalSkeleton'
 
@@ -38,11 +40,15 @@ const AddServiceModal = lazy(() =>
   import('./settings/AddServiceModal').then(module => ({ default: module.AddServiceModal }))
 )
 
+const TabSaaS = lazy(() =>
+  import('./TabSaaS').then(module => ({ default: module.TabSaaS }))
+)
+
 interface TabSettingsProps {
   barber: User
 }
 
-type SettingsSubTab = 'profile' | 'services' | 'hours' | 'payments' | 'integrations' | 'notifications' | 'team'
+type SettingsSubTab = 'profile' | 'services' | 'hours' | 'payments' | 'integrations' | 'notifications' | 'team' | 'plan'
 
 export function TabSettings({ barber }: TabSettingsProps) {
   const addToast = useToastStore((state) => state.addToast)
@@ -510,7 +516,20 @@ export function TabSettings({ barber }: TabSettingsProps) {
                 : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
             }`}
           >
-            <UserIcon className="w-3.5 h-3.5" /> Equipe
+            <UserIcon className="w-3.5 h-3.5" /> Equipe & Permissões
+          </button>
+        )}
+
+        {(barber.role === 'OWNER' || barber.role === 'BARBER') && (
+          <button
+            onClick={() => setActiveSubTab('plan')}
+            className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+              activeSubTab === 'plan'
+                ? 'bg-[#11AFFA] text-white shadow-[0_0_15px_rgba(17,175,250,0.4)] font-semibold border border-[#11AFFA]'
+                : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+            }`}
+          >
+            <Crown className="w-3.5 h-3.5" /> Meu Plano
           </button>
         )}
       </div>
@@ -684,6 +703,15 @@ export function TabSettings({ barber }: TabSettingsProps) {
                   className="bg-amber-500 hover:bg-[#0B3B5C] text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg text-xs flex items-center gap-2 cursor-pointer transition-all"
                 >
                   <Save className="w-4 h-4" /> Salvar Perfil
+                </button>
+                <button
+                  onClick={() => {
+                    supabase.auth.signOut();
+                    window.location.reload();
+                  }}
+                  className="bg-red-500/10 hover:bg-red-500/20 text-red-500 font-semibold px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 cursor-pointer transition-all border border-red-500/20"
+                >
+                  <LogOut className="w-4 h-4" /> Sair
                 </button>
               </div>
             </form>
@@ -1363,6 +1391,15 @@ export function TabSettings({ barber }: TabSettingsProps) {
       <Suspense fallback={<ModalSkeleton />}>
         <TeamSettings />
       </Suspense>
+      )}
+
+      {/* 2.8 PLANO (SAAS) */}
+      {activeSubTab === 'plan' && (
+        <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+          <Suspense fallback={<ModalSkeleton />}>
+            <TabSaaS />
+          </Suspense>
+        </div>
       )}
 
       {/* WHATSAPP CONNECTION MODAL */}

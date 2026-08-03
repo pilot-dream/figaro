@@ -18,6 +18,7 @@ import { processReminders } from './cron/reminder.cron'
 import { processWinbacks } from './cron/winback.cron'
 import { processBirthdays } from './cron/birthday.cron'
 import { processSummaries } from './cron/summary.cron'
+import { processAutoCompletes } from './cron/autocomplete.cron'
 import { startCronJobs } from './cron/scheduler'
 
 const app = express()
@@ -54,11 +55,13 @@ app.post('/api/webhooks/cakto', handleCaktoWebhook)
 
 app.get('/api/cron/reminders', async (req, res) => {
   try {
+    console.log('[Vercel Cron] Iniciando processamento de lembretes e auto-completes...')
     await processReminders()
-    res.json({ success: true, message: 'Reminders processed successfully' })
+    await processAutoCompletes()
+    res.json({ success: true, message: 'Reminders and auto-completes processed' })
   } catch (error) {
-    console.error('Cron error:', error)
-    res.status(500).json({ success: false, error: 'Failed to process reminders' })
+    console.error('[Vercel Cron] Erro:', error)
+    res.status(500).json({ error: 'Failed to process reminders and auto-completes' })
   }
 })
 

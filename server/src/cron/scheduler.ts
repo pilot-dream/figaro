@@ -3,6 +3,7 @@ import { processReminders } from './reminder.cron'
 import { processWinbacks } from './winback.cron'
 import { processBirthdays } from './birthday.cron'
 import { processSummaries } from './summary.cron'
+import { processAutoCompletes } from './autocomplete.cron'
 
 /**
  * Inicializa todos os Cron Jobs no ambiente local / VPS.
@@ -11,9 +12,10 @@ import { processSummaries } from './summary.cron'
 export function startCronJobs() {
   console.log('🚀 Inicializando Orquestrador de Cron Jobs do Fígaro...')
 
-  // 1. Lembretes (a cada 15 min)
+  // 1. Lembretes e Auto-Completes (a cada 15 min)
   cron.schedule('*/15 * * * *', async () => {
     await processReminders()
+    await processAutoCompletes()
   })
 
   // 2. Resumo Diário para a equipe (Todos os dias às 07:00)
