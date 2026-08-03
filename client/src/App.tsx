@@ -80,13 +80,16 @@ export default function App() {
             <div className="flex items-center gap-3">
               {/* Gamification and Appointments Links */}
               {user.role === 'CLIENT' && (
-                <Link
-                  to="/meus-agendamentos"
-                  className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs font-semibold text-white hover:bg-white/10 flex items-center gap-1.5 transition-colors"
+                <button
+                  onClick={async () => {
+                    await logout();
+                    window.location.reload();
+                  }}
+                  title="Sair"
+                  className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer"
                 >
-                  <Clock className="w-3.5 h-3.5 text-[#11AFFA]" />
-                  <span className="hidden sm:inline">Meus Agendamentos</span>
-                </Link>
+                  <LogOut className="w-4 h-4 text-[#F0553F]" />
+                </button>
               )}
               {(user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER') && (
                 <Link
