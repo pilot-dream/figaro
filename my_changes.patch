@@ -1,0 +1,464 @@
+commit d598b9859bb3121fab17dc75c3c1f89d2f4efe74
+Author: galatas <galatasmutz@gmail.com>
+Date:   Mon Aug 3 16:02:48 2026 -0300
+
+    feat: move plano to settings, add logout button and autocomplete cron
+
+diff --git a/client/src/components/dashboard/BarberBottomNav.tsx b/client/src/components/dashboard/BarberBottomNav.tsx
+index dd440c6..88a7955 100644
+--- a/client/src/components/dashboard/BarberBottomNav.tsx
++++ b/client/src/components/dashboard/BarberBottomNav.tsx
+@@ -20,11 +20,6 @@ export function BarberBottomNav({ activeTab, onChangeTab }: BarberBottomNavProps
+ 
+   const { user } = useAuthStore()
+ 
+-  // Se o usuário for OWNER ou BARBER (para testes), adicionamos a aba de SaaS no final
+-  if (user?.role === 'OWNER' || user?.role === 'BARBER') {
+-    tabs.push({ id: 'saas', label: 'Plano', icon: Crown })
+-  }
+-
+   // Se o usuário for OWNER e plano ENTERPRISE, adicionamos a aba Rede
+   if (user?.role === 'OWNER' && user?.subscriptionPlan === 'ENTERPRISE') {
+     tabs.push({ id: 'network', label: 'Rede', icon: Building2 })
+diff --git a/client/src/components/dashboard/tabs/TabSettings.tsx b/client/src/components/dashboard/tabs/TabSettings.tsx
+index 28a9758..c7550ca 100644
+--- a/client/src/components/dashboard/tabs/TabSettings.tsx
++++ b/client/src/components/dashboard/tabs/TabSettings.tsx
+@@ -26,7 +26,9 @@ import {
+   Download,
+   X,
+   MessageCircle,
+-  Upload
++  Upload,
++  LogOut,
++  Crown
+ } from 'lucide-react'
+ import { ModalSkeleton } from '@/components/ui/ModalSkeleton'
+ 
+@@ -38,11 +40,15 @@ const AddServiceModal = lazy(() =>
+   import('./settings/AddServiceModal').then(module => ({ default: module.AddServiceModal }))
+ )
+ 
++const TabSaaS = lazy(() =>
++  import('./TabSaaS').then(module => ({ default: module.TabSaaS }))
++)
++
+ interface TabSettingsProps {
+   barber: User
+ }
+ 
+-type SettingsSubTab = 'profile' | 'services' | 'hours' | 'payments' | 'integrations' | 'notifications' | 'team'
++type SettingsSubTab = 'profile' | 'services' | 'hours' | 'payments' | 'integrations' | 'notifications' | 'team' | 'plan'
+ 
+ export function TabSettings({ barber }: TabSettingsProps) {
+   const addToast = useToastStore((state) => state.addToast)
+@@ -449,7 +455,20 @@ export function TabSettings({ barber }: TabSettingsProps) {
+                 : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+             }`}
+           >
+-            <UserIcon className="w-3.5 h-3.5" /> Equipe
++            <UserIcon className="w-3.5 h-3.5" /> Equipe & Permissões
++          </button>
++        )}
++
++        {(barber.role === 'OWNER' || barber.role === 'BARBER') && (
++          <button
++            onClick={() => setActiveSubTab('plan')}
++            className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
++              activeSubTab === 'plan'
++                ? 'bg-[#11AFFA] text-white shadow-[0_0_15px_rgba(17,175,250,0.4)] font-semibold border border-[#11AFFA]'
++                : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
++            }`}
++          >
++            <Crown className="w-3.5 h-3.5" /> Meu Plano
+           </button>
+         )}
+       </div>
+@@ -590,6 +609,15 @@ export function TabSettings({ barber }: TabSettingsProps) {
+                 >
+                   <Save className="w-4 h-4" /> Salvar Perfil
+                 </button>
++                <button
++                  onClick={() => {
++                    supabase.auth.signOut();
++                    window.location.reload();
++                  }}
++                  className="bg-red-500/10 hover:bg-red-500/20 text-red-500 font-semibold px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 cursor-pointer transition-all border border-red-500/20"
++                >
++                  <LogOut className="w-4 h-4" /> Sair
++                </button>
+               </div>
+             </form>
+           </GlassCard>
+@@ -1266,6 +1294,15 @@ export function TabSettings({ barber }: TabSettingsProps) {
+       </Suspense>
+       )}
+ 
++      {/* 2.8 PLANO (SAAS) */}
++      {activeSubTab === 'plan' && (
++        <div className="animate-in fade-in slide-in-from-right-4 duration-300">
++          <Suspense fallback={<ModalSkeleton />}>
++            <TabSaaS />
++          </Suspense>
++        </div>
++      )}
++
+       {/* WHATSAPP CONNECTION MODAL */}
+       {showWhatsappModal && (
+         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+diff --git a/client/src/pages/MyAppointments.tsx b/client/src/pages/MyAppointments.tsx
+index 2713bb9..fd154ee 100644
+--- a/client/src/pages/MyAppointments.tsx
++++ b/client/src/pages/MyAppointments.tsx
+@@ -21,7 +21,6 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void })
+   const [barbers, setBarbers] = useState<User[]>([])
+   const [loading, setLoading] = useState(true)
+   const [showSelectBarberModal, setShowSelectBarberModal] = useState(false)
+-  const [showAllBarbers, setShowAllBarbers] = useState(false)
+   const [now, setNow] = useState(Date.now())
+ 
+   const loadAppointments = useCallback(async () => {
+@@ -113,8 +112,20 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void })
+     }
+   }
+ 
+-  const upcoming = appointments.filter((a) => a.status === 'CONFIRMED' || a.status === 'PENDING')
+-  const history = appointments.filter((a) => a.status !== 'CONFIRMED' && a.status !== 'PENDING')
++  const isOneHourPast = (startTime: string) => {
++    const oneHourInMs = 60 * 60 * 1000
++    // Using `now` to compare against current time. 
++    return new Date(startTime).getTime() + oneHourInMs < now
++  }
++
++  const upcoming = appointments.filter((a) => 
++    (a.status === 'CONFIRMED' || a.status === 'PENDING') && !isOneHourPast(a.startTime)
++  )
++
++  const history = appointments.filter((a) => 
++    (a.status !== 'CONFIRMED' && a.status !== 'PENDING') || 
++    ((a.status === 'CONFIRMED' || a.status === 'PENDING') && isOneHourPast(a.startTime))
++  )
+ 
+   // Requirement 1: Filter ONLY recent barbers the client has previously booked with
+   const recentBarberIds = Array.from(
+@@ -122,9 +133,8 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void })
+   )
+   const recentBarbers = barbers.filter((b) => recentBarberIds.includes(b.id))
+ 
+-  // If client has previous history with barbers, show ONLY recent ones by default
+-  const displayedBarbers =
+-    recentBarbers.length > 0 && !showAllBarbers ? recentBarbers : barbers
++  // Strictly show only recent barbers
++  const displayedBarbers = recentBarbers
+ 
+   return (
+     <div className="space-y-6 pb-24 max-w-2xl mx-auto">
+@@ -265,7 +275,7 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void })
+                     </p>
+                   </div>
+                   <div className="flex items-center gap-3">
+-                    {app.status === 'COMPLETED' && (
++                    {(app.status === 'COMPLETED' || isOneHourPast(app.startTime)) && app.status !== 'CANCELLED' && (
+                       <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-[#2ED9A0] bg-[#2ED9A0]/10 border border-[#2ED9A0]/20 font-bold px-2 py-1 rounded-full">
+                         <CheckCircle2 className="w-3 h-3" /> Concluído
+                       </span>
+@@ -298,20 +308,15 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void })
+               <div>
+                 <h3 className="font-bold text-white text-lg flex items-center gap-2">
+                   <UserCheck className="w-5 h-5 text-[var(--color-figaro-amber)]" />
+-                  {recentBarbers.length > 0 && !showAllBarbers
+-                    ? 'Seus Barbeiros Recentes'
+-                    : 'Escolha o Barbeiro'}
++                  Seus Barbeiros Recentes
+                 </h3>
+                 <p className="text-xs text-figaro-text-secondary mt-0.5">
+-                  {recentBarbers.length > 0 && !showAllBarbers
+-                    ? 'Exibindo apenas os profissionais que já atenderam você.'
+-                    : 'Selecione o profissional com quem deseja agendar seu horário.'}
++                  Exibindo apenas os profissionais que já atenderam você.
+                 </p>
+               </div>
+               <button
+                 onClick={() => {
+                   setShowSelectBarberModal(false)
+-                  setShowAllBarbers(false)
+                 }}
+                 className="p-1 rounded-full text-figaro-text-secondary hover:text-white cursor-pointer"
+               >
+@@ -320,67 +325,53 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void })
+             </div>
+ 
+             <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+-              {displayedBarbers.map((b) => {
+-                const isRecent = recentBarberIds.includes(b.id)
+-                return (
+-                  <GlassCard
+-                    key={b.id}
+-                    variant="interactive"
+-                    onClick={() => {
+-                      setShowSelectBarberModal(false)
+-                      setShowAllBarbers(false)
+-                      handleSelectBarber(b.slug)
+-                    }}
+-                    className={`p-4 flex items-center justify-between border transition-all ${
+-                      isRecent
+-                        ? 'border-[var(--color-figaro-amber)] bg-[var(--color-figaro-amber)]/10'
+-                        : 'border-glass-border'
+-                    }`}
+-                  >
+-                    <div className="flex items-center gap-3">
+-                      <img
+-                        src={
+-                          b.avatarUrl ||
+-                          'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80'
+-                        }
+-                        alt={b.name}
+-                        className="w-12 h-12 rounded-full object-cover border border-white/20 shadow-md"
+-                      />
+-                      <div>
+-                        <div className="flex items-center gap-2">
+-                          <h4 className="font-bold text-white text-sm">{b.name}</h4>
+-                          {isRecent && (
++              {recentBarbers.length === 0 ? (
++                <div className="py-8 text-center text-sm font-medium text-white/40 italic">
++                  (sem barbeiros recentes)
++                </div>
++              ) : (
++                displayedBarbers.map((b) => {
++                  return (
++                    <GlassCard
++                      key={b.id}
++                      variant="interactive"
++                      onClick={() => {
++                        setShowSelectBarberModal(false)
++                        handleSelectBarber(b.slug)
++                      }}
++                      className="p-4 flex items-center justify-between border transition-all border-[var(--color-figaro-amber)] bg-[var(--color-figaro-amber)]/10"
++                    >
++                      <div className="flex items-center gap-3">
++                        <img
++                          src={
++                            b.avatarUrl ||
++                            'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80'
++                          }
++                          alt={b.name}
++                          className="w-12 h-12 rounded-full object-cover border border-white/20 shadow-md"
++                        />
++                        <div>
++                          <div className="flex items-center gap-2">
++                            <h4 className="font-bold text-white text-sm">{b.name}</h4>
+                             <span className="text-[9px] px-2 py-0.5 rounded bg-[var(--color-figaro-amber)]/20 text-[var(--color-figaro-amber)] border border-[var(--color-figaro-amber)]/30 font-bold uppercase">
+                               Seu Barbeiro
+                             </span>
+-                          )}
+-                        </div>
+-                        <p className="text-xs text-figaro-text-secondary line-clamp-1">{b.notes || 'Especialista Fígaro'}</p>
+-                        <div className="flex items-center gap-1 text-[11px] text-[var(--color-figaro-amber)] mt-0.5">
+-                          <Star className="w-3 h-3 fill-current" />
+-                          <span className="text-white font-semibold">5.0</span>
++                          </div>
++                          <p className="text-xs text-figaro-text-secondary line-clamp-1">{b.notes || 'Especialista Fígaro'}</p>
++                          <div className="flex items-center gap-1 text-[11px] text-[var(--color-figaro-amber)] mt-0.5">
++                            <Star className="w-3 h-3 fill-current" />
++                            <span className="text-white font-semibold">5.0</span>
++                          </div>
+                         </div>
+                       </div>
+-                    </div>
+-                    <Button size="sm" variant={isRecent ? 'amber' : 'primary'}>
+-                      Agendar <ArrowRight className="w-3.5 h-3.5 ml-1" />
+-                    </Button>
+-                  </GlassCard>
+-                )
+-              })}
++                      <Button size="sm" variant="amber">
++                        Agendar <ArrowRight className="w-3.5 h-3.5 ml-1" />
++                      </Button>
++                    </GlassCard>
++                  )
++                })
++              )}
+             </div>
+-
+-            {recentBarbers.length > 0 && !showAllBarbers && barbers.length > recentBarbers.length && (
+-              <div className="border-t border-white/10 pt-3 text-center">
+-                <button
+-                  type="button"
+-                  onClick={() => setShowAllBarbers(true)}
+-                  className="text-xs text-[var(--color-figaro-blue)] hover:underline font-semibold cursor-pointer"
+-                >
+-                  Ver outros profissionais da barbearia ({barbers.length})
+-                </button>
+-              </div>
+-            )}
+           </GlassCard>
+         </div>
+       )}
+diff --git a/server/src/cron/autocomplete.cron.ts b/server/src/cron/autocomplete.cron.ts
+new file mode 100644
+index 0000000..a18b6ae
+--- /dev/null
++++ b/server/src/cron/autocomplete.cron.ts
+@@ -0,0 +1,28 @@
++import { PrismaClient } from '@prisma/client'
++
++const prisma = new PrismaClient()
++
++export async function processAutoCompletes() {
++  console.log('[CRON] Iniciando auto-complete de agendamentos passados...')
++  try {
++    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
++
++    const result = await prisma.appointment.updateMany({
++      where: {
++        status: { in: ['CONFIRMED', 'PENDING'] },
++        startTime: { lt: oneHourAgo }
++      },
++      data: {
++        status: 'COMPLETED'
++      }
++    })
++
++    if (result.count > 0) {
++      console.log(`[CRON] ${result.count} agendamentos antigos foram marcados como COMPLETED automaticamente.`)
++    } else {
++      console.log('[CRON] Nenhum agendamento para auto-completar agora.')
++    }
++  } catch (error) {
++    console.error('[CRON] Erro no auto-complete:', error)
++  }
++}
+diff --git a/server/src/cron/scheduler.ts b/server/src/cron/scheduler.ts
+index ba669d0..cae5944 100644
+--- a/server/src/cron/scheduler.ts
++++ b/server/src/cron/scheduler.ts
+@@ -3,6 +3,7 @@ import { processReminders } from './reminder.cron'
+ import { processWinbacks } from './winback.cron'
+ import { processBirthdays } from './birthday.cron'
+ import { processSummaries } from './summary.cron'
++import { processAutoCompletes } from './autocomplete.cron'
+ 
+ /**
+  * Inicializa todos os Cron Jobs no ambiente local / VPS.
+@@ -11,9 +12,10 @@ import { processSummaries } from './summary.cron'
+ export function startCronJobs() {
+   console.log('🚀 Inicializando Orquestrador de Cron Jobs do Fígaro...')
+ 
+-  // 1. Lembretes (a cada 15 min)
++  // 1. Lembretes e Auto-Completes (a cada 15 min)
+   cron.schedule('*/15 * * * *', async () => {
+     await processReminders()
++    await processAutoCompletes()
+   })
+ 
+   // 2. Resumo Diário para a equipe (Todos os dias às 07:00)
+diff --git a/server/src/index.ts b/server/src/index.ts
+index de2c129..6ac9043 100644
+--- a/server/src/index.ts
++++ b/server/src/index.ts
+@@ -18,6 +18,7 @@ import { processReminders } from './cron/reminder.cron'
+ import { processWinbacks } from './cron/winback.cron'
+ import { processBirthdays } from './cron/birthday.cron'
+ import { processSummaries } from './cron/summary.cron'
++import { processAutoCompletes } from './cron/autocomplete.cron'
+ import { startCronJobs } from './cron/scheduler'
+ 
+ const app = express()
+@@ -54,11 +55,13 @@ app.post('/api/webhooks/cakto', handleCaktoWebhook)
+ 
+ app.get('/api/cron/reminders', async (req, res) => {
+   try {
++    console.log('[Vercel Cron] Iniciando processamento de lembretes e auto-completes...')
+     await processReminders()
+-    res.json({ success: true, message: 'Reminders processed successfully' })
++    await processAutoCompletes()
++    res.json({ success: true, message: 'Reminders and auto-completes processed' })
+   } catch (error) {
+-    console.error('Cron error:', error)
+-    res.status(500).json({ success: false, error: 'Failed to process reminders' })
++    console.error('[Vercel Cron] Erro:', error)
++    res.status(500).json({ error: 'Failed to process reminders and auto-completes' })
+   }
+ })
+ 
+diff --git a/server/src/test_avail4.ts b/server/src/test_avail4.ts
+new file mode 100644
+index 0000000..975abd5
+--- /dev/null
++++ b/server/src/test_avail4.ts
+@@ -0,0 +1,16 @@
++import { AvailabilityService } from './services/availability.service'
++
++async function main() {
++  const service = new AvailabilityService()
++  const slots = await service.getAvailability({
++    date: '2026-07-28',
++    barberId: '7e3e3a08-e0d7-48e7-aca4-f816273e7f46',
++    serviceDurationMin: 15
++  })
++  console.log('UNAVAILABLE SLOTS:')
++  slots.filter(s => !s.available).forEach(s => {
++    console.log(s.startTime.toISOString())
++  })
++}
++
++main().catch(console.error)
+diff --git a/server/test_avail.js b/server/test_avail.js
+new file mode 100644
+index 0000000..3084018
+--- /dev/null
++++ b/server/test_avail.js
+@@ -0,0 +1,21 @@
++const { PrismaClient } = require('@prisma/client')
++const prisma = new PrismaClient()
++
++async function main() {
++  const barber = await prisma.user.findFirst({ where: { slug: 'filipe-lacerda-1' } })
++  if (!barber) {
++    console.log('Barber not found')
++    return
++  }
++  console.log('Barber ID:', barber.id)
++  
++  // Find blocked times
++  const blocked = await prisma.blockedTime.findMany({ where: { barberId: barber.id } })
++  console.log('Blocked times:', blocked)
++  
++  // Find appointments
++  const apps = await prisma.appointment.findMany({ where: { barberId: barber.id } })
++  console.log('Appointments:', apps.map(a => a.startTime))
++}
++
++main().catch(console.error).finally(() => prisma.$disconnect())
+diff --git a/server/test_avail2.js b/server/test_avail2.js
+new file mode 100644
+index 0000000..6afd645
+--- /dev/null
++++ b/server/test_avail2.js
+@@ -0,0 +1,11 @@
++const { PrismaClient } = require('@prisma/client')
++const prisma = new PrismaClient()
++
++async function main() {
++  const barber = await prisma.user.findFirst({ where: { slug: 'filipe-lacerda-1' } })
++  
++  const recSlots = await prisma.recurringSlot.findMany({ where: { barberId: barber.id } })
++  console.log('Recurring Slots:', recSlots)
++}
++
++main().catch(console.error).finally(() => prisma.$disconnect())
+diff --git a/server/test_avail3.js b/server/test_avail3.js
+new file mode 100644
+index 0000000..85f2e9d
+--- /dev/null
++++ b/server/test_avail3.js
+@@ -0,0 +1,9 @@
++const { PrismaClient } = require('@prisma/client')
++const prisma = new PrismaClient()
++
++async function main() {
++  const barber = await prisma.user.findFirst({ where: { slug: 'filipe-lacerda-1' } })
++  console.log('googleSyncBusyTimes:', barber.googleSyncBusyTimes, barber.googleRefreshToken ? 'Has token' : 'No token')
++}
++
++main().catch(console.error).finally(() => prisma.$disconnect())

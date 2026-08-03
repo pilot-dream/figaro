@@ -112,8 +112,20 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
     }
   }
 
-  const upcoming = appointments.filter((a) => a.status === 'CONFIRMED' || a.status === 'PENDING')
-  const history = appointments.filter((a) => a.status !== 'CONFIRMED' && a.status !== 'PENDING')
+  const isOneHourPast = (startTime: string) => {
+    const oneHourInMs = 60 * 60 * 1000
+    // Using `now` to compare against current time. 
+    return new Date(startTime).getTime() + oneHourInMs < now
+  }
+
+  const upcoming = appointments.filter((a) => 
+    (a.status === 'CONFIRMED' || a.status === 'PENDING') && !isOneHourPast(a.startTime)
+  )
+
+  const history = appointments.filter((a) => 
+    (a.status !== 'CONFIRMED' && a.status !== 'PENDING') || 
+    ((a.status === 'CONFIRMED' || a.status === 'PENDING') && isOneHourPast(a.startTime))
+  )
 
   const displayedBarbers = barbers
 
@@ -241,8 +253,8 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
                     </p>
                   </div>
                   <div>
-                    {app.status === 'COMPLETED' && (
-                      <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-wider text-green-400 bg-green-500/10 border border-green-500/20 font-bold px-2 py-1 rounded-full">
+                    {(app.status === 'COMPLETED' || isOneHourPast(app.startTime)) && app.status !== 'CANCELLED' && (
+                      <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-[#2ED9A0] bg-[#2ED9A0]/10 border border-[#2ED9A0]/20 font-bold px-2 py-1 rounded-full">
                         <CheckCircle2 className="w-3 h-3" /> Concluído
                       </span>
                     )}
