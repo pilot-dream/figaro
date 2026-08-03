@@ -1,6 +1,7 @@
-import { useEffect, Suspense, lazy } from 'react'
+import { useEffect, Suspense, lazy, useState } from 'react'
 import { Routes, Route, Navigate, Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/stores/auth.store'
+import { useToastStore } from '@/stores/toast.store'
 import { RequireAuth } from '@/components/auth/RequireAuth'
 const LoginPage = lazy(() => import('@/pages/LoginPage').then(m => ({ default: m.LoginPage })))
 const RegisterPage = lazy(() => import('@/pages/RegisterPage').then(m => ({ default: m.RegisterPage })))
@@ -23,9 +24,12 @@ import { BranchSwitcher } from '@/components/dashboard/BranchSwitcher'
 
 export default function App() {
   const { user, logout, initAuth, initialized } = useAuthStore()
+  const addToast = useToastStore((state) => state.addToast)
   const navigate = useNavigate()
   const location = useLocation()
   const isPublicRoute = ['/login', '/registro'].includes(location.pathname)
+  
+  const [hasNewNotifications, setHasNewNotifications] = useState(true)
 
   useEffect(() => {
     initAuth()
@@ -82,10 +86,17 @@ export default function App() {
               {user.role === 'CLIENT' && (
                 <>
                   <button
+                    onClick={() => {
+                      setHasNewNotifications(false)
+                      addToast('Nenhuma nova notificação.', 'info')
+                    }}
+                    title="Notificações"
                     className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer relative"
                   >
                     <Bell className="w-4 h-4" />
-                    <span className="absolute top-2 right-2.5 w-1.5 h-1.5 bg-[#F0553F] rounded-full border border-[#0A0E14]"></span>
+                    {hasNewNotifications && (
+                      <span className="absolute top-2 right-2.5 w-1.5 h-1.5 bg-[#F0553F] rounded-full border border-[#0A0E14]"></span>
+                    )}
                   </button>
                   <button
                     onClick={async () => {
