@@ -28,21 +28,19 @@ router.post('/push-token', async (req, res, next) => {
       return res.status(400).json({ error: 'userId e token são obrigatórios' })
     }
 
-    // Verifica se o usuário existe
-    const user = await prisma.user.findUnique({ where: { id: userId } })
-    if (!user) {
+    // Usa $executeRawUnsafe para evitar que o Prisma faça SELECT em colunas
+    // que possam não existir no banco (ex: banner_image_url).
+    // UPDATE direto é mais seguro e performático para este caso.
+    const result = await prisma.$executeRawUnsafe(
+      `UPDATE profiles SET push_token = $1, push_platform = $2, push_token_updated_at = NOW() WHERE id = $3::uuid`,
+      token,
+      platform || 'web',
+      userId
+    )
+
+    if (result === 0) {
       return res.status(404).json({ error: 'Usuário não encontrado' })
     }
-
-    // Atualiza o token de push no perfil
-    await prisma.user.update({
-      where: { id: userId },
-      data: {
-        pushToken: token,
-        pushPlatform: platform || 'web',
-        pushTokenUpdatedAt: new Date(),
-      },
-    })
 
     console.log(`[Push] Token salvo para usuário ${userId} (${platform || 'web'})`)
     res.json({ success: true })
