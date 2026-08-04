@@ -65,16 +65,6 @@ export function ClientProfilePage() {
 
   return (
     <div className="min-h-screen w-full bg-[#0A0E14] text-white pb-24 overflow-x-hidden">
-      {/* Header */}
-      <div className="px-6 pt-6 pb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">
-          Meu Perfil
-        </h1>
-        <button className="w-10 h-10 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center cursor-pointer hover:bg-white/10 transition">
-          <Settings className="w-5 h-5 text-gray-400" />
-        </button>
-      </div>
-
       {/* Avatar Section */}
       <div className="px-6 flex flex-col items-center mt-2 mb-8">
         <div className="relative">
