@@ -12,6 +12,7 @@ import appointmentsRoutes from './routes/appointments.routes'
 import mrrRoutes from './routes/mrr.routes'
 import dashboardRoutes from './routes/dashboard.routes'
 import gamificationRoutes from './routes/gamification.routes'
+import usersRoutes from './routes/users.routes'
 import { securityHeaders, globalLimiter } from './middleware/security.middleware'
 import { handleCaktoWebhook } from './controllers/saas.webhook.controller'
 import { processReminders } from './cron/reminder.cron'
@@ -49,6 +50,7 @@ app.use('/api/appointments', appointmentsRoutes)
 app.use('/api/mrr', mrrRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/gamification', gamificationRoutes)
+app.use('/api/users', usersRoutes)
 
 // Webhooks
 app.post('/api/webhooks/cakto', handleCaktoWebhook)

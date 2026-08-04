@@ -74,6 +74,12 @@ model User {
   marketingOptIn       Boolean   @default(false) @map("marketing_opt_in")
   referralCode         String?   @unique @map("referral_code")
   referredById         String?   @db.Uuid @map("referred_by_id")
+
+  // Web Push Notifications (FCM)
+  pushToken            String?   @map("push_token")
+  pushPlatform         String?   @map("push_platform")       // 'web' | 'android' | 'ios'
+  pushTokenUpdatedAt   DateTime? @map("push_token_updated_at")
+
   createdAt            DateTime @default(now()) @map("created_at")
 
   appointments  Appointment[] @relation("ClientAppointments")

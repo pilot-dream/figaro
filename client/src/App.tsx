@@ -21,6 +21,8 @@ import { PageTransition } from '@/components/ui/PageTransition'
 import { DashboardSkeleton } from '@/components/ui/DashboardSkeleton'
 import { TrialCountdownBadge } from '@/components/dashboard/TrialCountdownBadge'
 import { BranchSwitcher } from '@/components/dashboard/BranchSwitcher'
+import { PushNotificationPrompt } from '@/components/ui/PushNotificationPrompt'
+import { isPushSupported, wasPushPromptDismissed, getSavedPushToken } from '@/lib/firebase'
 
 export default function App() {
   const { user, logout, initAuth, initialized } = useAuthStore()
@@ -31,10 +33,25 @@ export default function App() {
   
   const [hasNewNotifications, setHasNewNotifications] = useState(true)
   const [showNotificationsMenu, setShowNotificationsMenu] = useState(false)
+  const [showPushPrompt, setShowPushPrompt] = useState(false)
 
   useEffect(() => {
     initAuth()
   }, [initAuth])
+
+  // Exibe o prompt de push para clientes que ainda não ativaram
+  // Delay de 3s após o login para não interromper o fluxo inicial
+  useEffect(() => {
+    if (!user || user.role !== 'CLIENT') return
+    if (!isPushSupported()) return
+    if (wasPushPromptDismissed() || getSavedPushToken()) return
+
+    const timer = setTimeout(() => {
+      setShowPushPrompt(true)
+    }, 3000)
+
+    return () => clearTimeout(timer)
+  }, [user])
 
   const handleLogout = async () => {
     await logout()
@@ -207,6 +224,11 @@ export default function App() {
         </PageTransition>
       </main>
       {/* Old Client Nav Removed as it conflicted with the new Premium Bottom Nav */}
+
+      {/* Push Notification Permission Modal */}
+      {showPushPrompt && (
+        <PushNotificationPrompt onClose={() => setShowPushPrompt(false)} />
+      )}
     </div>
   )
 }
