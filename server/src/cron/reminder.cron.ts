@@ -1,6 +1,7 @@
 import cron from 'node-cron'
 import { prisma } from '../lib/prisma'
 import { whatsappService } from '../services/whatsapp.service'
+import { pushService } from '../services/push.service'
 
 /**
  * Função principal que processa os lembretes (Exportada para ser chamada via API no Vercel)
@@ -39,12 +40,25 @@ export async function processReminders() {
     })
 
     for (const appt of appointments24h) {
+      // 1. WhatsApp
       const success = await whatsappService.send24hReminder(appt)
       if (success) {
         await prisma.appointment.update({
           where: { id: appt.id },
           data: { wpReminder24hSent: true }
         })
+      }
+
+      // 2. Web Push Notification
+      if (appt.client && appt.client.pushToken) {
+        const time = new Date(appt.startTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        const date = new Date(appt.startTime).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
+        await pushService.sendNotification(
+          appt.client.pushToken,
+          'Lembrete de Agendamento ✂️',
+          `Você tem um horário com ${appt.barber.name} amanhã (${date}) às ${time}.`,
+          '/meus-agendamentos'
+        )
       }
     }
 
@@ -70,12 +84,24 @@ export async function processReminders() {
     })
 
     for (const appt of appointments2h) {
+      // 1. WhatsApp
       const success = await whatsappService.send2hReminder(appt)
       if (success) {
         await prisma.appointment.update({
           where: { id: appt.id },
           data: { wpReminder2hSent: true }
         })
+      }
+
+      // 2. Web Push Notification
+      if (appt.client && appt.client.pushToken) {
+        const time = new Date(appt.startTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        await pushService.sendNotification(
+          appt.client.pushToken,
+          'Seu horário está chegando! ⏳',
+          `Seu corte com ${appt.barber.name} é hoje às ${time}. Não se atrase!`,
+          '/meus-agendamentos'
+        )
       }
     }
 
