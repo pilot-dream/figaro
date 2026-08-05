@@ -567,12 +567,7 @@ export async function fetchClientAppointments(
         service:services(*)
       )
     `)
-
-  if (clientPhone) {
-    query = query.or(`client_id.eq.${clientId},client_phone.eq.${clientPhone}`)
-  } else {
-    query = query.eq('client_id', clientId)
-  }
+    .eq('client_id', clientId)
 
   const { data, error } = await query.order('start_time', { ascending: false })
 

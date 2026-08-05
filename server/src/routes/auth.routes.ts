@@ -43,7 +43,6 @@ router.post('/register', async (req, res, next) => {
       return res.status(400).json({ error: authError?.message || 'Erro ao criar usuário' })
     }
 
-    // A trigger no banco criará o perfil como CLIENT por padrão.
     // Usamos upsert para evitar race condition com a trigger do banco (ou caso a trigger não exista)
     await prisma.user.upsert({
       where: { id: authData.user.id },
@@ -55,6 +54,14 @@ router.post('/register', async (req, res, next) => {
         role: 'CLIENT' 
       }
     })
+
+    // Vincula agendamentos órfãos (feitos antes de criar conta) a este cliente
+    if (phone) {
+      await prisma.appointment.updateMany({
+        where: { clientPhone: phone, clientId: null },
+        data: { clientId: authData.user.id }
+      })
+    }
 
     res.status(201).json({ success: true, user: authData.user })
   } catch (error) {
@@ -114,6 +121,14 @@ router.post('/register-owner', async (req, res, next) => {
         trialEndsAt: trialEnd
       }
     })
+
+    // Vincula agendamentos órfãos (feitos antes de criar conta) a este dono
+    if (phone) {
+      await prisma.appointment.updateMany({
+        where: { clientPhone: phone, clientId: null },
+        data: { clientId: authData.user.id }
+      })
+    }
 
     res.status(201).json({ success: true, user: authData.user })
   } catch (error) {
