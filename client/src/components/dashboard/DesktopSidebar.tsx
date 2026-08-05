@@ -23,12 +23,12 @@ export function DesktopSidebar({ activeTab, onChangeTab }: DesktopSidebarProps) 
       {/* Brand Header */}
       <div className="p-6 border-b border-white/5 flex flex-col gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30">
             <Scissors className="w-5 h-5 text-black" />
           </div>
           <div>
             <h1 className="text-xl font-bold text-white tracking-tight">FÍGARO</h1>
-            <p className="text-[10px] text-amber-500 font-bold uppercase tracking-wider">Painel Barbeiro</p>
+            <p className="text-[10px] text-[#D4AF37] font-bold uppercase tracking-wider">Painel Barbeiro</p>
           </div>
         </div>
       </div>
@@ -37,7 +37,7 @@ export function DesktopSidebar({ activeTab, onChangeTab }: DesktopSidebarProps) 
       <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
         <button
           onClick={() => onChangeTab('booking')}
-          className="w-full flex items-center justify-between p-3 mb-6 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl text-black font-bold shadow-lg shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+          className="w-full flex items-center justify-between p-3 mb-6 bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] rounded-xl text-black font-bold shadow-lg shadow-[#D4AF37]/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
         >
           <div className="flex items-center gap-3">
             <Scissors className="w-5 h-5" />
@@ -56,7 +56,7 @@ export function DesktopSidebar({ activeTab, onChangeTab }: DesktopSidebarProps) 
               onClick={() => onChangeTab(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all cursor-pointer ${
                 isActive 
-                  ? 'bg-amber-500/10 text-amber-500 font-bold' 
+                  ? 'bg-[#D4AF37] text-[#D4AF37] font-bold' 
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
             >

@@ -58,7 +58,7 @@ export function CreateBranchModal({ isOpen, onClose, onSubmit, loading }: Create
       <div className="relative w-full max-w-md bg-[#0A0E14]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.6)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-amber-500" />
+            <Building2 className="w-5 h-5 text-[#D4AF37]" />
             Nova Filial
           </h2>
           <button 
@@ -80,7 +80,7 @@ export function CreateBranchModal({ isOpen, onClose, onSubmit, loading }: Create
                 <input
                   type="text"
                   placeholder="Ex: Fígaro - Unidade Centro"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 pl-10 pr-3 text-white placeholder-white/20 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all text-sm"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 pl-10 pr-3 text-white placeholder-white/20 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all text-sm"
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
                 />
@@ -95,7 +95,7 @@ export function CreateBranchModal({ isOpen, onClose, onSubmit, loading }: Create
               <input
                 type="text"
                 placeholder="Rua, Número, Bairro..."
-                className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-3 text-white placeholder-white/20 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all text-sm"
+                className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 px-3 text-white placeholder-white/20 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all text-sm"
                 value={formData.branchAddress}
                 onChange={e => setFormData({ ...formData, branchAddress: e.target.value })}
               />
@@ -111,7 +111,7 @@ export function CreateBranchModal({ isOpen, onClose, onSubmit, loading }: Create
                     <input
                       type="text"
                       placeholder="Nome do Gerente"
-                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-10 pr-3 text-white placeholder-white/20 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all text-sm"
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-10 pr-3 text-white placeholder-white/20 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all text-sm"
                       value={formData.managerName}
                       onChange={e => setFormData({ ...formData, managerName: e.target.value })}
                     />
@@ -125,7 +125,7 @@ export function CreateBranchModal({ isOpen, onClose, onSubmit, loading }: Create
                     <input
                       type="email"
                       placeholder="E-mail de Acesso"
-                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-10 pr-3 text-white placeholder-white/20 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all text-sm"
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-10 pr-3 text-white placeholder-white/20 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all text-sm"
                       value={formData.managerEmail}
                       onChange={e => setFormData({ ...formData, managerEmail: e.target.value })}
                     />
@@ -139,7 +139,7 @@ export function CreateBranchModal({ isOpen, onClose, onSubmit, loading }: Create
                     <input
                       type="password"
                       placeholder="Senha Inicial"
-                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-10 pr-3 text-white placeholder-white/20 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all text-sm"
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-10 pr-3 text-white placeholder-white/20 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all text-sm"
                       value={formData.managerPassword}
                       onChange={e => setFormData({ ...formData, managerPassword: e.target.value })}
                     />
@@ -162,7 +162,7 @@ export function CreateBranchModal({ isOpen, onClose, onSubmit, loading }: Create
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 py-2.5 rounded-lg bg-amber-500 text-black font-semibold hover:bg-amber-500/90 hover:shadow-amber-500/30 transition-all text-sm disabled:opacity-50"
+              className="flex-1 py-2.5 rounded-lg bg-[#D4AF37] text-black font-semibold hover:bg-[#D4AF37] hover:shadow-[#D4AF37]/30 transition-all text-sm disabled:opacity-50"
             >
               {loading ? 'Criando...' : 'Criar Filial'}
             </button>

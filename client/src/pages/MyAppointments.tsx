@@ -140,7 +140,7 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
       <div className="px-4 mt-2">
         <button 
           onClick={() => setShowSelectBarberModal(true)}
-          className="w-full mb-6 bg-gradient-to-r from-amber-200 to-amber-500 text-black font-semibold rounded-xl py-3 text-sm flex justify-center items-center gap-2"
+          className="w-full mb-6 bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-3 text-sm flex justify-center items-center gap-2"
         >
           <Scissors className="w-4 h-4" /> Novo Agendamento
         </button>
@@ -185,7 +185,7 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
                     <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
                       app.status === 'CONFIRMED' 
                         ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-                        : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        : 'bg-[#D4AF37] text-[#D4AF37] border border-[#D4AF37]'
                     }`}>
                       {app.status === 'CONFIRMED' ? 'Confirmado' : 'Pendente'}
                     </span>

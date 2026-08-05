@@ -39,7 +39,7 @@ export function BlockTimeModal({ onClose, onBlock }: BlockTimeModalProps) {
               required
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs focus:outline-none focus:border-amber-500"
+              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs focus:outline-none focus:border-[#D4AF37]"
             />
           </div>
 

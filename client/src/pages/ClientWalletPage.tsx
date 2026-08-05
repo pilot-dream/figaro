@@ -77,13 +77,13 @@ export function ClientWalletPage() {
       {/* Premium Header */}
       <div className="px-6 pt-6 pb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-200 to-amber-500 bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] bg-clip-text text-transparent">
             Clube Fígaro
           </h1>
           <p className="text-sm text-[#8C97A8] mt-1">Seu programa de recompensas</p>
         </div>
         <div className="w-12 h-12 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center">
-          <Crown className="w-6 h-6 text-amber-400" />
+          <Crown className="w-6 h-6 text-[#D4AF37]" />
         </div>
       </div>
 
@@ -91,10 +91,10 @@ export function ClientWalletPage() {
       <div className="px-4">
         <div className="relative rounded-3xl p-6 overflow-hidden bg-gradient-to-br from-[#1a1c23] to-[#0A0E14] border border-white/10 shadow-2xl">
           {/* Glow effect */}
-          <div className="absolute -right-10 -top-10 w-40 h-40 bg-amber-500/20 blur-[50px] rounded-full pointer-events-none" />
+          <div className="absolute -right-10 -top-10 w-40 h-40 bg-[#D4AF37] blur-[50px] rounded-full pointer-events-none" />
           
           <div className="relative z-10 flex flex-col items-center text-center">
-            <span className="text-xs font-semibold uppercase tracking-wider text-amber-400 mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37] mb-2">
               Saldo Atual
             </span>
             <div className="flex items-end gap-1 mb-6">
@@ -110,7 +110,7 @@ export function ClientWalletPage() {
               </div>
               <div className="w-full h-2.5 bg-black/50 rounded-full overflow-hidden border border-white/5">
                 <div 
-                  className="h-full bg-gradient-to-r from-amber-500 to-amber-300 rounded-full shadow-[0_0_10px_rgba(251,191,36,0.5)] transition-all duration-1000 ease-out"
+                  className="h-full bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] rounded-full shadow-[0_0_10px_rgba(251,191,36,0.5)] transition-all duration-1000 ease-out"
                   style={{ width: `${Math.min(progress, 100)}%` }}
                 />
               </div>
@@ -129,15 +129,15 @@ export function ClientWalletPage() {
       <div className="px-4 mt-6">
         <button className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex items-center justify-between group hover:bg-white/10 transition-colors">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-amber-400" />
+            <div className="w-10 h-10 rounded-full bg-[#D4AF37] flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-[#D4AF37]" />
             </div>
             <div className="text-left">
               <h3 className="font-semibold text-white">Resgatar Prêmios</h3>
               <p className="text-xs text-gray-400">Ver cortes e produtos disponíveis</p>
             </div>
           </div>
-          <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-amber-400 transition-colors" />
+          <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-[#D4AF37] transition-colors" />
         </button>
       </div>
 
@@ -158,7 +158,7 @@ export function ClientWalletPage() {
                   <p className="font-medium text-sm text-white">{item.title}</p>
                   <p className="text-xs text-gray-500 mt-0.5">{item.date}</p>
                 </div>
-                <span className={`font-bold ${item.isRedemption ? 'text-red-400' : 'text-amber-400'}`}>
+                <span className={`font-bold ${item.isRedemption ? 'text-red-400' : 'text-[#D4AF37]'}`}>
                   {item.points}
                 </span>
               </div>

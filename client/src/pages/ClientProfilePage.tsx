@@ -73,12 +73,12 @@ export function ClientProfilePage() {
             alt="Profile" 
             className="w-28 h-28 rounded-full object-cover border-4 border-[#1a1c23] shadow-[0_0_20px_rgba(0,0,0,0.5)]"
           />
-          <button className="absolute bottom-0 right-0 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center text-black border-2 border-[#0A0E14] shadow-lg cursor-pointer hover:bg-amber-400 transition-colors">
+          <button className="absolute bottom-0 right-0 w-8 h-8 bg-[#D4AF37] rounded-full flex items-center justify-center text-black border-2 border-[#0A0E14] shadow-lg cursor-pointer hover:bg-[#D4AF37] transition-colors">
             <Camera className="w-4 h-4" />
           </button>
         </div>
         <h2 className="text-xl font-bold mt-4">{user?.name || 'Usuário Fígaro'}</h2>
-        <p className="text-sm text-amber-400 font-medium">Membro {user?.tier || 'GOLD'}</p>
+        <p className="text-sm text-[#D4AF37] font-medium">Membro {user?.tier || 'GOLD'}</p>
       </div>
 
       {/* Form / Info Section */}
@@ -94,7 +94,7 @@ export function ClientProfilePage() {
                 type="text" 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-[#0A0E14] border border-white/10 rounded-xl px-4 py-3 text-white focus:border-amber-400 focus:outline-none transition-colors"
+                className="w-full bg-[#0A0E14] border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none transition-colors"
               />
             ) : (
               <p className="text-lg font-medium text-white">{name}</p>
@@ -110,7 +110,7 @@ export function ClientProfilePage() {
                 type="text" 
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full bg-[#0A0E14] border border-white/10 rounded-xl px-4 py-3 text-white focus:border-amber-400 focus:outline-none transition-colors"
+                className="w-full bg-[#0A0E14] border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none transition-colors"
               />
             ) : (
               <p className="text-lg font-medium text-white">{phone || 'Não informado'}</p>
@@ -127,7 +127,7 @@ export function ClientProfilePage() {
           {isEditing ? (
             <button 
               onClick={handleSave}
-              className="w-full bg-gradient-to-r from-amber-200 to-amber-500 text-black font-semibold rounded-xl py-3.5 shadow-lg shadow-amber-500/20 cursor-pointer"
+              className="w-full bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-3.5 shadow-lg shadow-[#D4AF37]/30 cursor-pointer"
             >
               Salvar Alterações
             </button>

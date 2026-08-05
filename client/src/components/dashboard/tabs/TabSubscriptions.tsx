@@ -88,24 +88,24 @@ export function TabSubscriptions() {
       <div className="flex justify-between items-end">
         <div>
           <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-            <Crown className="w-6 h-6 text-amber-500" />
+            <Crown className="w-6 h-6 text-[#D4AF37]" />
             Clube de Assinatura (MRR)
           </h2>
           <p className="text-[#8C97A8]">
             Gerencie seus planos e assinantes com horários cativos
           </p>
         </div>
-        <Button onClick={() => setIsCreatingPlan(true)} className="flex items-center gap-2 bg-amber-500 hover:bg-amber-500/90 text-white font-medium border-none shadow-amber-500/30">
+        <Button onClick={() => setIsCreatingPlan(true)} className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#D4AF37] text-white font-medium border-none shadow-[#D4AF37]/30">
           <Plus className="w-4 h-4" />
           Novo Plano
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <GlassCard className="p-6 border-[#1A2332]/50 hover:border-amber-500/30 transition-all">
+        <GlassCard className="p-6 border-[#1A2332]/50 hover:border-[#D4AF37] transition-all">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-amber-500/10 rounded-xl">
-              <Users className="w-6 h-6 text-amber-500" />
+            <div className="p-3 bg-[#D4AF37] rounded-xl">
+              <Users className="w-6 h-6 text-[#D4AF37]" />
             </div>
             <div>
               <p className="text-sm font-medium text-[#8C97A8]">Assinantes Ativos</p>
@@ -154,7 +154,7 @@ export function TabSubscriptions() {
               <div>
                 <p className="font-medium text-white text-lg">{sub.clientName}</p>
                 <div className="flex items-center gap-3 mt-1">
-                  <span className="text-sm text-amber-500 font-medium px-2 py-0.5 bg-amber-500/10 rounded-md">
+                  <span className="text-sm text-[#D4AF37] font-medium px-2 py-0.5 bg-[#D4AF37] rounded-md">
                     {sub.planName}
                   </span>
                   <span className="text-sm text-[#8C97A8]">
@@ -285,26 +285,26 @@ export function TabSubscriptions() {
             }}>
               <div>
                 <label className="block text-sm font-medium text-[#8C97A8] mb-1">Nome do Plano</label>
-                <input name="name" type="text" placeholder="Ex: VIP Mensal" required className="w-full bg-[#0A0E14] border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors" />
+                <input name="name" type="text" placeholder="Ex: VIP Mensal" required className="w-full bg-[#0A0E14] border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#D4AF37] transition-colors" />
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-[#8C97A8] mb-1">Preço Mensal (R$)</label>
-                  <input name="price" type="number" min="0" step="0.01" placeholder="150.00" required className="w-full bg-[#0A0E14] border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors" />
+                  <input name="price" type="number" min="0" step="0.01" placeholder="150.00" required className="w-full bg-[#0A0E14] border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#D4AF37] transition-colors" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-[#8C97A8] mb-1">Cortes p/ Mês</label>
-                  <input name="cutsPerPeriod" type="number" min="1" placeholder="4" required className="w-full bg-[#0A0E14] border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors" />
+                  <input name="cutsPerPeriod" type="number" min="1" placeholder="4" required className="w-full bg-[#0A0E14] border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#D4AF37] transition-colors" />
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-[#8C97A8] mb-1">Descrição</label>
-                <textarea name="description" rows={3} placeholder="Benefícios do plano..." className="w-full bg-[#0A0E14] border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors"></textarea>
+                <textarea name="description" rows={3} placeholder="Benefícios do plano..." className="w-full bg-[#0A0E14] border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#D4AF37] transition-colors"></textarea>
               </div>
 
-              <Button type="submit" disabled={isSubmitting} className="w-full bg-amber-500 hover:bg-amber-500/90 text-white font-bold py-3 border-none shadow-amber-500/30 mt-2 disabled:opacity-50">
+              <Button type="submit" disabled={isSubmitting} className="w-full bg-[#D4AF37] hover:bg-[#D4AF37] text-white font-bold py-3 border-none shadow-[#D4AF37]/30 mt-2 disabled:opacity-50">
                 {isSubmitting ? 'Criando...' : 'Criar Plano'}
               </Button>
             </form>

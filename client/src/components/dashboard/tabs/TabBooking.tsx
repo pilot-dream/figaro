@@ -124,7 +124,7 @@ export function TabBooking({
             <select
               value={targetBarberId}
               onChange={(e) => setTargetBarberId(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-amber-500 outline-none appearance-none"
+              className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-[#D4AF37] outline-none appearance-none"
             >
               {teamMembers.map((m) => (
                 <option key={m.id} value={m.id} className="text-black">
@@ -137,7 +137,7 @@ export function TabBooking({
 
         {/* Step 1: Services */}
         <div className="space-y-3">
-          <label className="text-xs font-bold uppercase text-amber-500 tracking-wider block">
+          <label className="text-xs font-bold uppercase text-[#D4AF37] tracking-wider block">
             1. Selecione os Serviços
           </label>
 
@@ -151,7 +151,7 @@ export function TabBooking({
                   onClick={() => toggleService(srv)}
                   className={`p-3.5 flex items-center justify-between border transition-all ${
                     isSelected
-                      ? 'border-amber-500 bg-amber-500/10'
+                      ? 'border-[#D4AF37] bg-[#D4AF37]'
                       : 'border-glass-border'
                   }`}
                 >
@@ -159,7 +159,7 @@ export function TabBooking({
                     <div
                       className={`w-4 h-4 rounded border flex items-center justify-center ${
                         isSelected
-                          ? 'bg-amber-500 border-amber-500 text-white'
+                          ? 'bg-[#D4AF37] border-[#D4AF37] text-white'
                           : 'border-white/20'
                       }`}
                     >
@@ -180,7 +180,7 @@ export function TabBooking({
         {/* Step 2: Date & Slot Selection */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-bold uppercase text-amber-500 tracking-wider block">
+            <label className="text-xs font-bold uppercase text-[#D4AF37] tracking-wider block">
               2. Escolha Data & Horário Livre
             </label>
 
@@ -191,7 +191,7 @@ export function TabBooking({
                 setDateStr(e.target.value)
                 setSelectedSlot(null)
               }}
-              className="bg-white/5 border border-glass-border px-3 py-1 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-amber-500 cursor-pointer"
+              className="bg-white/5 border border-glass-border px-3 py-1 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-[#D4AF37] cursor-pointer"
             />
           </div>
 
@@ -216,8 +216,8 @@ export function TabBooking({
                       !slot.available
                         ? 'opacity-30 border-white/10 bg-white/5 line-through text-figaro-text-secondary'
                         : isSelected
-                        ? 'bg-amber-500 border-amber-500 text-white shadow-lg'
-                        : 'glass-panel text-white hover:border-amber-500/50'
+                        ? 'bg-[#D4AF37] border-[#D4AF37] text-white shadow-lg'
+                        : 'glass-panel text-white hover:border-[#D4AF37]'
                     }`}
                   >
                     {timeStr}
@@ -230,7 +230,7 @@ export function TabBooking({
 
         {/* Step 3: Client Info */}
         <div className="space-y-3">
-          <label className="text-xs font-bold uppercase text-amber-500 tracking-wider block">
+          <label className="text-xs font-bold uppercase text-[#D4AF37] tracking-wider block">
             3. Dados do Cliente
           </label>
 
@@ -245,7 +245,7 @@ export function TabBooking({
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
                 placeholder="Ex: João Souza"
-                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs focus:outline-none focus:border-amber-500"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs focus:outline-none focus:border-[#D4AF37]"
               />
             </div>
 
@@ -259,7 +259,7 @@ export function TabBooking({
                 value={clientPhone}
                 onChange={(e) => setClientPhone(e.target.value)}
                 placeholder="(11) 99999-9999"
-                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs focus:outline-none focus:border-amber-500"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs focus:outline-none focus:border-[#D4AF37]"
               />
             </div>
 
@@ -272,7 +272,7 @@ export function TabBooking({
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Ex: Cliente balcão, pagamento em dinheiro"
-                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs focus:outline-none focus:border-amber-500"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs focus:outline-none focus:border-[#D4AF37]"
               />
             </div>
           </GlassCard>

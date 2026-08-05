@@ -186,7 +186,7 @@ export function TeamSettings() {
             Gerencie os barbeiros e administradores do salão.
           </p>
         </div>
-        <Button onClick={openNewModal} className="w-full sm:w-auto bg-amber-500 hover:bg-[#0090FF] text-white">
+        <Button onClick={openNewModal} className="w-full sm:w-auto bg-[#D4AF37] hover:bg-[#0090FF] text-white">
           <Plus className="w-4 h-4 mr-2" /> Novo Colaborador
         </Button>
       </div>
@@ -209,7 +209,7 @@ export function TeamSettings() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {team.map((member) => (
-            <GlassCard key={member.id} className="p-5 flex flex-col items-center text-center gap-4 border-white/10 hover:border-amber-500/40 transition-colors">
+            <GlassCard key={member.id} className="p-5 flex flex-col items-center text-center gap-4 border-white/10 hover:border-[#D4AF37] transition-colors">
               <div className="relative">
                 <img
                   src={member.avatarUrl || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80'}
@@ -226,7 +226,7 @@ export function TeamSettings() {
               <div>
                 <h4 className="font-semibold text-white text-base">{member.name}</h4>
                 {member.specialty && (
-                  <p className="text-xs font-medium text-amber-500 mt-1">{member.specialty}</p>
+                  <p className="text-xs font-medium text-[#D4AF37] mt-1">{member.specialty}</p>
                 )}
                 <p className="text-[11px] text-figaro-text-secondary mt-1">{member.email || member.phone || 'Sem contato'}</p>
                 <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-xs font-medium text-white/80">
@@ -270,7 +270,7 @@ export function TeamSettings() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-amber-500 outline-none transition-colors"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-[#D4AF37] outline-none transition-colors"
                 />
               </div>
 
@@ -283,7 +283,7 @@ export function TeamSettings() {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-amber-500 outline-none transition-colors"
+                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-[#D4AF37] outline-none transition-colors"
                     />
                   </div>
                   <div>
@@ -293,7 +293,7 @@ export function TeamSettings() {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-amber-500 outline-none transition-colors"
+                      className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-[#D4AF37] outline-none transition-colors"
                     />
                   </div>
                 </>
@@ -305,7 +305,7 @@ export function TeamSettings() {
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-amber-500 outline-none transition-colors"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-[#D4AF37] outline-none transition-colors"
                 />
               </div>
 
@@ -315,7 +315,7 @@ export function TeamSettings() {
                   type="text"
                   value={specialty}
                   onChange={(e) => setSpecialty(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-amber-500 outline-none transition-colors"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-[#D4AF37] outline-none transition-colors"
                 />
               </div>
 
@@ -329,7 +329,7 @@ export function TeamSettings() {
                       className="w-12 h-12 rounded-full object-cover border border-white/10"
                     />
                   )}
-                  <label className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm hover:border-amber-500 cursor-pointer transition-colors">
+                  <label className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm hover:border-[#D4AF37] cursor-pointer transition-colors">
                     <Upload className="w-4 h-4" />
                     {isUploading ? 'Enviando...' : 'Escolher Arquivo'}
                     <input
@@ -348,7 +348,7 @@ export function TeamSettings() {
                 <select
                   value={role}
                   onChange={(e) => setRole(e.target.value as any)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-amber-500 outline-none appearance-none transition-colors"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-[#D4AF37] outline-none appearance-none transition-colors"
                 >
                   <option value="BARBER">Barbeiro (Acesso à própria agenda)</option>
                   <option value="OWNER">Dono (Acesso total)</option>
@@ -367,7 +367,7 @@ export function TeamSettings() {
                     onClick={() => setCommissionType('PERCENTAGE')}
                     className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
                       commissionType === 'PERCENTAGE' 
-                        ? 'bg-amber-500 text-white shadow-md' 
+                        ? 'bg-[#D4AF37] text-white shadow-md' 
                         : 'text-figaro-text-secondary hover:text-white'
                     }`}
                   >
@@ -378,7 +378,7 @@ export function TeamSettings() {
                     onClick={() => setCommissionType('FIXED')}
                     className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
                       commissionType === 'FIXED' 
-                        ? 'bg-amber-500 text-white shadow-md' 
+                        ? 'bg-[#D4AF37] text-white shadow-md' 
                         : 'text-figaro-text-secondary hover:text-white'
                     }`}
                   >
@@ -396,7 +396,7 @@ export function TeamSettings() {
                     min="0"
                     value={commissionValue}
                     onChange={(e) => setCommissionValue(Number(e.target.value))}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-amber-500 outline-none transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-glass-border text-white text-sm focus:border-[#D4AF37] outline-none transition-colors"
                   />
                   <p className="text-[10px] text-figaro-text-secondary mt-1.5">
                     {commissionType === 'PERCENTAGE' 
@@ -407,7 +407,7 @@ export function TeamSettings() {
               </div>
 
               <div className="pt-4 border-t border-white/10">
-                <Button type="submit" className="w-full bg-amber-500 hover:bg-[#0090FF] text-white">
+                <Button type="submit" className="w-full bg-[#D4AF37] hover:bg-[#0090FF] text-white">
                   <Save className="w-4 h-4 mr-2" /> Salvar Colaborador
                 </Button>
               </div>

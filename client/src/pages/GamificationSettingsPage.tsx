@@ -81,7 +81,7 @@ export const GamificationSettingsPage: React.FC = () => {
 
           <div className="flex flex-col justify-between rounded-2xl bg-[#0A0E14]/90 p-5 backdrop-blur-md border border-white/10">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-amber-500/10 rounded-lg text-amber-500">
+              <div className="p-2 bg-[#D4AF37] rounded-lg text-[#D4AF37]">
                 <Zap className="h-5 w-5" />
               </div>
               <h3 className="font-medium">Reativação (Win-back)</h3>

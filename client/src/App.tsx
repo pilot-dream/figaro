@@ -90,7 +90,7 @@ export default function App() {
                 to={['BARBER', 'MANAGER', 'OWNER'].includes(user.role) ? '/painel' : '/meus-agendamentos'}
                 className="flex items-center gap-2 hover:opacity-80 transition-opacity"
               >
-                <Scissors className="w-5 h-5 text-amber-500" />
+                <Scissors className="w-5 h-5 text-[#D4AF37]" />
                 <span className="font-bold text-white text-sm">FÍGARO</span>
               </Link>
               <span className="text-[10px] px-2 py-0.5 rounded font-mono font-bold uppercase bg-white/10 text-figaro-text-secondary">
@@ -163,7 +163,7 @@ export default function App() {
               {/* Profile Avatar */}
               {user.role !== 'CLIENT' && (
                 <button
-                  className="w-9 h-9 rounded-full overflow-hidden border-2 border-white/10 hover:border-amber-400 transition-colors cursor-pointer"
+                  className="w-9 h-9 rounded-full overflow-hidden border-2 border-white/10 hover:border-[#D4AF37] transition-colors cursor-pointer"
                 >
                   <Link to="/painel/configuracoes">
                     <img 

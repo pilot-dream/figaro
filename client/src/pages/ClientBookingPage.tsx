@@ -137,7 +137,7 @@ export function ClientBookingPage() {
     return (
       <div className="min-h-screen w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
         <div className="px-4 py-20 flex justify-center">
-          <div className="w-16 h-16 border-4 border-amber-400 border-t-transparent rounded-full animate-spin" />
+          <div className="w-16 h-16 border-4 border-[#D4AF37] border-t-transparent rounded-full animate-spin" />
         </div>
       </div>
     )
@@ -151,7 +151,7 @@ export function ClientBookingPage() {
             <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
             <h2 className="text-white font-bold text-lg">Barbeiro não encontrado</h2>
             <p className="text-[#8C97A8] text-sm">Verifique o link ou faça login.</p>
-            <Link to="/login" className="block mt-4 bg-gradient-to-r from-amber-200 to-amber-500 text-black font-semibold rounded-xl py-3 text-sm">
+            <Link to="/login" className="block mt-4 bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-3 text-sm">
               Ir para Login
             </Link>
           </div>
@@ -182,7 +182,7 @@ export function ClientBookingPage() {
                 setSelectedServices([])
                 setSelectedSlot(null)
               }}
-              className="w-full bg-gradient-to-r from-amber-200 to-amber-500 text-black font-semibold rounded-xl py-4"
+              className="w-full bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-4"
             >
               Realizar Novo Agendamento
             </button>
@@ -214,7 +214,7 @@ export function ClientBookingPage() {
             {/* 2. Cards match applied here as well */}
             <button className="w-10 h-10 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center relative">
               <Bell className="w-5 h-5 text-white" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-amber-400 rounded-full"></span>
+              <span className="absolute top-2 right-2 w-2 h-2 bg-[#D4AF37] rounded-full"></span>
             </button>
           </div>
 
@@ -229,7 +229,7 @@ export function ClientBookingPage() {
             </div>
             <div className="mt-4 relative z-10 flex items-center gap-3">
                <div className="flex-1 bg-white/10 h-2 rounded-full overflow-hidden">
-                 <div className="bg-gradient-to-r from-amber-200 to-amber-500 w-[60%] h-full rounded-full"></div>
+                 <div className="bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] w-[60%] h-full rounded-full"></div>
                </div>
             </div>
             <p className="text-[#8C97A8] text-[10px] mt-2">Faltam 2 cortes para você ganhar seu prêmio</p>
@@ -245,7 +245,7 @@ export function ClientBookingPage() {
               />
               <div className="absolute inset-0 bg-gradient-to-r from-[#0A0E14] to-[#0A0E14]/10"></div>
               <div className="absolute inset-0 p-6 flex flex-col justify-center">
-                <span className="text-amber-400 font-bold text-sm tracking-widest uppercase mb-1 drop-shadow-md">Especial</span>
+                <span className="text-[#D4AF37] font-bold text-sm tracking-widest uppercase mb-1 drop-shadow-md">Especial</span>
                 <h3 className="text-2xl text-white font-bold mb-1">Promoção Exclusiva</h3>
                 <p className="text-[#8C97A8] text-sm mb-4">Aproveite as ofertas do barbeiro</p>
               </div>
@@ -259,10 +259,10 @@ export function ClientBookingPage() {
               />
               <div className="absolute inset-0 bg-gradient-to-r from-[#0A0E14] to-[#0A0E14]/10"></div>
               <div className="absolute inset-0 p-6 flex flex-col justify-center">
-                <span className="text-amber-400 font-bold text-sm tracking-widest uppercase mb-1 drop-shadow-md">Especial</span>
+                <span className="text-[#D4AF37] font-bold text-sm tracking-widest uppercase mb-1 drop-shadow-md">Especial</span>
                 <h3 className="text-2xl text-white font-bold mb-1">Corte Premium</h3>
-                <p className="text-[#8C97A8] text-sm mb-4">Ganhe <strong className="text-amber-400">20% OFF</strong></p>
-                <button className="bg-gradient-to-r from-amber-200 to-amber-500 text-black font-semibold rounded-xl px-5 py-1.5 text-xs w-fit">
+                <p className="text-[#8C97A8] text-sm mb-4">Ganhe <strong className="text-[#D4AF37]">20% OFF</strong></p>
+                <button className="bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl px-5 py-1.5 text-xs w-fit">
                   Agendar
                 </button>
               </div>
@@ -274,7 +274,7 @@ export function ClientBookingPage() {
             <button 
               onClick={() => step > 1 && setStep(1)} 
               className={`flex-1 text-center py-2.5 rounded-full text-[11px] font-bold transition-all ${
-                step >= 1 ? 'bg-gradient-to-r from-amber-200 to-amber-500 text-black' : 'bg-white/5 border border-white/10 text-[#8C97A8]'
+                step >= 1 ? 'bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black' : 'bg-white/5 border border-white/10 text-[#8C97A8]'
               }`}
             >
               1. Escolha
@@ -284,7 +284,7 @@ export function ClientBookingPage() {
               onClick={() => step > 2 && setStep(2)} 
               disabled={selectedServices.length === 0 && step === 1}
               className={`flex-1 text-center py-2.5 rounded-full text-[11px] font-bold transition-all ${
-                step >= 2 ? 'bg-gradient-to-r from-amber-200 to-amber-500 text-black' : 'bg-white/5 border border-white/10 text-[#8C97A8]'
+                step >= 2 ? 'bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black' : 'bg-white/5 border border-white/10 text-[#8C97A8]'
               }`}
             >
               2. Data&Hora
@@ -292,7 +292,7 @@ export function ClientBookingPage() {
             <span className="text-white/30 mx-2 text-xs">⟶</span>
             <button 
               className={`flex-1 text-center py-2.5 rounded-full text-[11px] font-bold transition-all ${
-                step === 3 ? 'bg-gradient-to-r from-amber-200 to-amber-500 text-black' : 'bg-white/5 border border-white/10 text-[#8C97A8]'
+                step === 3 ? 'bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black' : 'bg-white/5 border border-white/10 text-[#8C97A8]'
               }`}
             >
               3. Confirmação
@@ -321,13 +321,13 @@ export function ClientBookingPage() {
                       <div
                         key={srv.id}
                         className={`bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden flex flex-col transition-all ${
-                          isSelected ? 'ring-2 ring-amber-400' : ''
+                          isSelected ? 'ring-2 ring-[#D4AF37]' : ''
                         }`}
                       >
                         <div className="relative h-36">
                           <img src={imageUrl} alt={srv.name} className="w-full h-full object-cover" />
                           <div className="absolute top-2 left-2 bg-white/20 backdrop-blur-md rounded-lg px-2 py-1 flex items-center gap-1 text-white font-bold text-xs">
-                            <Star className="w-3 h-3 text-amber-400 fill-amber-400" /> 4.9
+                            <Star className="w-3 h-3 text-[#D4AF37] fill-[#D4AF37]" /> 4.9
                           </div>
                           <div className="absolute top-2 right-2 text-white">
                             <Heart className="w-5 h-5" />
@@ -344,7 +344,7 @@ export function ClientBookingPage() {
                               className={`w-full text-black font-semibold rounded-xl py-2.5 text-xs transition-all ${
                                 isSelected 
                                 ? 'bg-white/20 text-white' 
-                                : 'bg-gradient-to-r from-amber-200 to-amber-500'
+                                : 'bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37]'
                               }`}
                             >
                               {isSelected ? 'Remover' : 'Agendar'}
@@ -360,7 +360,7 @@ export function ClientBookingPage() {
                  <div className="pt-6">
                     <button 
                       onClick={() => setStep(2)}
-                      className="w-full bg-gradient-to-r from-amber-200 to-amber-500 text-black font-semibold rounded-xl py-4 shadow-lg shadow-amber-500/20"
+                      className="w-full bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-4 shadow-lg shadow-[#D4AF37]/30"
                     >
                       Prosseguir para Horários
                     </button>
@@ -384,7 +384,7 @@ export function ClientBookingPage() {
                     }}
                     className={`flex-shrink-0 min-w-[70px] min-h-[70px] flex flex-col justify-center items-center p-2 rounded-2xl transition-all cursor-pointer ${
                       selectedDate === item.iso
-                        ? 'bg-gradient-to-r from-amber-200 to-amber-500 text-black shadow-lg shadow-amber-500/20'
+                        ? 'bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black shadow-lg shadow-[#D4AF37]/30'
                         : 'bg-white/5 backdrop-blur-md border border-white/10 text-[#8C97A8]'
                     }`}
                   >
@@ -403,7 +403,7 @@ export function ClientBookingPage() {
                 </div>
               ) : slots.length === 0 || !slots.some(s => s.available) ? (
                 <div className="p-6 text-center space-y-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl">
-                   <AlertCircle className="w-8 h-8 text-amber-400 mx-auto" />
+                   <AlertCircle className="w-8 h-8 text-[#D4AF37] mx-auto" />
                    <h4 className="text-white font-bold text-lg">Agenda Esgotada</h4>
                    <p className="text-[#8C97A8] text-sm">Sem horários para este dia.</p>
                 </div>
@@ -418,8 +418,8 @@ export function ClientBookingPage() {
                         onClick={() => setSelectedSlot(slot)}
                         className={`h-12 rounded-xl text-sm font-bold transition-all flex items-center justify-center cursor-pointer ${
                           isSelected
-                            ? 'bg-gradient-to-r from-amber-200 to-amber-500 text-black shadow-lg shadow-amber-500/20'
-                            : 'bg-white/5 backdrop-blur-md border border-white/10 text-white hover:border-amber-400 hover:bg-white/10'
+                            ? 'bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black shadow-lg shadow-[#D4AF37]/30'
+                            : 'bg-white/5 backdrop-blur-md border border-white/10 text-white hover:border-[#D4AF37] hover:bg-white/10'
                         }`}
                       >
                         {timeStr}
@@ -433,7 +433,7 @@ export function ClientBookingPage() {
                  <div className="pt-4">
                     <button 
                       onClick={() => setStep(3)}
-                      className="w-full bg-gradient-to-r from-amber-200 to-amber-500 text-black font-semibold rounded-xl py-4 shadow-lg shadow-amber-500/20"
+                      className="w-full bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-4 shadow-lg shadow-[#D4AF37]/30"
                     >
                       Ir para Confirmação
                     </button>
@@ -449,7 +449,7 @@ export function ClientBookingPage() {
               
               {!user ? (
                 <div className="p-6 space-y-4 text-center bg-white/5 backdrop-blur-md border border-white/10">
-                  <div className="w-12 h-12 rounded-full bg-amber-400/20 text-amber-400 flex items-center justify-center mx-auto border border-amber-400/30">
+                  <div className="w-12 h-12 rounded-full bg-[#D4AF37] text-[#D4AF37] flex items-center justify-center mx-auto border border-[#D4AF37]">
                     <LogIn className="w-6 h-6" />
                   </div>
                   <h4 className="text-white font-bold text-base">Faça Login</h4>
@@ -462,7 +462,7 @@ export function ClientBookingPage() {
                       </button>
                     </Link>
                     <Link to={`/registro?redirect=/${slug}`} className="flex-1">
-                      <button type="button" className="w-full bg-gradient-to-r from-amber-200 to-amber-500 text-black font-semibold rounded-xl py-3 text-sm">
+                      <button type="button" className="w-full bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-3 text-sm">
                         Criar Conta
                       </button>
                     </Link>
@@ -471,7 +471,7 @@ export function ClientBookingPage() {
               ) : (
                 <div className="p-6 space-y-5 bg-white/5 backdrop-blur-md border border-white/10">
                   <div className="bg-white/5 backdrop-blur-md border border-white/10 p-4 rounded-2xl flex flex-col gap-2">
-                    <span className="text-amber-400 font-semibold text-xs flex items-center gap-2">
+                    <span className="text-[#D4AF37] font-semibold text-xs flex items-center gap-2">
                       <ShieldCheck className="w-4 h-4" /> Conectado como {user.name}
                     </span>
                     <span className="text-white font-bold text-sm">Total: R$ {totalDuration}</span>
@@ -481,7 +481,7 @@ export function ClientBookingPage() {
                     <label className="text-[#8C97A8] text-xs font-semibold block mb-1">Nome Completo</label>
                     <input
                       type="text" required value={clientName} onChange={e => setClientName(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 text-white focus:outline-none focus:border-amber-400"
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 text-white focus:outline-none focus:border-[#D4AF37]"
                     />
                   </div>
 
@@ -489,7 +489,7 @@ export function ClientBookingPage() {
                     <label className="text-[#8C97A8] text-xs font-semibold block mb-1">WhatsApp</label>
                     <input
                       type="tel" required value={clientPhone} onChange={e => setClientPhone(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 text-white focus:outline-none focus:border-amber-400"
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 text-white focus:outline-none focus:border-[#D4AF37]"
                     />
                   </div>
                   
@@ -497,7 +497,7 @@ export function ClientBookingPage() {
                       type="button"
                       disabled={submitting}
                       onClick={handleConfirmAppointment}
-                      className="w-full bg-gradient-to-r from-amber-200 to-amber-500 text-black font-semibold rounded-xl py-4 shadow-lg shadow-amber-500/20 flex justify-center mt-6"
+                      className="w-full bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-4 shadow-lg shadow-[#D4AF37]/30 flex justify-center mt-6"
                     >
                       {submitting ? <RefreshCw className="w-6 h-6 animate-spin text-black" /> : 'Confirmar Agendamento'}
                     </button>

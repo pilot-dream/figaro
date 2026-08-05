@@ -8,7 +8,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return (
       <div className="bg-[#0A0E14]/90 backdrop-blur-md border border-white/10 p-3 rounded-xl shadow-xl">
         <p className="text-white font-bold mb-1">{label}</p>
-        <p className="text-amber-500 text-sm font-medium">
+        <p className="text-[#D4AF37] text-sm font-medium">
           R$ {payload[0].value.toFixed(2)}
         </p>
       </div>

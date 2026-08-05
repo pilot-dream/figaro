@@ -97,8 +97,8 @@ export function PushNotificationPrompt({ onClose }: PushNotificationPromptProps)
           {/* Ícone principal animado */}
           <div className="flex justify-center mb-6">
             <div className="relative">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400/20 to-amber-600/10 border border-amber-400/20 flex items-center justify-center">
-                <Bell className="w-7 h-7 text-amber-400 animate-[wiggle_1.5s_ease-in-out_infinite]" />
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#FBE7A1]/20 to-[#D4AF37]/10 border border-[#D4AF37] flex items-center justify-center">
+                <Bell className="w-7 h-7 text-[#D4AF37] animate-[wiggle_1.5s_ease-in-out_infinite]" />
               </div>
               {/* Dot de notificação */}
               <span className="absolute top-1 right-1 w-3 h-3 bg-[#F0553F] rounded-full border-2 border-[#0A0E14] animate-pulse" />
@@ -112,14 +112,14 @@ export function PushNotificationPrompt({ onClose }: PushNotificationPromptProps)
 
           {/* Descrição principal */}
           <p className="text-center text-sm text-gray-400 mb-6 leading-relaxed">
-            Quer ser avisado <span className="text-amber-400 font-semibold">2h antes</span> do seu corte para não esquecer? Ative os lembretes.
+            Quer ser avisado <span className="text-[#D4AF37] font-semibold">2h antes</span> do seu corte para não esquecer? Ative os lembretes.
           </p>
 
           {/* Benefícios */}
           <div className="space-y-3 mb-6">
             <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/[0.03] border border-white/5">
-              <div className="w-8 h-8 rounded-full bg-amber-400/10 flex items-center justify-center shrink-0">
-                <Clock className="w-4 h-4 text-amber-400" />
+              <div className="w-8 h-8 rounded-full bg-[#D4AF37] flex items-center justify-center shrink-0">
+                <Clock className="w-4 h-4 text-[#D4AF37]" />
               </div>
               <span className="text-xs text-gray-300">Lembrete automático antes do horário</span>
             </div>
@@ -138,7 +138,7 @@ export function PushNotificationPrompt({ onClose }: PushNotificationPromptProps)
             <button
               onClick={handleActivate}
               disabled={isLoading}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-sm shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-bold text-sm shadow-lg shadow-[#D4AF37]/30 hover:shadow-[#D4AF37]/30 transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>

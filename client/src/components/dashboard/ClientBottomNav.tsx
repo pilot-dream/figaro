@@ -22,11 +22,11 @@ export function ClientBottomNav({ onActionClick }: ClientBottomNavProps) {
           {/* Lado Esquerdo: Agenda */}
           <button 
             onClick={() => navigate('/meus-agendamentos')} 
-            className={`flex flex-col items-center justify-center min-w-[60px] transition-colors cursor-pointer ${isSchedule ? 'text-amber-400 font-semibold' : 'text-gray-400 hover:text-white'}`}
+            className={`flex flex-col items-center justify-center min-w-[60px] transition-colors cursor-pointer ${isSchedule ? 'text-[#D4AF37] font-semibold' : 'text-gray-400 hover:text-white'}`}
           >
              <Calendar className="w-6 h-6" />
              <span className="text-[10px] font-medium mt-1">Agenda</span>
-             {isSchedule && <div className="w-1 h-1 bg-amber-400 rounded-full mx-auto mt-1 shadow-sm shadow-amber-400" />}
+             {isSchedule && <div className="w-1 h-1 bg-[#D4AF37] rounded-full mx-auto mt-1 shadow-sm shadow-[#D4AF37]/30" />}
           </button>
           
           {/* Center Button: Novo Agendamento (Floating FAB) */}
@@ -40,7 +40,7 @@ export function ClientBottomNav({ onActionClick }: ClientBottomNavProps) {
                    navigate('/meus-agendamentos?agendar=true')
                  }
                }}
-               className="bg-gradient-to-br from-amber-500 to-amber-600 p-3 rounded-full shadow-[0_4px_15px_rgba(245,158,11,0.4)] border-4 border-[#0A0E14] text-white transform active:scale-95 transition-all duration-200 flex items-center justify-center cursor-pointer w-16 h-16"
+               className="bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] p-3 rounded-full shadow-[0_4px_15px_rgba(245,158,11,0.4)] border-4 border-[#0A0E14] text-white transform active:scale-95 transition-all duration-200 flex items-center justify-center cursor-pointer w-16 h-16"
              >
                 <Plus className="w-8 h-8 text-white" strokeWidth={3} />
              </button>
@@ -49,11 +49,11 @@ export function ClientBottomNav({ onActionClick }: ClientBottomNavProps) {
           {/* Lado Direito: Perfil */}
           <button 
             onClick={() => navigate('/perfil')} 
-            className={`flex flex-col items-center justify-center min-w-[60px] transition-colors cursor-pointer ${isProfile ? 'text-amber-400 font-semibold' : 'text-gray-400 hover:text-white'}`}
+            className={`flex flex-col items-center justify-center min-w-[60px] transition-colors cursor-pointer ${isProfile ? 'text-[#D4AF37] font-semibold' : 'text-gray-400 hover:text-white'}`}
           >
              <UserIcon className="w-6 h-6" />
              <span className="text-[10px] font-medium mt-1">Perfil</span>
-             {isProfile && <div className="w-1 h-1 bg-amber-400 rounded-full mx-auto mt-1 shadow-sm shadow-amber-400" />}
+             {isProfile && <div className="w-1 h-1 bg-[#D4AF37] rounded-full mx-auto mt-1 shadow-sm shadow-[#D4AF37]/30" />}
           </button>
           
       </nav>

@@ -75,11 +75,11 @@ export function TabHome({
         <div className="flex items-center gap-3">
           {user?.role === 'OWNER' && (
             <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-amber-500" />
+              <Filter className="w-4 h-4 text-[#D4AF37]" />
               <select
                 value={barberFilter}
                 onChange={(e) => setBarberFilter(e.target.value)}
-                className="bg-white/5 border border-glass-border px-3 py-1.5 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-amber-500 cursor-pointer"
+                className="bg-white/5 border border-glass-border px-3 py-1.5 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-[#D4AF37] cursor-pointer"
               >
                 <option value="all">Barbearia em Geral</option>
                 {barbers.map((b) => (
@@ -90,11 +90,11 @@ export function TabHome({
           )}
 
           <div className="flex items-center gap-2">
-            <CalendarIcon className="w-4 h-4 text-amber-500" />
+            <CalendarIcon className="w-4 h-4 text-[#D4AF37]" />
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value as any)}
-            className="bg-white/5 border border-glass-border px-3 py-1.5 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-amber-500 cursor-pointer"
+            className="bg-white/5 border border-glass-border px-3 py-1.5 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-[#D4AF37] cursor-pointer"
           >
             <option value="today">Hoje</option>
             <option value="yesterday">Ontem</option>
@@ -108,7 +108,7 @@ export function TabHome({
       {/* KPI Cards Grid with Circular Glass Icon Containers */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {/* KPI 1: TOTAL FATURADO */}
-        <GlassCard glow className="p-4 space-y-3 border-amber-500/40">
+        <GlassCard glow className="p-4 space-y-3 border-[#D4AF37]">
           <div className="flex items-center justify-between">
             <span className="text-[10px] uppercase font-bold text-figaro-text-secondary tracking-wider">
               Total Faturado
@@ -117,7 +117,7 @@ export function TabHome({
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
-          <p className="text-2xl font-black text-amber-500 drop-shadow-amber-500/30">
+          <p className="text-2xl font-black text-[#D4AF37] drop-shadow-[#D4AF37]/30">
             R$ {totalBilled.toFixed(2)}
           </p>
           <span className="text-[10px] text-[#2ED9A0] font-bold flex items-center gap-1">
@@ -126,12 +126,12 @@ export function TabHome({
         </GlassCard>
 
         {/* KPI 2: TOTAL CORTES */}
-        <GlassCard className="p-4 space-y-3 border-amber-500/30">
+        <GlassCard className="p-4 space-y-3 border-[#D4AF37]">
           <div className="flex items-center justify-between">
             <span className="text-[10px] uppercase font-bold text-figaro-text-secondary tracking-wider">
               Total Cortes
             </span>
-            <div className="w-9 h-9 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-500 shadow-amber-500/30">
+            <div className="w-9 h-9 rounded-full bg-[#D4AF37] border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] shadow-[#D4AF37]/30">
               <Scissors className="w-4 h-4" />
             </div>
           </div>
@@ -176,7 +176,7 @@ export function TabHome({
       {/* Upcoming Clients Summary */}
       <div className="space-y-4 pt-2">
         <h3 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
-          <Clock className="w-4 h-4 text-amber-500" /> Próximos Atendimentos
+          <Clock className="w-4 h-4 text-[#D4AF37]" /> Próximos Atendimentos
         </h3>
 
         {upcomingAppointments.length === 0 ? (

@@ -93,7 +93,7 @@ export function StepDateTime() {
           </label>
           <button
             onClick={() => setShowWaitlistModal(true)}
-            className="text-xs text-[var(--color-figaro-amber)] underline hover:text-amber-300 font-medium"
+            className="text-xs text-[var(--color-figaro-amber)] underline hover:text-[#D4AF37] font-medium"
           >
             Não achou seu horário? Entrar na Lista de Espera
           </button>
