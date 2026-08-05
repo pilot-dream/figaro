@@ -26,7 +26,6 @@ model User {
   phone                String?
   role                 String   @default("CLIENT")
   avatarUrl            String?  @map("avatar_url")
-  bannerImageUrl       String?  @map("banner_image_url")
   ownerId              String?  @map("owner_id") @db.Uuid
   notes                String?
   specialty            String?
