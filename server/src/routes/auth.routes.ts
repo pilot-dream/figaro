@@ -44,10 +44,16 @@ router.post('/register', async (req, res, next) => {
     }
 
     // A trigger no banco criará o perfil como CLIENT por padrão.
-    // Garantimos que a role é CLIENT no Prisma:
-    await prisma.user.update({
+    // Usamos upsert para evitar race condition com a trigger do banco (ou caso a trigger não exista)
+    await prisma.user.upsert({
       where: { id: authData.user.id },
-      data: { role: 'CLIENT' }
+      update: { role: 'CLIENT', name, phone: phone || null },
+      create: { 
+        id: authData.user.id,
+        name,
+        phone: phone || null,
+        role: 'CLIENT' 
+      }
     })
 
     res.status(201).json({ success: true, user: authData.user })
@@ -88,9 +94,20 @@ router.post('/register-owner', async (req, res, next) => {
     // 3. Força a role OWNER, salva o slug e inicia 7 dias de TRIAL
     const trialEnd = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
-    await prisma.user.update({
+    await prisma.user.upsert({
       where: { id: authData.user.id },
-      data: { 
+      update: { 
+        role: 'OWNER',
+        slug: candidateSlug,
+        saasStatus: 'TRIAL',
+        trialEndsAt: trialEnd,
+        name,
+        phone: phone || null
+      },
+      create: {
+        id: authData.user.id,
+        name,
+        phone: phone || null,
         role: 'OWNER',
         slug: candidateSlug,
         saasStatus: 'TRIAL',
