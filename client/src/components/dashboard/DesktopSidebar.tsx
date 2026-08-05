@@ -23,13 +23,7 @@ export function DesktopSidebar({ activeTab, onChangeTab }: DesktopSidebarProps) 
       {/* Brand Header */}
       <div className="p-6 border-b border-white/5 flex flex-col gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30">
-            <Scissors className="w-5 h-5 text-black" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-white tracking-tight">FÍGARO</h1>
-            <p className="text-[10px] text-[#D4AF37] font-bold uppercase tracking-wider">Painel Barbeiro</p>
-          </div>
+          <img src="/logo.png" alt="FÍGARO Logo" className="h-10 w-auto object-contain" />
         </div>
       </div>
 

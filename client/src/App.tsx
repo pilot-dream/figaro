@@ -83,15 +83,14 @@ export default function App() {
         {user && (
           <>
             <div className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between py-3 px-6 border-b border-white/10 bg-[#0A0E14]/85 backdrop-blur-xl ${
-              ['BARBER', 'MANAGER', 'OWNER'].includes(user.role) ? 'hidden' : 'max-w-xl mx-auto'
+              ['BARBER', 'MANAGER', 'OWNER'].includes(user.role) ? 'md:hidden' : 'max-w-xl mx-auto'
             }`}>
             <div className="flex items-center gap-2">
               <Link 
                 to={['BARBER', 'MANAGER', 'OWNER'].includes(user.role) ? '/painel' : '/meus-agendamentos'}
-                className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                className="flex items-center hover:opacity-80 transition-opacity"
               >
-                <Scissors className="w-5 h-5 text-[#D4AF37]" />
-                <span className="font-bold text-white text-sm">FÍGARO</span>
+                <img src="/logo.png" alt="FÍGARO Logo" className="h-6 w-auto object-contain" />
               </Link>
               <span className="text-[10px] px-2 py-0.5 rounded font-mono font-bold uppercase bg-white/10 text-figaro-text-secondary">
                 {user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER' ? 'PAINEL BARBEIRO' : 'ÁREA CLIENTE'}
@@ -177,7 +176,7 @@ export default function App() {
             </div>
           </div>
           {/* Spacer so the fixed topbar doesn't cover content (only if not hidden) */}
-          <div className={['BARBER', 'MANAGER', 'OWNER'].includes(user.role) ? '' : 'h-[68px] w-full'} />
+          <div className={['BARBER', 'MANAGER', 'OWNER'].includes(user.role) ? 'h-[68px] w-full md:hidden' : 'h-[68px] w-full'} />
           </>
         )}
 

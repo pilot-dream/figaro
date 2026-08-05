@@ -134,37 +134,7 @@ export function DashboardPage() {
       {/* Main Content */}
       <div className="flex-1 w-full md:pl-64">
         <div className="space-y-6 pb-28 pt-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-          {/* Top Welcome Header Banner (Hidden on Desktop since Sidebar has it) */}
-          <GlassCard glow className="p-4 border-[#D4AF37] flex md:hidden items-center justify-between">
-            <div className="flex items-center gap-3.5">
-            {/* Avatar with Blue Ring & Glow */}
-            <img
-              src={
-                user?.avatarUrl ||
-                'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80'
-              }
-              alt={user?.name}
-              className="w-12 h-12 rounded-full object-cover ring-2 ring-[#11AFFA] ring-offset-2 ring-offset-[#0A0E14] shadow-[#D4AF37]/30"
-            />
-            <div>
-              <span className="text-[10px] font-extrabold text-[var(--color-figaro-amber)] uppercase tracking-wider block">
-                Painel do Barbeiro
-              </span>
-              <h1 className="text-lg font-black text-white">{user?.name || 'Barbeiro'}</h1>
-            </div>
-          </div>
 
-          {/* Animated Realtime Pulsing Badge */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2ED9A0] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#2ED9A0]" />
-            </span>
-            <span className="text-xs font-bold text-[#2ED9A0] hidden sm:inline">
-              Agenda Conectada em Tempo Real
-            </span>
-          </div>
-        </GlassCard>
 
         {/* Render Active Tab Content */}
         {activeTab === 'home' && (
