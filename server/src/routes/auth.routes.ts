@@ -55,12 +55,18 @@ router.post('/register', async (req, res, next) => {
       }
     })
 
-    // Vincula agendamentos órfãos (feitos antes de criar conta) a este cliente
-    if (phone) {
-      await prisma.appointment.updateMany({
-        where: { clientPhone: phone, clientId: null },
-        data: { clientId: authData.user.id }
-      })
+    try {
+      // Vincula agendamentos
+      if (phone) {
+        await prisma.appointment.updateMany({
+          where: { clientPhone: phone, clientId: null },
+          data: { clientId: authData.user.id }
+        })
+      }
+    } catch (updateError) {
+      console.error('CRITICAL ERROR IN REGISTER CLIENT:', updateError)
+      await supabaseAdmin.auth.admin.deleteUser(authData.user.id)
+      return res.status(500).json({ error: 'Erro ao configurar a conta. Por favor, tente novamente.' })
     }
 
     res.status(201).json({ success: true, user: authData.user })
@@ -101,33 +107,46 @@ router.post('/register-owner', async (req, res, next) => {
     // 3. Força a role OWNER, salva o slug e inicia 7 dias de TRIAL
     const trialEnd = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
-    await prisma.user.upsert({
-      where: { id: authData.user.id },
-      update: { 
-        role: 'OWNER',
-        slug: candidateSlug,
-        saasStatus: 'TRIAL',
-        trialEndsAt: trialEnd,
-        name,
-        phone: phone || null
-      },
-      create: {
-        id: authData.user.id,
-        name,
-        phone: phone || null,
-        role: 'OWNER',
-        slug: candidateSlug,
-        saasStatus: 'TRIAL',
-        trialEndsAt: trialEnd
-      }
-    })
-
-    // Vincula agendamentos órfãos (feitos antes de criar conta) a este dono
-    if (phone) {
-      await prisma.appointment.updateMany({
-        where: { clientPhone: phone, clientId: null },
-        data: { clientId: authData.user.id }
+    try {
+      await prisma.user.upsert({
+        where: { id: authData.user.id },
+        update: { 
+          role: 'OWNER',
+          slug: candidateSlug,
+          saasStatus: 'TRIAL',
+          trialEndsAt: trialEnd,
+          name,
+          phone: phone || null
+        },
+        create: {
+          id: authData.user.id,
+          name,
+          phone: phone || null,
+          role: 'OWNER',
+          slug: candidateSlug,
+          saasStatus: 'TRIAL',
+          trialEndsAt: trialEnd
+        }
       })
+    } catch (upsertError) {
+      console.error('CRITICAL UPSERT ERROR IN REGISTER-OWNER:', upsertError)
+      // Rollback: deleta o usuário criado no Auth para não deixar a conta presa como CLIENT
+      await supabaseAdmin.auth.admin.deleteUser(authData.user.id)
+      return res.status(500).json({ error: 'Erro ao configurar a conta da barbearia. Por favor, tente novamente.' })
+    }
+
+    try {
+      // Vincula agendamentos órfãos (feitos antes de criar conta) a este dono
+      if (phone) {
+        await prisma.appointment.updateMany({
+          where: { clientPhone: phone, clientId: null },
+          data: { clientId: authData.user.id }
+        })
+      }
+    } catch (updateError) {
+      console.error('CRITICAL APPOINTMENT UPDATE ERROR IN REGISTER-OWNER:', updateError)
+      await supabaseAdmin.auth.admin.deleteUser(authData.user.id)
+      return res.status(500).json({ error: 'Erro ao vincular agendamentos. Por favor, tente novamente.' })
     }
 
     res.status(201).json({ success: true, user: authData.user })
