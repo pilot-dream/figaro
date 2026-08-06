@@ -130,7 +130,7 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
   const displayedBarbers = barbers
 
   return (
-    <div className="min-h-screen w-full bg-[#0A0E14] text-white pb-24 overflow-x-hidden">
+    <div className="min-h-screen w-full bg-figaro-black text-white pb-24 overflow-x-hidden">
       
       {/* Header */}
       <div className="px-6 pt-6 pb-6 flex items-center">
@@ -140,13 +140,13 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
       <div className="px-4 mt-2">
         <button 
           onClick={() => setShowSelectBarberModal(true)}
-          className="w-full mb-6 bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-3 text-sm flex justify-center items-center gap-2"
+          className="w-full mb-6 bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black font-semibold rounded-xl py-3 text-sm flex justify-center items-center gap-2"
         >
           <Scissors className="w-4 h-4" /> Novo Agendamento
         </button>
 
         {/* Upcoming Section */}
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-[#8C97A8] mb-4 pl-1">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-figaro-text-sec mb-4 pl-1">
           Próximo Atendimento
         </h3>
 
@@ -154,9 +154,9 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
           <div className="h-32 animate-pulse bg-white/5 rounded-2xl border border-white/10" />
         ) : upcoming.length === 0 ? (
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center mb-8">
-            <Calendar className="w-10 h-10 text-[#8C97A8] mx-auto mb-3" />
+            <Calendar className="w-10 h-10 text-figaro-text-sec mx-auto mb-3" />
             <h3 className="text-white font-bold mb-1">Nenhum agendamento ativo</h3>
-            <p className="text-sm text-[#8C97A8]">
+            <p className="text-sm text-figaro-text-sec">
               Você não possui horários marcados no momento.
             </p>
           </div>
@@ -178,20 +178,20 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
                   <div className="flex justify-between items-start mb-3">
                     <div>
                       <h4 className="text-white font-bold text-lg">{dateFormatted} às {timeFormatted}</h4>
-                      <p className="text-xs text-[#8C97A8] mt-1 flex items-center gap-1">
+                      <p className="text-xs text-figaro-text-sec mt-1 flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5" /> Faltam: {getCountdown(app.startTime)}
                       </p>
                     </div>
                     <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
                       app.status === 'CONFIRMED' 
                         ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-                        : 'bg-[#D4AF37] text-[#D4AF37] border border-[#D4AF37]'
+                        : 'bg-figaro-gold-base text-figaro-gold-base border border-figaro-gold-base'
                     }`}>
                       {app.status === 'CONFIRMED' ? 'Confirmado' : 'Pendente'}
                     </span>
                   </div>
 
-                  <div className="bg-[#0A0E14]/50 rounded-xl p-3 mb-4 flex items-center gap-3 border border-white/5">
+                  <div className="bg-figaro-black/50 rounded-xl p-3 mb-4 flex items-center gap-3 border border-white/5">
                     <div className="w-10 h-10 rounded-full border border-white/10 overflow-hidden">
                       <img 
                         src={app.barber?.avatarUrl || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=250&q=80'} 
@@ -201,7 +201,7 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
                     </div>
                     <div>
                       <h5 className="font-semibold text-white text-sm">{serviceName}</h5>
-                      <p className="text-xs text-[#8C97A8]">com {barberName}</p>
+                      <p className="text-xs text-figaro-text-sec">com {barberName}</p>
                     </div>
                   </div>
 
@@ -226,12 +226,12 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
         )}
 
         {/* History Section */}
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-[#8C97A8] mb-4 pl-1">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-figaro-text-sec mb-4 pl-1">
           Histórico Passado
         </h3>
 
         {history.length === 0 ? (
-          <p className="text-sm text-[#8C97A8] italic text-center py-4">Nenhum histórico anterior.</p>
+          <p className="text-sm text-figaro-text-sec italic text-center py-4">Nenhum histórico anterior.</p>
         ) : (
           <div className="space-y-4">
             {history.map((app) => {
@@ -248,7 +248,7 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
                 >
                   <div>
                     <h5 className="font-semibold text-white text-sm">{serviceName}</h5>
-                    <p className="text-xs text-[#8C97A8] mt-0.5">
+                    <p className="text-xs text-figaro-text-sec mt-0.5">
                       {dateFormatted} às {timeFormatted} • {app.barber?.name || 'Barbeiro'}
                     </p>
                   </div>
@@ -273,7 +273,7 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
 
       {/* Modal for Selecting Recent Barbers - adapted to Full Screen Dark Mode */}
       {showSelectBarberModal && (
-        <div className="fixed inset-0 min-h-screen w-full bg-[#0A0E14] z-50 overflow-y-auto pb-24">
+        <div className="fixed inset-0 min-h-screen w-full bg-figaro-black z-50 overflow-y-auto pb-24">
           <div className="flex items-center px-4 py-4 mt-2 border-b border-white/10">
             <button
               onClick={() => {
@@ -316,7 +316,7 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
                       <div className="flex items-center gap-2">
                         <h4 className="font-bold text-white text-base">{b.name}</h4>
                       </div>
-                      <p className="text-xs text-[#8C97A8] mt-0.5 line-clamp-1">{b.notes || 'Especialista Fígaro'}</p>
+                      <p className="text-xs text-figaro-text-sec mt-0.5 line-clamp-1">{b.notes || 'Especialista Fígaro'}</p>
                     </div>
                   </div>
                   <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">

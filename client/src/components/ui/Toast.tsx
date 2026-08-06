@@ -36,7 +36,7 @@ function Toast({ toast }: { toast: ToastMessage }) {
 
   return (
     <div
-      className={`pointer-events-auto flex items-start gap-3 p-4 w-[320px] bg-[#0A0E14]/90 backdrop-blur-md border border-white/10 ${borderColor} border-l-4 rounded-xl shadow-2xl animate-in slide-in-from-right-8 fade-in duration-300`}
+      className={`pointer-events-auto flex items-start gap-3 p-4 w-[320px] bg-figaro-black/90 backdrop-blur-md border border-white/10 ${borderColor} border-l-4 rounded-xl shadow-2xl animate-in slide-in-from-right-8 fade-in duration-300`}
     >
       <div className="shrink-0 mt-0.5">{icon}</div>
       

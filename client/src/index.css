@@ -2,6 +2,11 @@
 
 @theme {
   --color-figaro-dark: #0A0E14;
+  --color-figaro-black: #0A0E14;
+  --color-figaro-gold-light: #FBE7A1;
+  --color-figaro-gold-base: #D4AF37;
+  --color-figaro-gold-dark: #9C8126;
+  --color-figaro-text-sec: #8C97A8;
   --color-figaro-blue: #11AFFA;
   --color-figaro-amber: #F2A93B;
   --color-figaro-mint: #2ED9A0;

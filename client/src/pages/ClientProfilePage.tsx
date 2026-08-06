@@ -64,7 +64,7 @@ export function ClientProfilePage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#0A0E14] text-white pb-24 overflow-x-hidden">
+    <div className="min-h-screen w-full bg-figaro-black text-white pb-24 overflow-x-hidden">
       {/* Avatar Section */}
       <div className="px-6 flex flex-col items-center mt-2 mb-8">
         <div className="relative">
@@ -73,12 +73,12 @@ export function ClientProfilePage() {
             alt="Profile" 
             className="w-28 h-28 rounded-full object-cover border-4 border-[#1a1c23] shadow-[0_0_20px_rgba(0,0,0,0.5)]"
           />
-          <button className="absolute bottom-0 right-0 w-8 h-8 bg-[#D4AF37] rounded-full flex items-center justify-center text-black border-2 border-[#0A0E14] shadow-lg cursor-pointer hover:bg-[#D4AF37] transition-colors">
+          <button className="absolute bottom-0 right-0 w-8 h-8 bg-figaro-gold-base rounded-full flex items-center justify-center text-black border-2 border-[#0A0E14] shadow-lg cursor-pointer hover:bg-figaro-gold-base transition-colors">
             <Camera className="w-4 h-4" />
           </button>
         </div>
         <h2 className="text-xl font-bold mt-4">{user?.name || 'Usuário Fígaro'}</h2>
-        <p className="text-sm text-[#D4AF37] font-medium">Membro {user?.tier || 'GOLD'}</p>
+        <p className="text-sm text-figaro-gold-base font-medium">Membro {user?.tier || 'GOLD'}</p>
       </div>
 
       {/* Form / Info Section */}
@@ -94,7 +94,7 @@ export function ClientProfilePage() {
                 type="text" 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-[#0A0E14] border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none transition-colors"
+                className="w-full bg-figaro-black border border-white/10 rounded-xl px-4 py-3 text-white focus:border-figaro-gold-base focus:outline-none transition-colors"
               />
             ) : (
               <p className="text-lg font-medium text-white">{name}</p>
@@ -110,7 +110,7 @@ export function ClientProfilePage() {
                 type="text" 
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full bg-[#0A0E14] border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none transition-colors"
+                className="w-full bg-figaro-black border border-white/10 rounded-xl px-4 py-3 text-white focus:border-figaro-gold-base focus:outline-none transition-colors"
               />
             ) : (
               <p className="text-lg font-medium text-white">{phone || 'Não informado'}</p>
@@ -127,7 +127,7 @@ export function ClientProfilePage() {
           {isEditing ? (
             <button 
               onClick={handleSave}
-              className="w-full bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-3.5 shadow-lg shadow-[#D4AF37]/30 cursor-pointer"
+              className="w-full bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black font-semibold rounded-xl py-3.5 shadow-lg shadow-figaro-gold-base/30 cursor-pointer"
             >
               Salvar Alterações
             </button>
@@ -150,11 +150,11 @@ export function ClientProfilePage() {
           className="w-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex items-center justify-between transition-colors mb-3 cursor-pointer group"
         >
           <span className="font-semibold text-white">Preferências de Notificação</span>
-          <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-white transition" />
+          <ChevronRight className="w-5 h-5 text-figaro-text-sec group-hover:text-white transition" />
         </button>
         <button className="w-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex items-center justify-between transition-colors cursor-pointer group">
           <span className="font-semibold text-white">Termos e Privacidade</span>
-          <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-white transition" />
+          <ChevronRight className="w-5 h-5 text-figaro-text-sec group-hover:text-white transition" />
         </button>
       </div>
 
@@ -212,7 +212,7 @@ export function ClientProfilePage() {
 
               <div className="flex items-center justify-between bg-white/5 border border-white/10 p-4 rounded-2xl">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-figaro-black text-white0/20 flex items-center justify-center">
                     <Mail className="w-5 h-5 text-blue-400" />
                   </div>
                   <div>

@@ -1,7 +1,7 @@
 import { GlassCard } from '@/components/ui/GlassCard'
 import { AppointmentCard, type DashboardAppointment } from '@/components/dashboard/AppointmentCard'
 import type { AppointmentStatus } from '@/types'
-import { Calendar as CalendarIcon, Scissors, Filter } from 'lucide-react'
+import { Calendar as CalendarIcon, Scissors, Filter, Lock } from 'lucide-react'
 import { useState } from 'react'
 
 interface TabScheduleProps {
@@ -10,6 +10,7 @@ interface TabScheduleProps {
   onDateChange: (date: string) => void
   onSelectClient: (app: DashboardAppointment) => void
   onStatusChange: (id: string, status: AppointmentStatus) => void
+  onOpenBlockModal?: () => void
 }
 
 export function TabSchedule({
@@ -18,6 +19,7 @@ export function TabSchedule({
   onDateChange,
   onSelectClient,
   onStatusChange,
+  onOpenBlockModal,
 }: TabScheduleProps) {
   const [filterStatus, setFilterStatus] = useState<string>('ALL')
 
@@ -44,13 +46,23 @@ export function TabSchedule({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
         <div>
           <h2 className="text-xl font-bold text-white tracking-tight">Agenda do Dia</h2>
-          <p className="text-xs text-[#8C97A8]">
+          <p className="text-xs text-figaro-text-sec">
             Linha do tempo e gestão de status dos seus agendamentos
           </p>
         </div>
 
         <div className="flex items-center gap-1.5 flex-wrap">
-          <Filter className="w-4 h-4 text-[#8C97A8] mr-1 hidden sm:inline" />
+          {onOpenBlockModal && (
+            <button
+              onClick={onOpenBlockModal}
+              className="rounded-full px-3.5 py-1.5 text-xs font-bold bg-white/5 border border-white/10 text-figaro-text-sec hover:text-white flex items-center gap-1.5 transition-all cursor-pointer"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              Bloquear
+            </button>
+          )}
+          
+          <Filter className="w-4 h-4 text-figaro-text-sec mr-1 hidden sm:inline" />
           {filterOptions.map((opt) => {
             const isActive = filterStatus === opt.id
             return (
@@ -59,8 +71,8 @@ export function TabSchedule({
                 onClick={() => setFilterStatus(opt.id)}
                 className={`rounded-full px-3.5 py-1.5 text-xs transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-[#D4AF37] text-white shadow-[#D4AF37]/30 font-semibold border border-[#D4AF37]'
-                    : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+                    ? 'bg-figaro-gold-base text-white shadow-figaro-gold-base/30 font-semibold border border-figaro-gold-base'
+                    : 'bg-white/[0.05] text-figaro-text-sec hover:text-white border border-white/10 backdrop-blur-md'
                 }`}
               >
                 {opt.label}
@@ -70,7 +82,7 @@ export function TabSchedule({
 
           {/* Styled Date Picker Pill Inline */}
           <div className="flex items-center gap-2 bg-white/[0.05] border border-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-inner">
-            <CalendarIcon className="w-4 h-4 text-[#D4AF37] drop-shadow-[#D4AF37]/30" />
+            <CalendarIcon className="w-4 h-4 text-figaro-gold-base drop-shadow-figaro-gold-base/30" />
             <input
               type="date"
               value={selectedDate}
@@ -84,12 +96,12 @@ export function TabSchedule({
       {/* Schedule Timeline List */}
       {sorted.length === 0 ? (
         <GlassCard className="p-12 text-center space-y-4 border border-white/10 max-w-md mx-auto my-8">
-          <div className="w-16 h-16 rounded-full bg-[#D4AF37] border border-[#D4AF37] flex items-center justify-center mx-auto text-[#D4AF37] shadow-[#D4AF37]/30">
+          <div className="w-16 h-16 rounded-full bg-figaro-gold-base border border-figaro-gold-base flex items-center justify-center mx-auto text-figaro-gold-base shadow-figaro-gold-base/30">
             <Scissors className="w-8 h-8" />
           </div>
           <div className="space-y-1">
             <h3 className="text-base font-bold text-white">Nenhum agendamento para esta data</h3>
-            <p className="text-xs text-[#8C97A8]">
+            <p className="text-xs text-figaro-text-sec">
               Não foram encontrados agendamentos registrados no filtro selecionado.
             </p>
           </div>

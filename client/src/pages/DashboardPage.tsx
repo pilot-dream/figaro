@@ -135,7 +135,6 @@ export function DashboardPage() {
       <div className="flex-1 w-full md:pl-64">
         <div className="space-y-6 pb-28 pt-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
 
-
         {/* Render Active Tab Content */}
         {activeTab === 'home' && (
           <TabHome
@@ -151,6 +150,7 @@ export function DashboardPage() {
             onDateChange={setSelectedDate}
             onSelectClient={setSelectedClient}
             onStatusChange={handleStatusChange}
+            onOpenBlockModal={() => setShowBlockModal(true)}
           />
         )}
 

@@ -6,9 +6,9 @@ import { fetchRevenueChartData } from '@/lib/api'
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#0A0E14]/90 backdrop-blur-md border border-white/10 p-3 rounded-xl shadow-xl">
+      <div className="bg-figaro-black/90 backdrop-blur-md border border-[var(--color-figaro-gold-dark)]/40 p-3 rounded-xl shadow-xl">
         <p className="text-white font-bold mb-1">{label}</p>
-        <p className="text-[#D4AF37] text-sm font-medium">
+        <p className="text-[var(--color-figaro-gold-base)] text-sm font-medium">
           R$ {payload[0].value.toFixed(2)}
         </p>
       </div>
@@ -34,7 +34,7 @@ export function RevenueChart({ barberId = 'all' }: { barberId?: string }) {
     <GlassCard className="p-5 h-[350px] flex flex-col border-white/10">
       <div className="mb-6">
         <h3 className="text-lg font-bold text-white tracking-tight">Faturamento (Últimos 7 dias)</h3>
-        <p className="text-xs text-[#8C97A8]">Visão geral de receita gerada por atendimentos concluídos.</p>
+        <p className="text-xs text-figaro-text-sec">Visão geral de receita gerada por atendimentos concluídos.</p>
       </div>
       
       <div className="flex-1 w-full h-full min-h-0">
@@ -62,7 +62,7 @@ export function RevenueChart({ barberId = 'all' }: { barberId?: string }) {
             />
             <Bar 
               dataKey="faturamento" 
-              fill="#f59e0b" 
+              fill="#D4AF37" 
               radius={[4, 4, 0, 0]} 
               barSize={32}
             />

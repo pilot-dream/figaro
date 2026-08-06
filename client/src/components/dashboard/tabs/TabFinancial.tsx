@@ -80,7 +80,7 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
         <div>
           <h2 className="text-xl font-bold text-white tracking-tight">Relatório Financeiro</h2>
-          <p className="text-xs text-[#8C97A8]">
+          <p className="text-xs text-figaro-text-sec">
             {user.role === 'OWNER' 
               ? 'Acompanhe o faturamento, comissões da equipe e lucro líquido.' 
               : 'Acompanhe seus atendimentos, comissões e desempenho.'}
@@ -94,8 +94,8 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
               onClick={() => setPeriodFilter('today')}
               className={`px-3.5 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${
                 periodFilter === 'today'
-                  ? 'bg-[#D4AF37] text-white shadow-[#D4AF37]/30 font-semibold border border-[#D4AF37]'
-                  : 'text-[#8C97A8] hover:text-white'
+                  ? 'bg-figaro-gold-base text-white shadow-figaro-gold-base/30 font-semibold border border-figaro-gold-base'
+                  : 'text-figaro-text-sec hover:text-white'
               }`}
             >
               Hoje
@@ -104,8 +104,8 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
               onClick={() => setPeriodFilter('week')}
               className={`px-3.5 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${
                 periodFilter === 'week'
-                  ? 'bg-[#D4AF37] text-white shadow-[#D4AF37]/30 font-semibold border border-[#D4AF37]'
-                  : 'text-[#8C97A8] hover:text-white'
+                  ? 'bg-figaro-gold-base text-white shadow-figaro-gold-base/30 font-semibold border border-figaro-gold-base'
+                  : 'text-figaro-text-sec hover:text-white'
               }`}
             >
               Semana
@@ -114,8 +114,8 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
               onClick={() => setPeriodFilter('month')}
               className={`px-3.5 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${
                 periodFilter === 'month'
-                  ? 'bg-[#D4AF37] text-white shadow-[#D4AF37]/30 font-semibold border border-[#D4AF37]'
-                  : 'text-[#8C97A8] hover:text-white'
+                  ? 'bg-figaro-gold-base text-white shadow-figaro-gold-base/30 font-semibold border border-figaro-gold-base'
+                  : 'text-figaro-text-sec hover:text-white'
               }`}
             >
               Mês
@@ -124,7 +124,7 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
 
           <button
             onClick={handleExport}
-            className="bg-[#D4AF37] hover:bg-[#0B3B5C] text-white font-semibold text-xs rounded-xl px-4 py-2 shadow-lg shadow-[#D4AF37]/30 flex items-center gap-2 border border-[#D4AF37] transition-all cursor-pointer"
+            className="bg-figaro-gold-base hover:bg-[#0B3B5C] text-white font-semibold text-xs rounded-xl px-4 py-2 shadow-lg shadow-figaro-gold-base/30 flex items-center gap-2 border border-figaro-gold-base transition-all cursor-pointer"
           >
             <Download className="w-4 h-4" /> Exportar
           </button>
@@ -143,20 +143,20 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl relative overflow-hidden space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs uppercase font-bold text-[#8C97A8] tracking-wider">Faturamento Bruto</span>
-                <div className="w-10 h-10 rounded-full bg-[#D4AF37] border border-[#D4AF37] text-[#D4AF37] flex items-center justify-center">
+                <span className="text-xs uppercase font-bold text-figaro-text-sec tracking-wider">Faturamento Bruto</span>
+                <div className="w-10 h-10 rounded-full bg-figaro-gold-base border border-figaro-gold-base text-figaro-gold-base flex items-center justify-center">
                   <DollarSign className="w-5 h-5" />
                 </div>
               </div>
-              <h3 className="text-[#D4AF37] font-mono text-3xl font-extrabold drop-shadow-[#D4AF37]/30">
+              <h3 className="text-figaro-gold-base font-mono text-3xl font-extrabold drop-shadow-figaro-gold-base/30">
                 R$ {(financeData.grossRevenue || 0).toFixed(2)}
               </h3>
-              <span className="text-xs text-[#8C97A8] block">Total gerado pela barbearia</span>
+              <span className="text-xs text-figaro-text-sec block">Total gerado pela barbearia</span>
             </div>
 
             <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl relative overflow-hidden space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs uppercase font-bold text-[#8C97A8] tracking-wider">Comissões a Pagar</span>
+                <span className="text-xs uppercase font-bold text-figaro-text-sec tracking-wider">Comissões a Pagar</span>
                 <div className="w-10 h-10 rounded-full bg-[#F2A93B]/20 border border-[#F2A93B]/30 text-[#F2A93B] flex items-center justify-center">
                   <Users className="w-5 h-5" />
                 </div>
@@ -164,12 +164,12 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
               <h3 className="text-[#F2A93B] font-mono text-3xl font-extrabold drop-shadow-[0_0_15px_rgba(242,169,59,0.4)]">
                 R$ {(financeData.totalCommissions || 0).toFixed(2)}
               </h3>
-              <span className="text-xs text-[#8C97A8] block">Valor devido aos barbeiros</span>
+              <span className="text-xs text-figaro-text-sec block">Valor devido aos barbeiros</span>
             </div>
 
             <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl relative overflow-hidden space-y-3 border-b-2 border-b-[#2ED9A0]/50">
               <div className="flex items-center justify-between">
-                <span className="text-xs uppercase font-bold text-[#8C97A8] tracking-wider">Lucro Líquido</span>
+                <span className="text-xs uppercase font-bold text-figaro-text-sec tracking-wider">Lucro Líquido</span>
                 <div className="w-10 h-10 rounded-full bg-[#2ED9A0]/20 border border-[#2ED9A0]/30 text-[#2ED9A0] flex items-center justify-center">
                   <TrendingUp className="w-5 h-5" />
                 </div>
@@ -185,11 +185,11 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
           <GlassCard className="p-0 overflow-hidden mt-6">
             <div className="p-4 border-b border-white/10 flex items-center justify-between">
               <h4 className="font-bold text-white text-base">Desempenho por Barbeiro</h4>
-              <span className="text-xs text-[#8C97A8]">{financeData.barberBreakdown?.length || 0} profissionais ativos</span>
+              <span className="text-xs text-figaro-text-sec">{financeData.barberBreakdown?.length || 0} profissionais ativos</span>
             </div>
             
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-[#8C97A8]">
+              <table className="w-full text-left text-sm text-figaro-text-sec">
                 <thead className="text-xs text-white/70 uppercase bg-white/5 border-b border-white/10">
                   <tr>
                     <th className="px-6 py-4 font-semibold">Profissional</th>
@@ -238,7 +238,7 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl relative overflow-hidden space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs uppercase font-bold text-[#8C97A8] tracking-wider">Meus Ganhos (Comissão)</span>
+                <span className="text-xs uppercase font-bold text-figaro-text-sec tracking-wider">Meus Ganhos (Comissão)</span>
                 <div className="w-10 h-10 rounded-full bg-[#2ED9A0]/20 border border-[#2ED9A0]/30 text-[#2ED9A0] flex items-center justify-center">
                   <Wallet className="w-5 h-5" />
                 </div>
@@ -246,20 +246,20 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
               <h3 className="text-[#2ED9A0] font-mono text-3xl font-extrabold drop-shadow-[0_0_15px_rgba(46,217,160,0.4)]">
                 R$ {(financeData.myCommission || 0).toFixed(2)}
               </h3>
-              <span className="text-xs text-[#8C97A8] block">Comissão calculada no período</span>
+              <span className="text-xs text-figaro-text-sec block">Comissão calculada no período</span>
             </div>
 
             <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl relative overflow-hidden space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs uppercase font-bold text-[#8C97A8] tracking-wider">Ticket Médio</span>
-                <div className="w-10 h-10 rounded-full bg-[#D4AF37] border border-[#D4AF37] text-[#D4AF37] flex items-center justify-center">
+                <span className="text-xs uppercase font-bold text-figaro-text-sec tracking-wider">Ticket Médio</span>
+                <div className="w-10 h-10 rounded-full bg-figaro-gold-base border border-figaro-gold-base text-figaro-gold-base flex items-center justify-center">
                   <TrendingUp className="w-5 h-5" />
                 </div>
               </div>
               <h3 className="text-white font-mono text-3xl font-extrabold">
                 R$ {averageTicket.toFixed(2)}
               </h3>
-              <span className="text-xs text-[#8C97A8] flex items-center gap-1.5">
+              <span className="text-xs text-figaro-text-sec flex items-center gap-1.5">
                 Em {financeData.totalAppointments} atendimentos concluídos
               </span>
             </div>
@@ -274,7 +274,7 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
         </h4>
 
         {Object.keys(serviceStats).length === 0 ? (
-          <p className="text-xs text-[#8C97A8] italic py-8 text-center">
+          <p className="text-xs text-figaro-text-sec italic py-8 text-center">
             Nenhum dado de serviço concluído para este período.
           </p>
         ) : (
@@ -286,9 +286,9 @@ export function TabFinancial({ appointments, user }: TabFinancialProps) {
               >
                 <div>
                   <h5 className="font-semibold text-white text-sm">{name}</h5>
-                  <span className="text-xs text-[#8C97A8]">{stat.count} cortes efetuados</span>
+                  <span className="text-xs text-figaro-text-sec">{stat.count} cortes efetuados</span>
                 </div>
-                <span className="font-mono font-bold text-[#D4AF37] text-base">
+                <span className="font-mono font-bold text-figaro-gold-base text-base">
                   R$ {stat.total.toFixed(2)}
                 </span>
               </div>

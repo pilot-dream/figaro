@@ -36,9 +36,9 @@ export function BranchSwitcher() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0A0E14]/90 backdrop-blur-md border border-white/10 hover:border-[#D4AF37] transition-all cursor-pointer group"
+        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-figaro-black/90 backdrop-blur-md border border-white/10 hover:border-figaro-gold-base transition-all cursor-pointer group"
       >
-        <Building2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+        <Building2 className="w-3.5 h-3.5 text-figaro-gold-base" />
         <span className="text-[11px] font-semibold text-white max-w-[100px] truncate">
           {currentLabel}
         </span>
@@ -46,7 +46,7 @@ export function BranchSwitcher() {
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-2 w-56 rounded-xl bg-[#0A0E14]/95 backdrop-blur-2xl border border-white/10 shadow-[0_16px_40px_rgba(0,0,0,0.6)] z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="absolute top-full left-0 mt-2 w-56 rounded-xl bg-figaro-black/95 backdrop-blur-2xl border border-white/10 shadow-[0_16px_40px_rgba(0,0,0,0.6)] z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
           {/* Header */}
           <div className="px-3 py-2 border-b border-white/5">
             <span className="text-[10px] font-bold uppercase tracking-wider text-figaro-text-secondary">
@@ -59,13 +59,13 @@ export function BranchSwitcher() {
             onClick={() => { setSelectedBranch(null); setOpen(false) }}
             className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-left transition-colors ${
               !selectedBranch
-                ? 'bg-[#D4AF37] text-[#D4AF37]'
+                ? 'bg-figaro-gold-base text-figaro-gold-base'
                 : 'text-figaro-text-secondary hover:bg-white/5 hover:text-white'
             }`}
           >
             <Globe className="w-4 h-4 shrink-0" />
             <span className="text-xs font-medium flex-1">Toda a Rede</span>
-            {!selectedBranch && <Check className="w-3.5 h-3.5 text-[#D4AF37]" />}
+            {!selectedBranch && <Check className="w-3.5 h-3.5 text-figaro-gold-base" />}
           </button>
 
           <div className="border-t border-white/5" />
@@ -82,7 +82,7 @@ export function BranchSwitcher() {
                   onClick={() => { setSelectedBranch(branch); setOpen(false) }}
                   className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-left transition-colors ${
                     isSelected
-                      ? 'bg-[#D4AF37] text-[#D4AF37]'
+                      ? 'bg-figaro-gold-base text-figaro-gold-base'
                       : 'text-figaro-text-secondary hover:bg-white/5 hover:text-white'
                   }`}
                 >
@@ -92,10 +92,10 @@ export function BranchSwitcher() {
                       {branch.branchName || branch.name}
                     </span>
                     {isFirst && (
-                      <span className="text-[9px] text-[#D4AF37] font-bold uppercase tracking-wider">Matriz</span>
+                      <span className="text-[9px] text-figaro-gold-base font-bold uppercase tracking-wider">Matriz</span>
                     )}
                   </div>
-                  {isSelected && <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-figaro-gold-base shrink-0" />}
                 </button>
               )
             })}

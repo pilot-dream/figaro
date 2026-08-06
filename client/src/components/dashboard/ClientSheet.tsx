@@ -46,11 +46,11 @@ export function ClientSheet({ appointment, onClose, onSaveNotes }: ClientSheetPr
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <GlassCard className="w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-6 space-y-6 border-[#D4AF37] shadow-2xl animate-in slide-in-from-bottom duration-300">
+      <GlassCard className="w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-6 space-y-6 border-figaro-gold-base shadow-2xl animate-in slide-in-from-bottom duration-300">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-[#D4AF37] border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] font-bold text-lg">
+            <div className="w-12 h-12 rounded-full bg-figaro-gold-base border border-figaro-gold-base flex items-center justify-center text-figaro-gold-base font-bold text-lg">
               {appointment.clientName.charAt(0)}
             </div>
             <div>
@@ -78,7 +78,7 @@ export function ClientSheet({ appointment, onClose, onSaveNotes }: ClientSheetPr
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Adicione preferências técnicas (ex: corte de tesoura, máquina, café preferido)..."
-            className="w-full p-3 rounded-xl bg-white/5 border border-glass-border text-white text-xs focus:outline-none focus:border-[#D4AF37] resize-none"
+            className="w-full p-3 rounded-xl bg-white/5 border border-glass-border text-white text-xs focus:outline-none focus:border-figaro-gold-base resize-none"
           />
           <div className="flex justify-end">
             <Button size="sm" variant="amber" isLoading={saving} onClick={handleSave}>
@@ -90,7 +90,7 @@ export function ClientSheet({ appointment, onClose, onSaveNotes }: ClientSheetPr
         {/* Cut History */}
         <div className="space-y-3 pt-2">
           <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-            <History className="w-4 h-4 text-[#D4AF37]" /> Histórico de Cortes
+            <History className="w-4 h-4 text-figaro-gold-base" /> Histórico de Cortes
           </h4>
           <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
             {sampleHistory.map((h, i) => (

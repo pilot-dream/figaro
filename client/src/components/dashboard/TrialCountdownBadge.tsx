@@ -31,10 +31,10 @@ export function TrialCountdownBadge() {
         // disparamos um evento customizado que o DashboardPage pode ouvir.
         window.dispatchEvent(new CustomEvent('nav-to-saas-tab'))
       }}
-      className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37] border border-[#D4AF37] hover:bg-[#D4AF37] transition-all cursor-pointer shadow-[0_0_10px_rgba(245,158,11,0.15)] group"
+      className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-figaro-gold-base border border-figaro-gold-base hover:bg-figaro-gold-base transition-all cursor-pointer shadow-[0_0_10px_rgba(245,158,11,0.15)] group"
     >
-      <Clock className="w-3.5 h-3.5 text-[#D4AF37] group-hover:animate-pulse" />
-      <span className="text-[10px] font-bold tracking-wide uppercase text-[#D4AF37]">
+      <Clock className="w-3.5 h-3.5 text-figaro-gold-base group-hover:animate-pulse" />
+      <span className="text-[10px] font-bold tracking-wide uppercase text-figaro-gold-base">
         {text}
       </span>
     </button>

@@ -35,7 +35,7 @@ class LocalErrorBoundary extends Component<{children: ReactNode}, {hasError: boo
       return (
         <div className="p-8 m-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl text-white font-mono text-xs overflow-auto">
           <h2 className="text-xl text-white font-bold mb-4">CRASH DETECTED</h2>
-          <p className="text-[#8C97A8]">{this.state.error?.message}</p>
+          <p className="text-figaro-text-sec">{this.state.error?.message}</p>
         </div>
       )
     }
@@ -77,6 +77,7 @@ export function ClientBookingPage() {
   }, [user, clientName, clientPhone])
 
   const totalDuration = selectedServices.reduce((acc, s) => acc + (Number(s.durationMin) || 0), 0)
+  const totalPrice = selectedServices.reduce((acc, s) => acc + (Number(s.price) || 0), 0)
 
   const availableDates = getBrasiliaNextDays(14)
 
@@ -135,9 +136,9 @@ export function ClientBookingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
+      <div className="min-h-screen w-full bg-figaro-black text-white overflow-x-hidden pb-24">
         <div className="px-4 py-20 flex justify-center">
-          <div className="w-16 h-16 border-4 border-[#D4AF37] border-t-transparent rounded-full animate-spin" />
+          <div className="w-16 h-16 border-4 border-figaro-gold-base border-t-transparent rounded-full animate-spin" />
         </div>
       </div>
     )
@@ -145,13 +146,13 @@ export function ClientBookingPage() {
 
   if (notFound || !barber) {
     return (
-      <div className="min-h-screen w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
+      <div className="min-h-screen w-full bg-figaro-black text-white overflow-x-hidden pb-24">
         <div className="px-4 py-20 flex justify-center items-center">
           <div className="p-8 space-y-4 bg-white/5 backdrop-blur-md border border-white/10 text-center">
             <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
             <h2 className="text-white font-bold text-lg">Barbeiro não encontrado</h2>
-            <p className="text-[#8C97A8] text-sm">Verifique o link ou faça login.</p>
-            <Link to="/login" className="block mt-4 bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-3 text-sm">
+            <p className="text-figaro-text-sec text-sm">Verifique o link ou faça login.</p>
+            <Link to="/login" className="block mt-4 bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black font-semibold rounded-xl py-3 text-sm">
               Ir para Login
             </Link>
           </div>
@@ -162,7 +163,7 @@ export function ClientBookingPage() {
 
   if (completed) {
     return (
-      <div className="min-h-screen w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
+      <div className="min-h-screen w-full bg-figaro-black text-white overflow-x-hidden pb-24">
         <div className="px-4 py-12 flex flex-col items-center">
           <div className="p-8 text-center space-y-6 bg-white/5 backdrop-blur-md border border-white/10 w-full">
             <div className="w-20 h-20 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center mx-auto border border-green-500/30">
@@ -170,7 +171,7 @@ export function ClientBookingPage() {
             </div>
             <div>
               <h2 className="text-white font-bold text-2xl">Agendamento Confirmado!</h2>
-              <p className="text-[#8C97A8] text-sm mt-2">
+              <p className="text-figaro-text-sec text-sm mt-2">
                 Detalhes enviados para seu WhatsApp.
               </p>
             </div>
@@ -182,7 +183,7 @@ export function ClientBookingPage() {
                 setSelectedServices([])
                 setSelectedSlot(null)
               }}
-              className="w-full bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-4"
+              className="w-full bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black font-semibold rounded-xl py-4"
             >
               Realizar Novo Agendamento
             </button>
@@ -195,7 +196,7 @@ export function ClientBookingPage() {
   return (
     <LocalErrorBoundary>
       {/* 1. Main Wrapper STRICTLY matched */}
-      <div className="min-h-screen w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
+      <div className="min-h-screen w-full bg-figaro-black text-white overflow-x-hidden pb-24">
         <div className="px-4 pt-6 space-y-6">
           
           {/* Header */}
@@ -207,14 +208,14 @@ export function ClientBookingPage() {
                 className="w-11 h-11 rounded-full object-cover border border-white/10" 
               />
               <div>
-                <p className="text-[#8C97A8] text-xs">Você está na</p>
+                <p className="text-figaro-text-sec text-xs">Você está na</p>
                 <h2 className="text-white font-bold text-sm">{barber?.name || 'Barbearia Vivaz'}</h2>
               </div>
             </div>
             {/* 2. Cards match applied here as well */}
             <button className="w-10 h-10 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center relative">
               <Bell className="w-5 h-5 text-white" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-[#D4AF37] rounded-full"></span>
+              <span className="absolute top-2 right-2 w-2 h-2 bg-figaro-gold-base rounded-full"></span>
             </button>
           </div>
 
@@ -222,17 +223,17 @@ export function ClientBookingPage() {
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-5 relative overflow-hidden">
             <div className="flex justify-between items-start relative z-10">
               <div>
-                <p className="text-[#8C97A8] text-sm">Bem-vindo</p>
+                <p className="text-figaro-text-sec text-sm">Bem-vindo</p>
                 <h2 className="text-white font-bold text-xl">{user?.name || 'Visitante'}</h2>
               </div>
               <div className="text-4xl drop-shadow-md">🎁</div>
             </div>
             <div className="mt-4 relative z-10 flex items-center gap-3">
                <div className="flex-1 bg-white/10 h-2 rounded-full overflow-hidden">
-                 <div className="bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] w-[60%] h-full rounded-full"></div>
+                 <div className="bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base w-[60%] h-full rounded-full"></div>
                </div>
             </div>
-            <p className="text-[#8C97A8] text-[10px] mt-2">Faltam 2 cortes para você ganhar seu prêmio</p>
+            <p className="text-figaro-text-sec text-[10px] mt-2">Faltam 2 cortes para você ganhar seu prêmio</p>
           </div>
 
           {/* Promotional Banner */}
@@ -245,9 +246,9 @@ export function ClientBookingPage() {
               />
               <div className="absolute inset-0 bg-gradient-to-r from-[#0A0E14] to-[#0A0E14]/10"></div>
               <div className="absolute inset-0 p-6 flex flex-col justify-center">
-                <span className="text-[#D4AF37] font-bold text-sm tracking-widest uppercase mb-1 drop-shadow-md">Especial</span>
+                <span className="text-figaro-gold-base font-bold text-sm tracking-widest uppercase mb-1 drop-shadow-md">Especial</span>
                 <h3 className="text-2xl text-white font-bold mb-1">Promoção Exclusiva</h3>
-                <p className="text-[#8C97A8] text-sm mb-4">Aproveite as ofertas do barbeiro</p>
+                <p className="text-figaro-text-sec text-sm mb-4">Aproveite as ofertas do barbeiro</p>
               </div>
             </div>
           ) : (
@@ -259,10 +260,10 @@ export function ClientBookingPage() {
               />
               <div className="absolute inset-0 bg-gradient-to-r from-[#0A0E14] to-[#0A0E14]/10"></div>
               <div className="absolute inset-0 p-6 flex flex-col justify-center">
-                <span className="text-[#D4AF37] font-bold text-sm tracking-widest uppercase mb-1 drop-shadow-md">Especial</span>
+                <span className="text-figaro-gold-base font-bold text-sm tracking-widest uppercase mb-1 drop-shadow-md">Especial</span>
                 <h3 className="text-2xl text-white font-bold mb-1">Corte Premium</h3>
-                <p className="text-[#8C97A8] text-sm mb-4">Ganhe <strong className="text-[#D4AF37]">20% OFF</strong></p>
-                <button className="bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl px-5 py-1.5 text-xs w-fit">
+                <p className="text-figaro-text-sec text-sm mb-4">Ganhe <strong className="text-figaro-gold-base">20% OFF</strong></p>
+                <button className="bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black font-semibold rounded-xl px-5 py-1.5 text-xs w-fit">
                   Agendar
                 </button>
               </div>
@@ -274,7 +275,7 @@ export function ClientBookingPage() {
             <button 
               onClick={() => step > 1 && setStep(1)} 
               className={`flex-1 text-center py-2.5 rounded-full text-[11px] font-bold transition-all ${
-                step >= 1 ? 'bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black' : 'bg-white/5 border border-white/10 text-[#8C97A8]'
+                step >= 1 ? 'bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black' : 'bg-white/5 border border-white/10 text-figaro-text-sec'
               }`}
             >
               1. Escolha
@@ -284,7 +285,7 @@ export function ClientBookingPage() {
               onClick={() => step > 2 && setStep(2)} 
               disabled={selectedServices.length === 0 && step === 1}
               className={`flex-1 text-center py-2.5 rounded-full text-[11px] font-bold transition-all ${
-                step >= 2 ? 'bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black' : 'bg-white/5 border border-white/10 text-[#8C97A8]'
+                step >= 2 ? 'bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black' : 'bg-white/5 border border-white/10 text-figaro-text-sec'
               }`}
             >
               2. Data&Hora
@@ -292,7 +293,7 @@ export function ClientBookingPage() {
             <span className="text-white/30 mx-2 text-xs">⟶</span>
             <button 
               className={`flex-1 text-center py-2.5 rounded-full text-[11px] font-bold transition-all ${
-                step === 3 ? 'bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black' : 'bg-white/5 border border-white/10 text-[#8C97A8]'
+                step === 3 ? 'bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black' : 'bg-white/5 border border-white/10 text-figaro-text-sec'
               }`}
             >
               3. Confirmação
@@ -321,13 +322,13 @@ export function ClientBookingPage() {
                       <div
                         key={srv.id}
                         className={`bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden flex flex-col transition-all ${
-                          isSelected ? 'ring-2 ring-[#D4AF37]' : ''
+                          isSelected ? 'ring-2 ring-figaro-gold-base' : ''
                         }`}
                       >
                         <div className="relative h-36">
                           <img src={imageUrl} alt={srv.name} className="w-full h-full object-cover" />
                           <div className="absolute top-2 left-2 bg-white/20 backdrop-blur-md rounded-lg px-2 py-1 flex items-center gap-1 text-white font-bold text-xs">
-                            <Star className="w-3 h-3 text-[#D4AF37] fill-[#D4AF37]" /> 4.9
+                            <Star className="w-3 h-3 text-figaro-gold-base fill-[#D4AF37]" /> 4.9
                           </div>
                           <div className="absolute top-2 right-2 text-white">
                             <Heart className="w-5 h-5" />
@@ -336,7 +337,7 @@ export function ClientBookingPage() {
                         
                         <div className="p-4 flex-1 flex flex-col">
                           <h4 className="text-white font-bold text-[13px] leading-tight mb-1">{srv.name}</h4>
-                          <p className="text-[#8C97A8] text-[10px] mb-4">Dura entre {srv.durationMin} mnts</p>
+                          <p className="text-figaro-text-sec text-[10px] mb-4">Dura entre {srv.durationMin} mnts</p>
                           
                           <div className="mt-auto">
                             <button
@@ -344,7 +345,7 @@ export function ClientBookingPage() {
                               className={`w-full text-black font-semibold rounded-xl py-2.5 text-xs transition-all ${
                                 isSelected 
                                 ? 'bg-white/20 text-white' 
-                                : 'bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37]'
+                                : 'bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base'
                               }`}
                             >
                               {isSelected ? 'Remover' : 'Agendar'}
@@ -360,7 +361,7 @@ export function ClientBookingPage() {
                  <div className="pt-6">
                     <button 
                       onClick={() => setStep(2)}
-                      className="w-full bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-4 shadow-lg shadow-[#D4AF37]/30"
+                      className="w-full bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black font-semibold rounded-xl py-4 shadow-lg shadow-figaro-gold-base/30"
                     >
                       Prosseguir para Horários
                     </button>
@@ -384,13 +385,13 @@ export function ClientBookingPage() {
                     }}
                     className={`flex-shrink-0 min-w-[70px] min-h-[70px] flex flex-col justify-center items-center p-2 rounded-2xl transition-all cursor-pointer ${
                       selectedDate === item.iso
-                        ? 'bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black shadow-lg shadow-[#D4AF37]/30'
-                        : 'bg-white/5 backdrop-blur-md border border-white/10 text-[#8C97A8]'
+                        ? 'bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black shadow-lg shadow-figaro-gold-base/30'
+                        : 'bg-white/5 backdrop-blur-md border border-white/10 text-figaro-text-sec'
                     }`}
                   >
                     <span className={`block text-[10px] uppercase font-bold ${selectedDate === item.iso ? 'text-black' : 'text-white'}`}>{item.dayName}</span>
                     <span className={`block text-xl font-bold my-0.5 ${selectedDate === item.iso ? 'text-black' : 'text-white'}`}>{item.dayNum}</span>
-                    <span className={`block text-[10px] uppercase ${selectedDate === item.iso ? 'text-black' : 'text-[#8C97A8]'}`}>{item.month}</span>
+                    <span className={`block text-[10px] uppercase ${selectedDate === item.iso ? 'text-black' : 'text-figaro-text-sec'}`}>{item.month}</span>
                   </button>
                 ))}
               </div>
@@ -403,9 +404,9 @@ export function ClientBookingPage() {
                 </div>
               ) : slots.length === 0 || !slots.some(s => s.available) ? (
                 <div className="p-6 text-center space-y-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl">
-                   <AlertCircle className="w-8 h-8 text-[#D4AF37] mx-auto" />
+                   <AlertCircle className="w-8 h-8 text-figaro-gold-base mx-auto" />
                    <h4 className="text-white font-bold text-lg">Agenda Esgotada</h4>
-                   <p className="text-[#8C97A8] text-sm">Sem horários para este dia.</p>
+                   <p className="text-figaro-text-sec text-sm">Sem horários para este dia.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-3 gap-3">
@@ -418,8 +419,8 @@ export function ClientBookingPage() {
                         onClick={() => setSelectedSlot(slot)}
                         className={`h-12 rounded-xl text-sm font-bold transition-all flex items-center justify-center cursor-pointer ${
                           isSelected
-                            ? 'bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black shadow-lg shadow-[#D4AF37]/30'
-                            : 'bg-white/5 backdrop-blur-md border border-white/10 text-white hover:border-[#D4AF37] hover:bg-white/10'
+                            ? 'bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black shadow-lg shadow-figaro-gold-base/30'
+                            : 'bg-white/5 backdrop-blur-md border border-white/10 text-white hover:border-figaro-gold-base hover:bg-white/10'
                         }`}
                       >
                         {timeStr}
@@ -433,7 +434,7 @@ export function ClientBookingPage() {
                  <div className="pt-4">
                     <button 
                       onClick={() => setStep(3)}
-                      className="w-full bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-4 shadow-lg shadow-[#D4AF37]/30"
+                      className="w-full bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black font-semibold rounded-xl py-4 shadow-lg shadow-figaro-gold-base/30"
                     >
                       Ir para Confirmação
                     </button>
@@ -447,49 +448,54 @@ export function ClientBookingPage() {
             <form className="space-y-6">
               <h3 className="text-white font-bold text-lg">Finalizar Agendamento</h3>
               
-              {!user ? (
-                <div className="p-6 space-y-4 text-center bg-white/5 backdrop-blur-md border border-white/10">
-                  <div className="w-12 h-12 rounded-full bg-[#D4AF37] text-[#D4AF37] flex items-center justify-center mx-auto border border-[#D4AF37]">
-                    <LogIn className="w-6 h-6" />
+              {!user && (
+                <div className="p-4 mb-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div>
+                    <h4 className="text-white font-bold text-sm">Já tem uma conta?</h4>
+                    <p className="text-figaro-text-sec text-xs mt-1">Faça login para acompanhar seu histórico e ganhar pontos.</p>
                   </div>
-                  <h4 className="text-white font-bold text-base">Faça Login</h4>
-                  <p className="text-[#8C97A8] text-sm">Entre para confirmar seu agendamento.</p>
-                  
-                  <div className="flex gap-3 pt-2">
-                    <Link to={`/login?redirect=/${slug}`} className="flex-1">
-                      <button type="button" className="w-full bg-white/5 backdrop-blur-md border border-white/10 text-white font-semibold rounded-xl py-3 text-sm">
-                        Entrar
+                  <div className="flex gap-2 w-full sm:w-auto">
+                    <Link to={`/login?redirect=/${slug}`} className="flex-1 sm:flex-none">
+                      <button type="button" className="w-full sm:w-auto bg-white/10 border border-white/20 text-white font-semibold rounded-xl px-4 py-2 text-xs hover:bg-white/20 transition-colors">
+                        Fazer Login
                       </button>
                     </Link>
-                    <Link to={`/registro?redirect=/${slug}`} className="flex-1">
-                      <button type="button" className="w-full bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-3 text-sm">
+                    <Link to={`/registro?redirect=/${slug}`} className="flex-1 sm:flex-none">
+                      <button type="button" className="w-full sm:w-auto bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black font-semibold rounded-xl px-4 py-2 text-xs">
                         Criar Conta
                       </button>
                     </Link>
                   </div>
                 </div>
-              ) : (
-                <div className="p-6 space-y-5 bg-white/5 backdrop-blur-md border border-white/10">
+              )}
+              
+              <div className="p-6 space-y-5 bg-white/5 backdrop-blur-md border border-white/10">
                   <div className="bg-white/5 backdrop-blur-md border border-white/10 p-4 rounded-2xl flex flex-col gap-2">
-                    <span className="text-[#D4AF37] font-semibold text-xs flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4" /> Conectado como {user.name}
-                    </span>
-                    <span className="text-white font-bold text-sm">Total: R$ {totalDuration}</span>
+                    {user ? (
+                      <span className="text-figaro-gold-base font-semibold text-xs flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4" /> Conectado como {user.name}
+                      </span>
+                    ) : (
+                      <span className="text-figaro-text-sec font-semibold text-xs flex items-center gap-2">
+                        <UserPlus className="w-4 h-4" /> Agendando como Visitante
+                      </span>
+                    )}
+                    <span className="text-white font-bold text-sm">Total: R$ {totalPrice.toFixed(2)}</span>
                   </div>
 
                   <div>
-                    <label className="text-[#8C97A8] text-xs font-semibold block mb-1">Nome Completo</label>
+                    <label className="text-figaro-text-sec text-xs font-semibold block mb-1">Nome Completo</label>
                     <input
                       type="text" required value={clientName} onChange={e => setClientName(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 text-white focus:outline-none focus:border-[#D4AF37]"
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 text-white focus:outline-none focus:border-figaro-gold-base"
                     />
                   </div>
 
                   <div>
-                    <label className="text-[#8C97A8] text-xs font-semibold block mb-1">WhatsApp</label>
+                    <label className="text-figaro-text-sec text-xs font-semibold block mb-1">WhatsApp</label>
                     <input
                       type="tel" required value={clientPhone} onChange={e => setClientPhone(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 text-white focus:outline-none focus:border-[#D4AF37]"
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 text-white focus:outline-none focus:border-figaro-gold-base"
                     />
                   </div>
                   
@@ -497,7 +503,7 @@ export function ClientBookingPage() {
                       type="button"
                       disabled={submitting}
                       onClick={handleConfirmAppointment}
-                      className="w-full bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-semibold rounded-xl py-4 shadow-lg shadow-[#D4AF37]/30 flex justify-center mt-6"
+                      className="w-full bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black font-semibold rounded-xl py-4 shadow-lg shadow-figaro-gold-base/30 flex justify-center mt-6"
                     >
                       {submitting ? <RefreshCw className="w-6 h-6 animate-spin text-black" /> : 'Confirmar Agendamento'}
                     </button>

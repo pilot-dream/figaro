@@ -73,17 +73,17 @@ export function ClientWalletPage() {
     : ((points - currentThreshold) / (nextThreshold - currentThreshold)) * 100
 
   return (
-    <div className="min-h-screen w-full bg-[#0A0E14] text-white pb-24 overflow-x-hidden">
+    <div className="min-h-screen w-full bg-figaro-black text-white pb-24 overflow-x-hidden">
       {/* Premium Header */}
       <div className="px-6 pt-6 pb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base bg-clip-text text-transparent">
             Clube Fígaro
           </h1>
-          <p className="text-sm text-[#8C97A8] mt-1">Seu programa de recompensas</p>
+          <p className="text-sm text-figaro-text-sec mt-1">Seu programa de recompensas</p>
         </div>
         <div className="w-12 h-12 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center">
-          <Crown className="w-6 h-6 text-[#D4AF37]" />
+          <Crown className="w-6 h-6 text-figaro-gold-base" />
         </div>
       </div>
 
@@ -91,10 +91,10 @@ export function ClientWalletPage() {
       <div className="px-4">
         <div className="relative rounded-3xl p-6 overflow-hidden bg-gradient-to-br from-[#1a1c23] to-[#0A0E14] border border-white/10 shadow-2xl">
           {/* Glow effect */}
-          <div className="absolute -right-10 -top-10 w-40 h-40 bg-[#D4AF37] blur-[50px] rounded-full pointer-events-none" />
+          <div className="absolute -right-10 -top-10 w-40 h-40 bg-figaro-gold-base blur-[50px] rounded-full pointer-events-none" />
           
           <div className="relative z-10 flex flex-col items-center text-center">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37] mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-figaro-gold-base mb-2">
               Saldo Atual
             </span>
             <div className="flex items-end gap-1 mb-6">
@@ -106,11 +106,11 @@ export function ClientWalletPage() {
             <div className="w-full">
               <div className="flex justify-between text-xs font-bold mb-2">
                 <span className="text-white">{currentTier}</span>
-                <span className="text-gray-500">{nextTier}</span>
+                <span className="text-figaro-text-sec">{nextTier}</span>
               </div>
               <div className="w-full h-2.5 bg-black/50 rounded-full overflow-hidden border border-white/5">
                 <div 
-                  className="h-full bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] rounded-full shadow-[0_0_10px_rgba(251,191,36,0.5)] transition-all duration-1000 ease-out"
+                  className="h-full bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base rounded-full shadow-[0_0_10px_rgba(251,191,36,0.5)] transition-all duration-1000 ease-out"
                   style={{ width: `${Math.min(progress, 100)}%` }}
                 />
               </div>
@@ -129,15 +129,15 @@ export function ClientWalletPage() {
       <div className="px-4 mt-6">
         <button className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex items-center justify-between group hover:bg-white/10 transition-colors">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-[#D4AF37] flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-[#D4AF37]" />
+            <div className="w-10 h-10 rounded-full bg-figaro-gold-base flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-figaro-gold-base" />
             </div>
             <div className="text-left">
               <h3 className="font-semibold text-white">Resgatar Prêmios</h3>
               <p className="text-xs text-gray-400">Ver cortes e produtos disponíveis</p>
             </div>
           </div>
-          <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-[#D4AF37] transition-colors" />
+          <ChevronRight className="w-5 h-5 text-figaro-text-sec group-hover:text-figaro-gold-base transition-colors" />
         </button>
       </div>
 
@@ -156,16 +156,16 @@ export function ClientWalletPage() {
               <div key={item.id} className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
                 <div>
                   <p className="font-medium text-sm text-white">{item.title}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{item.date}</p>
+                  <p className="text-xs text-figaro-text-sec mt-0.5">{item.date}</p>
                 </div>
-                <span className={`font-bold ${item.isRedemption ? 'text-red-400' : 'text-[#D4AF37]'}`}>
+                <span className={`font-bold ${item.isRedemption ? 'text-red-400' : 'text-figaro-gold-base'}`}>
                   {item.points}
                 </span>
               </div>
             ))
           ) : (
             <div className="text-center py-6 bg-white/5 rounded-2xl border border-white/5">
-              <Scissors className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+              <Scissors className="w-8 h-8 text-figaro-text-sec mx-auto mb-2" />
               <p className="text-sm text-gray-400">Você ainda não possui agendamentos finalizados.</p>
             </div>
           )}

@@ -63,11 +63,11 @@ export function SubscriptionCheckout() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0E14] text-white p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen bg-figaro-black text-white p-4 sm:p-6 md:p-8">
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-center gap-4">
-          <Button variant="ghost" onClick={() => step === 'PLAN' ? navigate(`/${barberSlug}`) : setStep(step === 'PAYMENT' ? 'SLOT' : 'PLAN')} className="p-2 h-auto text-[#8C97A8] hover:text-white">
+          <Button variant="ghost" onClick={() => step === 'PLAN' ? navigate(`/${barberSlug}`) : setStep(step === 'PAYMENT' ? 'SLOT' : 'PLAN')} className="p-2 h-auto text-figaro-text-sec hover:text-white">
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -89,11 +89,11 @@ export function SubscriptionCheckout() {
               <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${step === 'PLAN' ? 'bg-[#11AFFA] text-white shadow-[0_0_15px_rgba(17,175,250,0.4)]' : 'bg-[#11AFFA] text-white'}`}>1</div>
               <span className="text-xs font-medium">Plano</span>
             </div>
-            <div className={`flex flex-col items-center gap-2 ${step === 'SLOT' ? 'text-[#11AFFA]' : step === 'PAYMENT' ? 'text-white' : 'text-[#8C97A8]'}`}>
+            <div className={`flex flex-col items-center gap-2 ${step === 'SLOT' ? 'text-[#11AFFA]' : step === 'PAYMENT' ? 'text-white' : 'text-figaro-text-sec'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${step === 'SLOT' ? 'bg-[#11AFFA] text-white shadow-[0_0_15px_rgba(17,175,250,0.4)]' : step === 'PAYMENT' ? 'bg-[#11AFFA] text-white' : 'bg-[#1A2332]'}`}>2</div>
               <span className="text-xs font-medium">Horário</span>
             </div>
-            <div className={`flex flex-col items-center gap-2 ${step === 'PAYMENT' ? 'text-[#11AFFA]' : 'text-[#8C97A8]'}`}>
+            <div className={`flex flex-col items-center gap-2 ${step === 'PAYMENT' ? 'text-[#11AFFA]' : 'text-figaro-text-sec'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${step === 'PAYMENT' ? 'bg-[#11AFFA] text-white shadow-[0_0_15px_rgba(17,175,250,0.4)]' : 'bg-[#1A2332]'}`}>3</div>
               <span className="text-xs font-medium">Pagamento</span>
             </div>
@@ -105,7 +105,7 @@ export function SubscriptionCheckout() {
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
             <div>
               <h2 className="text-xl font-bold mb-2">Escolha seu Plano VIP</h2>
-              <p className="text-[#8C97A8]">Garanta seu horário cativo toda semana.</p>
+              <p className="text-figaro-text-sec">Garanta seu horário cativo toda semana.</p>
             </div>
 
             {plans.length > 0 ? plans.map((plan: any) => (
@@ -117,27 +117,27 @@ export function SubscriptionCheckout() {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="text-2xl font-black text-white">{plan.name}</h3>
-                    <p className="text-[#8C97A8]">{plan.cutsPerPeriod} Cortes por mês</p>
+                    <p className="text-figaro-text-sec">{plan.cutsPerPeriod} Cortes por mês</p>
                   </div>
                   <div className="text-right">
                     <span className="text-2xl font-bold text-[#2ED9A0]">R$ {plan.price.toFixed(2)}</span>
-                    <span className="text-sm text-[#8C97A8]">/mês</span>
+                    <span className="text-sm text-figaro-text-sec">/mês</span>
                   </div>
                 </div>
                 {plan.description && (
-                  <p className="text-sm text-[#8C97A8] mb-6 italic">{plan.description}</p>
+                  <p className="text-sm text-figaro-text-sec mb-6 italic">{plan.description}</p>
                 )}
                 <ul className="space-y-2 mb-6">
-                  <li className="flex items-center gap-2 text-[#8C97A8]">
+                  <li className="flex items-center gap-2 text-figaro-text-sec">
                     <Check className="w-4 h-4 text-[#11AFFA]" /> Horário cativo garantido
                   </li>
-                  <li className="flex items-center gap-2 text-[#8C97A8]">
+                  <li className="flex items-center gap-2 text-figaro-text-sec">
                     <Check className="w-4 h-4 text-[#11AFFA]" /> Prioridade na fila de espera
                   </li>
                 </ul>
               </GlassCard>
             )) : (
-              <p className="text-[#8C97A8] p-4 text-center">Nenhum plano ativo no momento.</p>
+              <p className="text-figaro-text-sec p-4 text-center">Nenhum plano ativo no momento.</p>
             )}
 
             <Button 
@@ -155,11 +155,11 @@ export function SubscriptionCheckout() {
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
              <div>
               <h2 className="text-xl font-bold mb-2">Escolha seu Horário Cativo</h2>
-              <p className="text-[#8C97A8]">Este será o seu horário sagrado toda semana.</p>
+              <p className="text-figaro-text-sec">Este será o seu horário sagrado toda semana.</p>
             </div>
 
             <div className="space-y-4">
-              <h3 className="font-semibold text-[#8C97A8]">Dia da Semana</h3>
+              <h3 className="font-semibold text-figaro-text-sec">Dia da Semana</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {daysOfWeek.map(day => (
                   <button
@@ -168,7 +168,7 @@ export function SubscriptionCheckout() {
                     className={`p-3 rounded-xl border font-medium transition-all ${
                       selectedDay === day.id 
                         ? 'border-[#11AFFA] bg-[#11AFFA]/10 text-white shadow-[0_0_15px_rgba(17,175,250,0.2)]' 
-                        : 'border-[#1A2332] bg-[#0A0E14] text-[#8C97A8] hover:border-[#11AFFA]/40'
+                        : 'border-[#1A2332] bg-figaro-black text-figaro-text-sec hover:border-[#11AFFA]/40'
                     }`}
                   >
                     {day.label}
@@ -179,7 +179,7 @@ export function SubscriptionCheckout() {
 
             {selectedDay !== null && (
               <div className="space-y-4 animate-in fade-in zoom-in-95">
-                <h3 className="font-semibold text-[#8C97A8]">Horário</h3>
+                <h3 className="font-semibold text-figaro-text-sec">Horário</h3>
                 <div className="grid grid-cols-4 gap-3">
                   {mockTimes.map(time => {
                     const isTaken = takenSlots.some(s => s.dayOfWeek === selectedDay && s.time === time)
@@ -190,10 +190,10 @@ export function SubscriptionCheckout() {
                         onClick={() => setSelectedTime(time)}
                         className={`p-3 rounded-xl border font-medium transition-all ${
                           isTaken
-                            ? 'border-[#1A2332]/30 bg-[#1A2332]/20 text-[#8C97A8]/30 cursor-not-allowed line-through'
+                            ? 'border-[#1A2332]/30 bg-[#1A2332]/20 text-figaro-text-sec/30 cursor-not-allowed line-through'
                             : selectedTime === time 
                               ? 'border-[#11AFFA] bg-[#11AFFA]/10 text-white shadow-[0_0_15px_rgba(17,175,250,0.2)]' 
-                              : 'border-[#1A2332] bg-[#0A0E14] text-[#8C97A8] hover:border-[#11AFFA]/40'
+                              : 'border-[#1A2332] bg-figaro-black text-figaro-text-sec hover:border-[#11AFFA]/40'
                         }`}
                       >
                         {time}
@@ -219,8 +219,8 @@ export function SubscriptionCheckout() {
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
             <GlassCard className="p-6 border-[#1A2332]/50 text-center mb-8">
               <h3 className="text-lg font-bold text-white mb-1">Resumo da Assinatura</h3>
-              <p className="text-[#2ED9A0] font-black text-2xl mb-4">R$ {selectedPlan?.price?.toFixed(2) || '0.00'} <span className="text-sm text-[#8C97A8] font-normal">/mês</span></p>
-              <div className="flex items-center justify-center gap-2 text-[#8C97A8]">
+              <p className="text-[#2ED9A0] font-black text-2xl mb-4">R$ {selectedPlan?.price?.toFixed(2) || '0.00'} <span className="text-sm text-figaro-text-sec font-normal">/mês</span></p>
+              <div className="flex items-center justify-center gap-2 text-figaro-text-sec">
                 <Calendar className="w-4 h-4" />
                 <span>Toda {daysOfWeek.find(d => d.id === selectedDay)?.label} às {selectedTime}</span>
               </div>
@@ -235,7 +235,7 @@ export function SubscriptionCheckout() {
                   </div>
                   <div>
                     <h4 className="font-bold text-white text-lg mb-2">À Combinar na Barbearia</h4>
-                    <p className="text-sm text-[#8C97A8]">
+                    <p className="text-sm text-figaro-text-sec">
                       O pagamento será acertado diretamente com o seu barbeiro presencialmente. Seu horário já ficará reservado!
                     </p>
                   </div>
@@ -261,7 +261,7 @@ export function SubscriptionCheckout() {
             </div>
             <div>
               <h2 className="text-3xl font-black text-white mb-2">Bem-vindo ao Clube!</h2>
-              <p className="text-[#8C97A8] max-w-sm mx-auto">
+              <p className="text-figaro-text-sec max-w-sm mx-auto">
                 Sua reserva foi concluída. Acerte o pagamento diretamente com o barbeiro na sua próxima visita.
               </p>
             </div>

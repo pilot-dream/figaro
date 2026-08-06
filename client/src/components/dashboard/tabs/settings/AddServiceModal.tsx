@@ -50,14 +50,14 @@ export function AddServiceModal({
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[60] flex items-center justify-center p-4">
-      <div className="bg-[#0A0E14]/90 backdrop-blur-2xl border border-white/20 rounded-3xl p-6 shadow-2xl shadow-black/80 max-w-md w-full space-y-4">
+      <div className="bg-figaro-black/90 backdrop-blur-2xl border border-white/20 rounded-3xl p-6 shadow-2xl shadow-black/80 max-w-md w-full space-y-4">
         <h3 className="font-bold text-white text-lg border-b border-white/10 pb-3">
           {editingService ? 'Editar Item' : isCombo ? 'Novo Combo Promocional' : 'Novo Serviço'}
         </h3>
 
         <form onSubmit={handleSaveService} className="space-y-4">
           <div>
-            <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">
+            <label className="text-xs font-semibold text-figaro-text-sec block mb-1.5">
               Nome do Serviço / Combo *
             </label>
             <input
@@ -66,13 +66,13 @@ export function AddServiceModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={isCombo ? 'Ex: Combo Cabelo + Barba + Sobrancelha' : 'Ex: Corte Degradê Navalhado'}
-              className="bg-white/5 border border-white/10 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] text-white rounded-xl p-3 outline-none text-xs w-full"
+              className="bg-white/5 border border-white/10 focus:border-figaro-gold-base focus:ring-1 focus:ring-figaro-gold-base text-white rounded-xl p-3 outline-none text-xs w-full"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">Preço (R$) *</label>
+              <label className="text-xs font-semibold text-figaro-text-sec block mb-1.5">Preço (R$) *</label>
               <input
                 type="number"
                 step="0.01"
@@ -80,16 +80,16 @@ export function AddServiceModal({
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="75.00"
-                className="bg-white/5 border border-white/10 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] text-white rounded-xl p-3 outline-none text-xs w-full font-mono"
+                className="bg-white/5 border border-white/10 focus:border-figaro-gold-base focus:ring-1 focus:ring-figaro-gold-base text-white rounded-xl p-3 outline-none text-xs w-full font-mono"
               />
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">Duração (minutos) *</label>
+              <label className="text-xs font-semibold text-figaro-text-sec block mb-1.5">Duração (minutos) *</label>
               <select
                 value={durationMin}
                 onChange={(e) => setDurationMin(e.target.value)}
-                className="bg-[#0A0E14] border border-white/10 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] text-white rounded-xl p-3 outline-none text-xs w-full"
+                className="bg-figaro-black border border-white/10 focus:border-figaro-gold-base focus:ring-1 focus:ring-figaro-gold-base text-white rounded-xl p-3 outline-none text-xs w-full"
               >
                 <option value="15">15 min</option>
                 <option value="30">30 min</option>
@@ -101,18 +101,18 @@ export function AddServiceModal({
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">Descrição (opcional)</label>
+            <label className="text-xs font-semibold text-figaro-text-sec block mb-1.5">Descrição (opcional)</label>
             <textarea
               rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Detalhes dos itens inclusos neste serviço..."
-              className="bg-white/5 border border-white/10 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] text-white rounded-xl p-3 outline-none text-xs w-full resize-none"
+              className="bg-white/5 border border-white/10 focus:border-figaro-gold-base focus:ring-1 focus:ring-figaro-gold-base text-white rounded-xl p-3 outline-none text-xs w-full resize-none"
             />
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">
+            <label className="text-xs font-semibold text-figaro-text-sec block mb-1.5">
               Imagem do Serviço (Card Principal)
             </label>
             <div className="flex items-center gap-4">
@@ -120,7 +120,7 @@ export function AddServiceModal({
                 {imageUrl ? (
                   <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-[10px] text-[#8C97A8] text-center px-1">Sem Foto</span>
+                  <span className="text-[10px] text-figaro-text-sec text-center px-1">Sem Foto</span>
                 )}
                 {isUploading && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -134,9 +134,9 @@ export function AddServiceModal({
                   accept="image/*"
                   onChange={handleImageUpload}
                   disabled={isUploading}
-                  className="w-full text-xs text-[#8C97A8] file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#D4AF37] file:text-[#D4AF37] hover:file:bg-[#D4AF37] cursor-pointer"
+                  className="w-full text-xs text-figaro-text-sec file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-figaro-gold-base file:text-figaro-gold-base hover:file:bg-figaro-gold-base cursor-pointer"
                 />
-                <p className="text-[9px] text-[#8C97A8] mt-1">Recomendado: Imagens horizontais (16:9), até 2MB.</p>
+                <p className="text-[9px] text-figaro-text-sec mt-1">Recomendado: Imagens horizontais (16:9), até 2MB.</p>
               </div>
             </div>
           </div>
@@ -148,7 +148,7 @@ export function AddServiceModal({
                 type="checkbox"
                 checked={isFeatured}
                 onChange={(e) => setIsFeatured(e.target.checked)}
-                className="w-4 h-4 rounded border-white/20 bg-white/5 text-[#D4AF37]"
+                className="w-4 h-4 rounded border-white/20 bg-white/5 text-figaro-gold-base"
               />
               Destacar na página pública
             </label>
@@ -170,7 +170,7 @@ export function AddServiceModal({
             </Button>
             <button
               type="submit"
-              className="bg-[#D4AF37] hover:bg-[#0B3B5C] text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg transition-all text-xs cursor-pointer"
+              className="bg-figaro-gold-base hover:bg-[#0B3B5C] text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg transition-all text-xs cursor-pointer"
             >
               Salvar
             </button>

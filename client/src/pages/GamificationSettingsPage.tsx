@@ -60,7 +60,7 @@ export const GamificationSettingsPage: React.FC = () => {
         <h2 className="text-xl font-semibold">Automações Ativas</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           
-          <div className="flex flex-col justify-between rounded-2xl bg-[#0A0E14]/90 p-5 backdrop-blur-md border border-white/10">
+          <div className="flex flex-col justify-between rounded-2xl bg-figaro-black/90 p-5 backdrop-blur-md border border-white/10">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-pink-500/10 rounded-lg text-pink-500">
                 <Gift className="h-5 w-5" />
@@ -79,9 +79,9 @@ export const GamificationSettingsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-col justify-between rounded-2xl bg-[#0A0E14]/90 p-5 backdrop-blur-md border border-white/10">
+          <div className="flex flex-col justify-between rounded-2xl bg-figaro-black/90 p-5 backdrop-blur-md border border-white/10">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-[#D4AF37] rounded-lg text-[#D4AF37]">
+              <div className="p-2 bg-figaro-gold-base rounded-lg text-figaro-gold-base">
                 <Zap className="h-5 w-5" />
               </div>
               <h3 className="font-medium">Reativação (Win-back)</h3>
@@ -98,7 +98,7 @@ export const GamificationSettingsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-col justify-between rounded-2xl bg-[#0A0E14]/90 p-5 backdrop-blur-md border border-white/10">
+          <div className="flex flex-col justify-between rounded-2xl bg-figaro-black/90 p-5 backdrop-blur-md border border-white/10">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-500">
                 <Users className="h-5 w-5" />
@@ -123,7 +123,7 @@ export const GamificationSettingsPage: React.FC = () => {
       {/* Regras e Recompensas */}
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Regras e Recompensas</h2>
-        <div className="rounded-2xl bg-[#0A0E14]/90 p-6 backdrop-blur-md border border-white/10 space-y-6">
+        <div className="rounded-2xl bg-figaro-black/90 p-6 backdrop-blur-md border border-white/10 space-y-6">
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-6">
             <div className="max-w-md">

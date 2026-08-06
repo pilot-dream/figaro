@@ -19,7 +19,7 @@ export function DesktopSidebar({ activeTab, onChangeTab }: DesktopSidebarProps) 
   ]
 
   return (
-    <div className="hidden md:flex w-64 flex-col fixed inset-y-0 left-0 bg-[#0A0E14] border-r border-white/10 z-50">
+    <div className="hidden md:flex w-64 flex-col fixed inset-y-0 left-0 bg-figaro-black border-r border-white/10 z-50">
       {/* Brand Header */}
       <div className="p-6 border-b border-white/5 flex flex-col gap-4">
         <div className="flex items-center gap-3">
@@ -31,7 +31,7 @@ export function DesktopSidebar({ activeTab, onChangeTab }: DesktopSidebarProps) 
       <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
         <button
           onClick={() => onChangeTab('booking')}
-          className="w-full flex items-center justify-between p-3 mb-6 bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] rounded-xl text-black font-bold shadow-lg shadow-[#D4AF37]/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+          className="w-full flex items-center justify-between p-3 mb-6 bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base rounded-xl text-black font-bold shadow-lg shadow-figaro-gold-base/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
         >
           <div className="flex items-center gap-3">
             <Scissors className="w-5 h-5" />
@@ -71,7 +71,7 @@ export function DesktopSidebar({ activeTab, onChangeTab }: DesktopSidebarProps) 
           />
           <div className="flex-1 truncate">
             <p className="text-sm font-bold text-white truncate">{user?.name}</p>
-            <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+            <p className="text-xs text-figaro-text-sec truncate">{user?.email}</p>
           </div>
         </div>
         

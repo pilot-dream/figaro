@@ -83,7 +83,7 @@ export function PushNotificationPrompt({ onClose }: PushNotificationPromptProps)
       {/* Modal central */}
       <div className="fixed inset-0 z-[9999] flex items-center justify-center p-6">
         <div
-          className="relative w-full max-w-sm rounded-3xl border border-white/10 bg-[#0A0E14]/90 backdrop-blur-md p-6 shadow-2xl"
+          className="relative w-full max-w-sm rounded-3xl border border-white/10 bg-figaro-black/90 backdrop-blur-md p-6 shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Botão fechar */}
@@ -97,8 +97,8 @@ export function PushNotificationPrompt({ onClose }: PushNotificationPromptProps)
           {/* Ícone principal animado */}
           <div className="flex justify-center mb-6">
             <div className="relative">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#FBE7A1]/20 to-[#D4AF37]/10 border border-[#D4AF37] flex items-center justify-center">
-                <Bell className="w-7 h-7 text-[#D4AF37] animate-[wiggle_1.5s_ease-in-out_infinite]" />
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-figaro-gold-light/20 to-figaro-gold-base/10 border border-figaro-gold-base flex items-center justify-center">
+                <Bell className="w-7 h-7 text-figaro-gold-base animate-[wiggle_1.5s_ease-in-out_infinite]" />
               </div>
               {/* Dot de notificação */}
               <span className="absolute top-1 right-1 w-3 h-3 bg-[#F0553F] rounded-full border-2 border-[#0A0E14] animate-pulse" />
@@ -112,14 +112,14 @@ export function PushNotificationPrompt({ onClose }: PushNotificationPromptProps)
 
           {/* Descrição principal */}
           <p className="text-center text-sm text-gray-400 mb-6 leading-relaxed">
-            Quer ser avisado <span className="text-[#D4AF37] font-semibold">2h antes</span> do seu corte para não esquecer? Ative os lembretes.
+            Quer ser avisado <span className="text-figaro-gold-base font-semibold">2h antes</span> do seu corte para não esquecer? Ative os lembretes.
           </p>
 
           {/* Benefícios */}
           <div className="space-y-3 mb-6">
             <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/[0.03] border border-white/5">
-              <div className="w-8 h-8 rounded-full bg-[#D4AF37] flex items-center justify-center shrink-0">
-                <Clock className="w-4 h-4 text-[#D4AF37]" />
+              <div className="w-8 h-8 rounded-full bg-figaro-gold-base flex items-center justify-center shrink-0">
+                <Clock className="w-4 h-4 text-figaro-gold-base" />
               </div>
               <span className="text-xs text-gray-300">Lembrete automático antes do horário</span>
             </div>
@@ -138,7 +138,7 @@ export function PushNotificationPrompt({ onClose }: PushNotificationPromptProps)
             <button
               onClick={handleActivate}
               disabled={isLoading}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#FBE7A1] to-[#D4AF37] text-black font-bold text-sm shadow-lg shadow-[#D4AF37]/30 hover:shadow-[#D4AF37]/30 transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black font-bold text-sm shadow-lg shadow-figaro-gold-base/30 hover:shadow-figaro-gold-base/30 transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
@@ -156,14 +156,14 @@ export function PushNotificationPrompt({ onClose }: PushNotificationPromptProps)
             {/* Botão secundário */}
             <button
               onClick={handleDismiss}
-              className="w-full py-3 rounded-2xl text-sm text-gray-500 hover:text-gray-300 transition-colors cursor-pointer"
+              className="w-full py-3 rounded-2xl text-sm text-figaro-text-sec hover:text-gray-300 transition-colors cursor-pointer"
             >
               Agora não
             </button>
           </div>
 
           {/* Nota de privacidade */}
-          <p className="text-center text-[10px] text-gray-600 mt-4">
+          <p className="text-center text-[10px] text-figaro-text-sec mt-4">
             Você pode desativar a qualquer momento nas configurações.
           </p>
         </div>

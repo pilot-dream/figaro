@@ -434,7 +434,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
       {/* Header */}
       <div className="border-b border-white/10 pb-4">
         <h2 className="text-xl font-bold text-white tracking-tight">Configurações & Ajustes</h2>
-        <p className="text-xs text-[#8C97A8]">
+        <p className="text-xs text-figaro-text-sec">
           Personalize seu perfil público, serviços, horários e regras de pagamento
         </p>
       </div>
@@ -445,8 +445,8 @@ export function TabSettings({ barber }: TabSettingsProps) {
           onClick={() => setActiveSubTab('profile')}
           className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
             activeSubTab === 'profile'
-              ? 'bg-[#D4AF37] text-white shadow-[#D4AF37]/30 font-semibold border border-[#D4AF37]'
-              : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+              ? 'bg-figaro-gold-base text-white shadow-figaro-gold-base/30 font-semibold border border-figaro-gold-base'
+              : 'bg-white/[0.05] text-figaro-text-sec hover:text-white border border-white/10 backdrop-blur-md'
           }`}
         >
           <UserIcon className="w-3.5 h-3.5" /> Link & Perfil
@@ -456,8 +456,8 @@ export function TabSettings({ barber }: TabSettingsProps) {
           onClick={() => setActiveSubTab('services')}
           className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
             activeSubTab === 'services'
-              ? 'bg-[#D4AF37] text-white shadow-[#D4AF37]/30 font-semibold border border-[#D4AF37]'
-              : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+              ? 'bg-figaro-gold-base text-white shadow-figaro-gold-base/30 font-semibold border border-figaro-gold-base'
+              : 'bg-white/[0.05] text-figaro-text-sec hover:text-white border border-white/10 backdrop-blur-md'
           }`}
         >
           <Scissors className="w-3.5 h-3.5" /> Serviços & Combos
@@ -467,8 +467,8 @@ export function TabSettings({ barber }: TabSettingsProps) {
           onClick={() => setActiveSubTab('hours')}
           className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
             activeSubTab === 'hours'
-              ? 'bg-[#D4AF37] text-white shadow-[#D4AF37]/30 font-semibold border border-[#D4AF37]'
-              : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+              ? 'bg-figaro-gold-base text-white shadow-figaro-gold-base/30 font-semibold border border-figaro-gold-base'
+              : 'bg-white/[0.05] text-figaro-text-sec hover:text-white border border-white/10 backdrop-blur-md'
           }`}
         >
           <Clock className="w-3.5 h-3.5" /> Horários & Pausas
@@ -478,8 +478,8 @@ export function TabSettings({ barber }: TabSettingsProps) {
           onClick={() => setActiveSubTab('payments')}
           className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
             activeSubTab === 'payments'
-              ? 'bg-[#D4AF37] text-white shadow-[#D4AF37]/30 font-semibold border border-[#D4AF37]'
-              : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+              ? 'bg-figaro-gold-base text-white shadow-figaro-gold-base/30 font-semibold border border-figaro-gold-base'
+              : 'bg-white/[0.05] text-figaro-text-sec hover:text-white border border-white/10 backdrop-blur-md'
           }`}
         >
           <DollarSign className="w-3.5 h-3.5" /> Pagamentos & Regras
@@ -489,8 +489,8 @@ export function TabSettings({ barber }: TabSettingsProps) {
           onClick={() => setActiveSubTab('integrations')}
           className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
             activeSubTab === 'integrations'
-              ? 'bg-[#D4AF37] text-white shadow-[#D4AF37]/30 font-semibold border border-[#D4AF37]'
-              : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+              ? 'bg-figaro-gold-base text-white shadow-figaro-gold-base/30 font-semibold border border-figaro-gold-base'
+              : 'bg-white/[0.05] text-figaro-text-sec hover:text-white border border-white/10 backdrop-blur-md'
           }`}
         >
           <Calendar className="w-3.5 h-3.5" /> Integrações
@@ -500,8 +500,8 @@ export function TabSettings({ barber }: TabSettingsProps) {
           onClick={() => setActiveSubTab('notifications')}
           className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
             activeSubTab === 'notifications'
-              ? 'bg-[#D4AF37] text-white shadow-[#D4AF37]/30 font-semibold border border-[#D4AF37]'
-              : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+              ? 'bg-figaro-gold-base text-white shadow-figaro-gold-base/30 font-semibold border border-figaro-gold-base'
+              : 'bg-white/[0.05] text-figaro-text-sec hover:text-white border border-white/10 backdrop-blur-md'
           }`}
         >
           <MessageCircle className="w-3.5 h-3.5" /> Notificações
@@ -512,8 +512,8 @@ export function TabSettings({ barber }: TabSettingsProps) {
             onClick={() => setActiveSubTab('team')}
             className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
               activeSubTab === 'team'
-                ? 'bg-[#D4AF37] text-white shadow-[#D4AF37]/30 font-semibold border border-[#D4AF37]'
-                : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+                ? 'bg-figaro-gold-base text-white shadow-figaro-gold-base/30 font-semibold border border-figaro-gold-base'
+                : 'bg-white/[0.05] text-figaro-text-sec hover:text-white border border-white/10 backdrop-blur-md'
             }`}
           >
             <UserIcon className="w-3.5 h-3.5" /> Equipe & Permissões
@@ -526,7 +526,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
             className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
               activeSubTab === 'plan'
                 ? 'bg-[#11AFFA] text-white shadow-[0_0_15px_rgba(17,175,250,0.4)] font-semibold border border-[#11AFFA]'
-                : 'bg-white/[0.05] text-[#8C97A8] hover:text-white border border-white/10 backdrop-blur-md'
+                : 'bg-white/[0.05] text-figaro-text-sec hover:text-white border border-white/10 backdrop-blur-md'
             }`}
           >
             <Crown className="w-3.5 h-3.5" /> Meu Plano
@@ -538,16 +538,16 @@ export function TabSettings({ barber }: TabSettingsProps) {
       {activeSubTab === 'profile' && (
         <div className="space-y-6">
           {/* Highlighted Public Booking Link Card */}
-          <div className="bg-gradient-to-r from-[#D4AF37]/10 to-transparent backdrop-blur-xl border border-[#D4AF37] rounded-2xl p-6 shadow-[#D4AF37]/30 relative overflow-hidden space-y-4">
+          <div className="bg-gradient-to-r from-[#D4AF37]/10 to-transparent backdrop-blur-xl border border-figaro-gold-base rounded-2xl p-6 shadow-figaro-gold-base/30 relative overflow-hidden space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-[#D4AF37] text-[#D4AF37] border border-[#D4AF37]">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-figaro-gold-base text-figaro-gold-base border border-figaro-gold-base">
                   SEU LINK PÚBLICO DE AGENDAMENTO
                 </span>
                 <h3 className="text-lg font-bold text-white tracking-tight">
                   Divulgue seu Link Exclusivo
                 </h3>
-                <p className="text-xs text-[#8C97A8]">
+                <p className="text-xs text-figaro-text-sec">
                   Seus clientes entram direto no seu perfil exclusivo para reservar horários sem fila.
                 </p>
               </div>
@@ -557,18 +557,18 @@ export function TabSettings({ barber }: TabSettingsProps) {
                 onClick={() => setShowQrModal(true)}
                 className="bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-semibold px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all cursor-pointer flex-shrink-0"
               >
-                <QrCode className="w-4 h-4 text-[#D4AF37]" /> Gerar QR Code
+                <QrCode className="w-4 h-4 text-figaro-gold-base" /> Gerar QR Code
               </button>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
-              <div className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 font-mono text-[#D4AF37] text-sm flex-1 truncate">
+              <div className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 font-mono text-figaro-gold-base text-sm flex-1 truncate">
                 {publicUrl}
               </div>
 
               <button
                 onClick={handleCopyLink}
-                className={`w-full sm:w-auto flex-shrink-0 bg-[#D4AF37] hover:bg-[#0B3B5C] text-white font-semibold px-5 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer ${
+                className={`w-full sm:w-auto flex-shrink-0 bg-figaro-gold-base hover:bg-[#0B3B5C] text-white font-semibold px-5 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer ${
                   copied ? '!bg-[#2ED9A0] !text-black' : ''
                 }`}
               >
@@ -588,7 +588,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
           {/* Profile Form */}
           <GlassCard className="p-6 space-y-5">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <UserIcon className="w-4 h-4 text-[#D4AF37]" /> Perfil Público do Barbeiro
+              <UserIcon className="w-4 h-4 text-figaro-gold-base" /> Perfil Público do Barbeiro
             </h3>
 
             <form onSubmit={handleSaveProfile} className="space-y-4">
@@ -597,11 +597,11 @@ export function TabSettings({ barber }: TabSettingsProps) {
                   <img
                     src={avatarUrl}
                     alt={displayName}
-                    className="w-16 h-16 rounded-full object-cover ring-2 ring-[#D4AF37] shadow-md shrink-0"
+                    className="w-16 h-16 rounded-full object-cover ring-2 ring-figaro-gold-base shadow-md shrink-0"
                   />
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[#8C97A8] block mb-2">Sua Foto de Perfil</label>
-                    <label className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs hover:border-[#D4AF37] cursor-pointer transition-colors w-fit">
+                    <label className="text-xs font-semibold text-figaro-text-sec block mb-2">Sua Foto de Perfil</label>
+                    <label className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs hover:border-figaro-gold-base cursor-pointer transition-colors w-fit">
                       <Upload className="w-4 h-4" />
                       {isUploading ? 'Enviando...' : 'Alterar Foto'}
                       <input
@@ -616,11 +616,11 @@ export function TabSettings({ barber }: TabSettingsProps) {
                 </div>
 
                 <div className="flex items-center gap-4 border-t sm:border-t-0 sm:border-l border-white/10 pt-4 sm:pt-0 sm:pl-6 w-full">
-                  <div className="w-24 h-16 rounded-lg overflow-hidden border border-white/10 shrink-0 bg-[#0A0E14] relative">
+                  <div className="w-24 h-16 rounded-lg overflow-hidden border border-white/10 shrink-0 bg-figaro-black relative">
                     {bannerImageUrl ? (
                       <img src={bannerImageUrl} alt="Banner" className="w-full h-full object-cover opacity-80" />
                     ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-[9px] text-[#8C97A8] p-1 text-center bg-white/5">
+                      <div className="w-full h-full flex flex-col items-center justify-center text-[9px] text-figaro-text-sec p-1 text-center bg-white/5">
                         <span className="mb-0.5">Sem</span>
                         <span>Capa</span>
                       </div>
@@ -632,8 +632,8 @@ export function TabSettings({ barber }: TabSettingsProps) {
                     )}
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[#8C97A8] block mb-2">Capa Promocional</label>
-                    <label className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs hover:border-[#D4AF37] cursor-pointer transition-colors w-fit">
+                    <label className="text-xs font-semibold text-figaro-text-sec block mb-2">Capa Promocional</label>
+                    <label className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs hover:border-figaro-gold-base cursor-pointer transition-colors w-fit">
                       <Upload className="w-4 h-4" />
                       {isUploadingBanner ? 'Enviando...' : 'Alterar Capa'}
                       <input
@@ -650,7 +650,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">
+                  <label className="text-xs font-semibold text-figaro-text-sec block mb-1.5">
                     Nome de Exibição *
                   </label>
                   <input
@@ -658,29 +658,29 @@ export function TabSettings({ barber }: TabSettingsProps) {
                     required
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    className="bg-white/5 border border-white/10 text-white text-xs rounded-xl p-3 outline-none focus:border-[#D4AF37] w-full"
+                    className="bg-white/5 border border-white/10 text-white text-xs rounded-xl p-3 outline-none focus:border-figaro-gold-base w-full"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">
+                  <label className="text-xs font-semibold text-figaro-text-sec block mb-1.5">
                     Instagram Profissional
                   </label>
                   <div className="relative">
-                    <Globe className="w-4 h-4 text-[#8C97A8] absolute left-3 top-3.5" />
+                    <Globe className="w-4 h-4 text-figaro-text-sec absolute left-3 top-3.5" />
                     <input
                       type="text"
                       value={instagram}
                       onChange={(e) => setInstagram(e.target.value)}
                       placeholder="@seu.perfil"
-                      className="bg-white/5 border border-white/10 text-white text-xs rounded-xl pl-9 p-3 outline-none focus:border-[#D4AF37] w-full"
+                      className="bg-white/5 border border-white/10 text-white text-xs rounded-xl pl-9 p-3 outline-none focus:border-figaro-gold-base w-full"
                     />
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#8C97A8] block mb-1.5">
+                <label className="text-xs font-semibold text-figaro-text-sec block mb-1.5">
                   Biografia Profissional
                 </label>
                 <textarea
@@ -688,7 +688,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                   placeholder="Conte um pouco sobre sua experiência e diferenciais..."
-                  className="bg-white/5 border border-white/10 text-white text-xs rounded-xl p-3 outline-none focus:border-[#D4AF37] w-full resize-none"
+                  className="bg-white/5 border border-white/10 text-white text-xs rounded-xl p-3 outline-none focus:border-figaro-gold-base w-full resize-none"
                 />
               </div>
 
@@ -700,7 +700,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                 )}
                 <button
                   type="submit"
-                  className="bg-[#D4AF37] hover:bg-[#0B3B5C] text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg text-xs flex items-center gap-2 cursor-pointer transition-all"
+                  className="bg-figaro-gold-base hover:bg-[#0B3B5C] text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg text-xs flex items-center gap-2 cursor-pointer transition-all"
                 >
                   <Save className="w-4 h-4" /> Salvar Perfil
                 </button>
@@ -725,9 +725,9 @@ export function TabSettings({ barber }: TabSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <Scissors className="w-4 h-4 text-[#D4AF37]" /> Catálogo de Serviços & Combos
+                <Scissors className="w-4 h-4 text-figaro-gold-base" /> Catálogo de Serviços & Combos
               </h3>
-              <p className="text-xs text-[#8C97A8]">
+              <p className="text-xs text-figaro-text-sec">
                 Gerencie valores, durações, destaques e crie combos promocionais
               </p>
             </div>
@@ -760,7 +760,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                   setIsCombo(false)
                   setShowServiceModal(true)
                 }}
-                className="bg-[#D4AF37] hover:bg-[#0B3B5C] text-white font-semibold rounded-xl px-4 py-2 text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                className="bg-figaro-gold-base hover:bg-[#0B3B5C] text-white font-semibold rounded-xl px-4 py-2 text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <Plus className="w-4 h-4" /> Adicionar Serviço
               </button>
@@ -813,7 +813,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                         className={`w-8 h-8 flex items-center justify-center rounded-lg border transition-all cursor-pointer ${
                           srv.isFeatured
                             ? 'bg-[#F2A93B]/20 border-[#F2A93B]/40 text-[#F2A93B] shadow-[0_0_10px_rgba(242,169,59,0.3)]'
-                            : 'border-white/10 bg-white/5 text-[#8C97A8] hover:text-[#F2A93B]'
+                            : 'border-white/10 bg-white/5 text-figaro-text-sec hover:text-[#F2A93B]'
                         }`}
                       >
                         <Star className="w-4 h-4 fill-current" />
@@ -822,21 +822,21 @@ export function TabSettings({ barber }: TabSettingsProps) {
                       <button
                         onClick={() => handleOpenEdit(srv)}
                         title="Editar Serviço"
-                        className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 hover:text-[#D4AF37] hover:border-[#D4AF37] hover:bg-[#D4AF37] transition-all text-[#8C97A8] cursor-pointer"
+                        className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 hover:text-figaro-gold-base hover:border-figaro-gold-base hover:bg-figaro-gold-base transition-all text-figaro-text-sec cursor-pointer"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteService(srv.id)}
                         title="Excluir Serviço"
-                        className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 hover:text-[#F0553F] hover:border-[#F0553F]/40 hover:bg-[#F0553F]/10 transition-all text-[#8C97A8] cursor-pointer"
+                        className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 hover:text-[#F0553F] hover:border-[#F0553F]/40 hover:bg-[#F0553F]/10 transition-all text-figaro-text-sec cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
 
-                  <p className="text-[#8C97A8] text-xs line-clamp-2 mt-1 mb-3">
+                  <p className="text-figaro-text-sec text-xs line-clamp-2 mt-1 mb-3">
                     {srv.description || 'Sem descrição cadastrada'}
                   </p>
                 </div>
@@ -846,7 +846,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                   <span className="bg-[#2ED9A0]/10 border border-[#2ED9A0]/20 text-[#2ED9A0] font-mono font-bold text-sm px-3 py-1 rounded-lg">
                     R$ {srv.price.toFixed(2)}
                   </span>
-                  <span className="bg-white/5 border border-white/10 text-[#8C97A8] font-mono text-xs px-3 py-1 rounded-lg flex items-center gap-1">
+                  <span className="bg-white/5 border border-white/10 text-figaro-text-sec font-mono text-xs px-3 py-1 rounded-lg flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5 text-[#F2A93B]" /> {srv.durationMin} min
                   </span>
                   {srv.isFeatured && (
@@ -868,9 +868,9 @@ export function TabSettings({ barber }: TabSettingsProps) {
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <div>
               <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-[#D4AF37]" /> Grade Semanal de Atendimento & Pausas
+                <Calendar className="w-4 h-4 text-figaro-gold-base" /> Grade Semanal de Atendimento & Pausas
               </h3>
-              <p className="text-xs text-[#8C97A8]">
+              <p className="text-xs text-figaro-text-sec">
                 Ative os dias da semana, defina horários de abertura, fechamento e almoço
               </p>
             </div>
@@ -881,7 +881,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
             <div className="bg-black/30 border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h4 className="font-semibold text-white text-sm">Tempo de Intervalo Entre Clientes</h4>
-                <p className="text-xs text-[#8C97A8]">
+                <p className="text-xs text-figaro-text-sec">
                   Tempo adicional reservado para higienização e preparação das ferramentas
                 </p>
               </div>
@@ -889,7 +889,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
               <select
                 value={bufferTime}
                 onChange={(e) => setBufferTime(e.target.value)}
-                className="bg-[#0A0E14] border border-white/20 text-white text-xs rounded-xl px-3 py-2 outline-none font-mono focus:border-[#D4AF37]"
+                className="bg-figaro-black border border-white/20 text-white text-xs rounded-xl px-3 py-2 outline-none font-mono focus:border-figaro-gold-base"
               >
                 <option value="0">Sem intervalo (0 min)</option>
                 <option value="5">5 minutos</option>
@@ -906,7 +906,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                   className={`p-3.5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all ${
                     item.active
                       ? 'bg-white/[0.04] border-white/10 text-white'
-                      : 'bg-white/[0.01] border-white/5 text-[#8C97A8] opacity-60'
+                      : 'bg-white/[0.01] border-white/5 text-figaro-text-sec opacity-60'
                   }`}
                 >
                   <div className="flex items-center gap-3 w-44">
@@ -919,7 +919,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                         setWeekDays(updated)
                       }}
                       className={`w-10 h-6 rounded-full transition-colors relative cursor-pointer ${
-                        item.active ? 'bg-[#D4AF37]' : 'bg-white/20'
+                        item.active ? 'bg-figaro-gold-base' : 'bg-white/20'
                       }`}
                     >
                       <span
@@ -934,7 +934,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                   {item.active ? (
                     <div className="flex items-center gap-3 font-mono">
                       <div>
-                        <span className="text-[10px] text-[#8C97A8] block">Abertura</span>
+                        <span className="text-[10px] text-figaro-text-sec block">Abertura</span>
                         <input
                           type="time"
                           value={item.open}
@@ -946,9 +946,9 @@ export function TabSettings({ barber }: TabSettingsProps) {
                           className="bg-black/40 border border-white/10 rounded-lg px-2 py-1 text-white text-xs"
                         />
                       </div>
-                      <span className="text-[#8C97A8]">até</span>
+                      <span className="text-figaro-text-sec">até</span>
                       <div>
-                        <span className="text-[10px] text-[#8C97A8] block">Fechamento</span>
+                        <span className="text-[10px] text-figaro-text-sec block">Fechamento</span>
                         <input
                           type="time"
                           value={item.close}
@@ -966,7 +966,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                       </div>
                     </div>
                   ) : (
-                    <span className="text-xs text-[#8C97A8] italic font-semibold">Dia de Folga / Fechado</span>
+                    <span className="text-xs text-figaro-text-sec italic font-semibold">Dia de Folga / Fechado</span>
                   )}
                 </div>
               ))}
@@ -980,7 +980,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
               )}
               <button
                 type="submit"
-                className="bg-[#D4AF37] hover:bg-[#0B3B5C] text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg text-xs flex items-center gap-2 cursor-pointer transition-all"
+                className="bg-figaro-gold-base hover:bg-[#0B3B5C] text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg text-xs flex items-center gap-2 cursor-pointer transition-all"
               >
                 <Save className="w-4 h-4" /> Salvar Grade de Horários
               </button>
@@ -996,7 +996,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
             <h3 className="text-base font-bold text-white flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-[#2ED9A0]" /> Pagamentos & Regras de Cancelamento
             </h3>
-            <p className="text-xs text-[#8C97A8]">
+            <p className="text-xs text-figaro-text-sec">
               Defina sua chave PIX de recebimento e regras para cancelamentos de horários
             </p>
           </div>
@@ -1007,7 +1007,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
               <div className="flex items-center gap-2 text-[#2ED9A0] font-bold text-sm">
                 <QrCode className="w-4 h-4" /> Chave PIX da Barbearia
               </div>
-              <p className="text-xs text-[#8C97A8]">
+              <p className="text-xs text-figaro-text-sec">
                 Esta chave será exibida para os clientes no momento da confirmação da reserva do serviço
               </p>
               <input
@@ -1024,13 +1024,13 @@ export function TabSettings({ barber }: TabSettingsProps) {
               <div className="flex items-center gap-2 text-[#F2A93B] font-bold text-sm">
                 <ShieldAlert className="w-4 h-4" /> Tempo Limite para Cancelamento Gratuito
               </div>
-              <p className="text-xs text-[#8C97A8]">
+              <p className="text-xs text-figaro-text-sec">
                 Antecedência mínima permitida para o cliente desmarcar o horário sem cobrança de taxa
               </p>
               <select
                 value={cancelPolicy}
                 onChange={(e) => setCancelPolicy(e.target.value)}
-                className="bg-[#0A0E14] border border-white/20 text-white text-xs rounded-xl p-3 outline-none font-semibold w-full focus:border-[#F2A93B]"
+                className="bg-figaro-black border border-white/20 text-white text-xs rounded-xl p-3 outline-none font-semibold w-full focus:border-[#F2A93B]"
               >
                 <option value="2h">Até 2 horas antes do atendimento</option>
                 <option value="6h">Até 6 horas antes do atendimento</option>
@@ -1048,7 +1048,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
               )}
               <button
                 type="submit"
-                className="bg-[#D4AF37] hover:bg-[#0B3B5C] text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg text-xs flex items-center gap-2 cursor-pointer transition-all"
+                className="bg-figaro-gold-base hover:bg-[#0B3B5C] text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg text-xs flex items-center gap-2 cursor-pointer transition-all"
               >
                 <Save className="w-4 h-4" /> Salvar Configurações de Pagamento
               </button>
@@ -1062,9 +1062,9 @@ export function TabSettings({ barber }: TabSettingsProps) {
         <GlassCard className="p-6 space-y-6">
           <div className="border-b border-white/10 pb-3">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-[#D4AF37]" /> Integração Google Calendar
+              <Calendar className="w-4 h-4 text-figaro-gold-base" /> Integração Google Calendar
             </h3>
-            <p className="text-xs text-[#8C97A8]">
+            <p className="text-xs text-figaro-text-sec">
               Sincronize seus agendamentos do Fígaro com a sua agenda pessoal do Google
             </p>
           </div>
@@ -1073,7 +1073,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-bold text-white text-sm mb-1">Sincronização com Google Agenda</h4>
-                <p className="text-xs text-[#8C97A8]">
+                <p className="text-xs text-figaro-text-sec">
                   Status:{' '}
                   {googleEmail ? (
                     <span className="font-semibold text-[#2ED9A0]">Conectado como {googleEmail}</span>
@@ -1125,7 +1125,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
               <label className="flex items-center justify-between cursor-pointer group">
                 <div>
                   <span className="text-sm font-semibold text-white block">Enviar novos agendamentos</span>
-                  <span className="text-xs text-[#8C97A8]">
+                  <span className="text-xs text-figaro-text-sec">
                     Agendamentos do Fígaro aparecerão automaticamente no seu Google Calendar.
                   </span>
                 </div>
@@ -1134,7 +1134,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                   type="button"
                   onClick={() => handleUpdateGoogleSettings(!googleSyncEnabled, googleSyncBusyTimes)}
                   className={`w-10 h-6 rounded-full transition-colors relative cursor-pointer flex-shrink-0 ${
-                    googleSyncEnabled ? 'bg-[#D4AF37]' : 'bg-white/20'
+                    googleSyncEnabled ? 'bg-figaro-gold-base' : 'bg-white/20'
                   }`}
                 >
                   <span
@@ -1148,7 +1148,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
               <label className="flex items-center justify-between cursor-pointer group">
                 <div>
                   <span className="text-sm font-semibold text-white block">Bloquear horários ocupados</span>
-                  <span className="text-xs text-[#8C97A8]">
+                  <span className="text-xs text-figaro-text-sec">
                     Eventos da sua agenda do Google vão bloquear horários no Fígaro.
                   </span>
                 </div>
@@ -1157,7 +1157,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                   type="button"
                   onClick={() => handleUpdateGoogleSettings(googleSyncEnabled, !googleSyncBusyTimes)}
                   className={`w-10 h-6 rounded-full transition-colors relative cursor-pointer flex-shrink-0 ${
-                    googleSyncBusyTimes ? 'bg-[#D4AF37]' : 'bg-white/20'
+                    googleSyncBusyTimes ? 'bg-figaro-gold-base' : 'bg-white/20'
                   }`}
                 >
                   <span
@@ -1175,26 +1175,26 @@ export function TabSettings({ barber }: TabSettingsProps) {
       {/* QR Code Modal */}
       {showQrModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-[#0A0E14]/95 backdrop-blur-2xl border border border-[#D4AF37] rounded-3xl p-6 shadow-2xl shadow-black/80 max-w-sm w-full space-y-5 text-center relative">
+          <div className="bg-figaro-black/95 backdrop-blur-2xl border border border-figaro-gold-base rounded-3xl p-6 shadow-2xl shadow-black/80 max-w-sm w-full space-y-5 text-center relative">
             <button
               onClick={() => setShowQrModal(false)}
-              className="absolute right-4 top-4 text-[#8C97A8] hover:text-white p-1 rounded-lg hover:bg-white/10"
+              className="absolute right-4 top-4 text-figaro-text-sec hover:text-white p-1 rounded-lg hover:bg-white/10"
             >
               <X className="w-5 h-5" />
             </button>
 
             <div className="space-y-1 pt-2">
-              <span className="text-[10px] font-bold text-[#D4AF37] uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-figaro-gold-base uppercase tracking-wider">
                 FÍGARO AGENDA PÚBLICA
               </span>
               <h3 className="font-bold text-white text-lg">{displayName}</h3>
-              <p className="text-xs text-[#8C97A8]">
+              <p className="text-xs text-figaro-text-sec">
                 Escaneie o QR Code abaixo para agendar horários direto pelo celular
               </p>
             </div>
 
             {/* QR Code Image */}
-            <div className="p-4 bg-white rounded-2xl w-fit mx-auto shadow-2xl border-4 border-[#D4AF37]">
+            <div className="p-4 bg-white rounded-2xl w-fit mx-auto shadow-2xl border-4 border-figaro-gold-base">
               <img src={qrCodeApiUrl} alt="QR Code da Agenda" className="w-48 h-48 mx-auto" />
             </div>
 
@@ -1204,7 +1204,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                 download="qrcode-figaro.png"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 bg-[#D4AF37] hover:bg-[#0B3B5C] text-white font-semibold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg"
+                className="flex-1 bg-figaro-gold-base hover:bg-[#0B3B5C] text-white font-semibold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg"
               >
                 <Download className="w-4 h-4" /> Baixar QR Code
               </a>
@@ -1247,16 +1247,16 @@ export function TabSettings({ barber }: TabSettingsProps) {
       {/* 6. SUB-ABA 6: NOTIFICATIONS */}
       {activeSubTab === 'notifications' && (
         <div className="space-y-6">
-          <GlassCard className="p-6 border-[#D4AF37] relative overflow-hidden space-y-6">
+          <GlassCard className="p-6 border-figaro-gold-base relative overflow-hidden space-y-6">
             <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-              <div className="w-10 h-10 rounded-full bg-[#D4AF37] border border-[#D4AF37] flex items-center justify-center">
-                <MessageCircle className="w-5 h-5 text-[#D4AF37]" />
+              <div className="w-10 h-10 rounded-full bg-figaro-gold-base border border-figaro-gold-base flex items-center justify-center">
+                <MessageCircle className="w-5 h-5 text-figaro-gold-base" />
               </div>
               <div>
                 <h3 className="text-base font-bold text-white tracking-tight">
                   Automações de WhatsApp
                 </h3>
-                <p className="text-xs text-[#8C97A8]">
+                <p className="text-xs text-figaro-text-sec">
                   Gerencie lembretes e confirmações enviadas automaticamente para seus clientes.
                 </p>
               </div>
@@ -1267,7 +1267,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl gap-4">
                 <div>
                   <h4 className="text-sm font-semibold text-white">Status da Conexão</h4>
-                  <p className="text-xs text-[#8C97A8]">
+                  <p className="text-xs text-figaro-text-sec">
                     {barber.whatsappStatus === 'CONNECTED' 
                       ? 'Seu WhatsApp está conectado e pronto para enviar.' 
                       : 'Conecte seu WhatsApp para enviar mensagens através do seu número.'}
@@ -1327,7 +1327,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                 <div className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl">
                   <div>
                     <h4 className="text-sm font-semibold text-white">Lembrete 24h antes</h4>
-                    <p className="text-xs text-[#8C97A8]">Avisa o cliente 1 dia antes do agendamento.</p>
+                    <p className="text-xs text-figaro-text-sec">Avisa o cliente 1 dia antes do agendamento.</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -1339,7 +1339,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                         handleUpdateWhatsApp({ whatsappReminder24h: e.target.checked })
                       }}
                     />
-                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-figaro-gold-base"></div>
                   </label>
                 </div>
 
@@ -1347,7 +1347,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                 <div className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl">
                   <div>
                     <h4 className="text-sm font-semibold text-white">Lembrete 2h antes</h4>
-                    <p className="text-xs text-[#8C97A8]">Lembrete final logo antes do horário marcado.</p>
+                    <p className="text-xs text-figaro-text-sec">Lembrete final logo antes do horário marcado.</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -1359,13 +1359,13 @@ export function TabSettings({ barber }: TabSettingsProps) {
                         handleUpdateWhatsApp({ whatsappReminder2h: e.target.checked })
                       }}
                     />
-                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-figaro-gold-base"></div>
                   </label>
                 </div>
 
                 {/* Template de Mensagem */}
                 <div className="pt-2 space-y-2">
-                  <label className="text-xs font-semibold text-[#8C97A8] block uppercase tracking-wider">
+                  <label className="text-xs font-semibold text-figaro-text-sec block uppercase tracking-wider">
                     Template Base da Mensagem
                   </label>
                   <textarea
@@ -1373,11 +1373,11 @@ export function TabSettings({ barber }: TabSettingsProps) {
                     onChange={(e) => setWhatsappTemplate(e.target.value)}
                     onBlur={() => handleUpdateWhatsApp({ whatsappTemplateBase: whatsappTemplate })}
                     rows={4}
-                    className="w-full bg-black/40 border border-white/10 text-white text-sm rounded-xl p-4 outline-none focus:border-[#D4AF37] resize-none"
+                    className="w-full bg-black/40 border border-white/10 text-white text-sm rounded-xl p-4 outline-none focus:border-figaro-gold-base resize-none"
                     placeholder="Olá {{client_name}}, lembrete do seu agendamento..."
                   />
-                  <p className="text-[10px] text-[#8C97A8]">
-                    Variáveis disponíveis: <code className="text-[#D4AF37] bg-[#D4AF37] px-1 rounded">{"{{client_name}}"}</code>, <code className="text-[#D4AF37] bg-[#D4AF37] px-1 rounded">{"{{barber_name}}"}</code>, <code className="text-[#D4AF37] bg-[#D4AF37] px-1 rounded">{"{{services}}"}</code>, <code className="text-[#D4AF37] bg-[#D4AF37] px-1 rounded">{"{{time}}"}</code>
+                  <p className="text-[10px] text-figaro-text-sec">
+                    Variáveis disponíveis: <code className="text-figaro-gold-base bg-figaro-gold-base px-1 rounded">{"{{client_name}}"}</code>, <code className="text-figaro-gold-base bg-figaro-gold-base px-1 rounded">{"{{barber_name}}"}</code>, <code className="text-figaro-gold-base bg-figaro-gold-base px-1 rounded">{"{{services}}"}</code>, <code className="text-figaro-gold-base bg-figaro-gold-base px-1 rounded">{"{{time}}"}</code>
                   </p>
                 </div>
               </div>
@@ -1412,7 +1412,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
           <div className="relative w-full max-w-sm bg-[#121214] border border-[#2ED9A0]/30 rounded-3xl p-6 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <button
               onClick={() => setShowWhatsappModal(false)}
-              className="absolute top-4 right-4 text-[#8C97A8] hover:text-white bg-white/5 rounded-full p-2 transition-colors cursor-pointer"
+              className="absolute top-4 right-4 text-figaro-text-sec hover:text-white bg-white/5 rounded-full p-2 transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -1424,7 +1424,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                 <h3 className="text-xl font-bold text-white tracking-tight">
                   Conectar Dispositivo
                 </h3>
-                <p className="text-sm text-[#8C97A8] mt-1">
+                <p className="text-sm text-figaro-text-sec mt-1">
                   Abra o WhatsApp no seu celular, vá em Aparelhos Conectados e escaneie o código abaixo:
                 </p>
               </div>
@@ -1440,7 +1440,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
                     className="w-full h-full object-contain mix-blend-multiply" 
                   />
                 ) : (
-                  <div className="text-xs text-gray-500 text-center px-4">
+                  <div className="text-xs text-figaro-text-sec text-center px-4">
                     Seu servidor Evolution API não respondeu com um QR Code.<br/><br/>
                     Verifique o arquivo .env
                   </div>

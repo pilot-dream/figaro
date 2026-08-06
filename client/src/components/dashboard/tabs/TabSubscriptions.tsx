@@ -88,27 +88,27 @@ export function TabSubscriptions() {
       <div className="flex justify-between items-end">
         <div>
           <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-            <Crown className="w-6 h-6 text-[#D4AF37]" />
+            <Crown className="w-6 h-6 text-figaro-gold-base" />
             Clube de Assinatura (MRR)
           </h2>
-          <p className="text-[#8C97A8]">
+          <p className="text-figaro-text-sec">
             Gerencie seus planos e assinantes com horários cativos
           </p>
         </div>
-        <Button onClick={() => setIsCreatingPlan(true)} className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#D4AF37] text-white font-medium border-none shadow-[#D4AF37]/30">
+        <Button onClick={() => setIsCreatingPlan(true)} className="flex items-center gap-2 bg-figaro-gold-base hover:bg-figaro-gold-base text-white font-medium border-none shadow-figaro-gold-base/30">
           <Plus className="w-4 h-4" />
           Novo Plano
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <GlassCard className="p-6 border-[#1A2332]/50 hover:border-[#D4AF37] transition-all">
+        <GlassCard className="p-6 border-[#1A2332]/50 hover:border-figaro-gold-base transition-all">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-[#D4AF37] rounded-xl">
-              <Users className="w-6 h-6 text-[#D4AF37]" />
+            <div className="p-3 bg-figaro-gold-base rounded-xl">
+              <Users className="w-6 h-6 text-figaro-gold-base" />
             </div>
             <div>
-              <p className="text-sm font-medium text-[#8C97A8]">Assinantes Ativos</p>
+              <p className="text-sm font-medium text-figaro-text-sec">Assinantes Ativos</p>
               <p className="text-2xl font-bold text-white">
                 {subscribers.filter(s => s.status === 'ACTIVE').length}
               </p>
@@ -121,7 +121,7 @@ export function TabSubscriptions() {
               <Crown className="w-6 h-6 text-[#2ED9A0]" />
             </div>
             <div>
-              <p className="text-sm font-medium text-[#8C97A8]">MRR Projetado</p>
+              <p className="text-sm font-medium text-figaro-text-sec">MRR Projetado</p>
               <p className="text-2xl font-bold text-white">
                 R$ {subscribers.filter(s => s.status === 'ACTIVE').length * (plans[0]?.price || 0)}
               </p>
@@ -134,7 +134,7 @@ export function TabSubscriptions() {
               <XCircle className="w-6 h-6 text-red-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-[#8C97A8]">Inadimplentes</p>
+              <p className="text-sm font-medium text-figaro-text-sec">Inadimplentes</p>
               <p className="text-2xl font-bold text-white">
                 {subscribers.filter(s => s.status === 'PAST_DUE').length}
               </p>
@@ -154,10 +154,10 @@ export function TabSubscriptions() {
               <div>
                 <p className="font-medium text-white text-lg">{sub.clientName}</p>
                 <div className="flex items-center gap-3 mt-1">
-                  <span className="text-sm text-[#D4AF37] font-medium px-2 py-0.5 bg-[#D4AF37] rounded-md">
+                  <span className="text-sm text-figaro-gold-base font-medium px-2 py-0.5 bg-figaro-gold-base rounded-md">
                     {sub.planName}
                   </span>
-                  <span className="text-sm text-[#8C97A8]">
+                  <span className="text-sm text-figaro-text-sec">
                     Toda {daysOfWeek[sub.dayOfWeek]} às {sub.time}
                   </span>
                 </div>
@@ -185,13 +185,13 @@ export function TabSubscriptions() {
                 <div className="relative">
                   <button 
                     onClick={() => setOpenDropdownId(openDropdownId === sub.id ? null : sub.id)}
-                    className="p-2 text-[#8C97A8] hover:text-white hover:bg-[#1A2332] rounded-lg transition-colors"
+                    className="p-2 text-figaro-text-sec hover:text-white hover:bg-[#1A2332] rounded-lg transition-colors"
                   >
                     <MoreVertical className="w-5 h-5" />
                   </button>
 
                   {openDropdownId === sub.id && (
-                    <div className="absolute right-0 top-full mt-2 w-48 bg-[#0A0E14] border border-[#1A2332] rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in zoom-in-95">
+                    <div className="absolute right-0 top-full mt-2 w-48 bg-figaro-black border border-[#1A2332] rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in zoom-in-95">
                       <div className="py-1">
                         {sub.status !== 'ACTIVE' && (
                           <button 
@@ -252,7 +252,7 @@ export function TabSubscriptions() {
           <GlassCard className="w-full max-w-md p-6 border-[#1A2332] shadow-2xl relative">
             <button 
               onClick={() => setIsCreatingPlan(false)}
-              className="absolute top-4 right-4 text-[#8C97A8] hover:text-white"
+              className="absolute top-4 right-4 text-figaro-text-sec hover:text-white"
             >
               <XCircle className="w-6 h-6" />
             </button>
@@ -284,27 +284,27 @@ export function TabSubscriptions() {
               }
             }}>
               <div>
-                <label className="block text-sm font-medium text-[#8C97A8] mb-1">Nome do Plano</label>
-                <input name="name" type="text" placeholder="Ex: VIP Mensal" required className="w-full bg-[#0A0E14] border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#D4AF37] transition-colors" />
+                <label className="block text-sm font-medium text-figaro-text-sec mb-1">Nome do Plano</label>
+                <input name="name" type="text" placeholder="Ex: VIP Mensal" required className="w-full bg-figaro-black border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-figaro-gold-base transition-colors" />
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#8C97A8] mb-1">Preço Mensal (R$)</label>
-                  <input name="price" type="number" min="0" step="0.01" placeholder="150.00" required className="w-full bg-[#0A0E14] border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#D4AF37] transition-colors" />
+                  <label className="block text-sm font-medium text-figaro-text-sec mb-1">Preço Mensal (R$)</label>
+                  <input name="price" type="number" min="0" step="0.01" placeholder="150.00" required className="w-full bg-figaro-black border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-figaro-gold-base transition-colors" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#8C97A8] mb-1">Cortes p/ Mês</label>
-                  <input name="cutsPerPeriod" type="number" min="1" placeholder="4" required className="w-full bg-[#0A0E14] border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#D4AF37] transition-colors" />
+                  <label className="block text-sm font-medium text-figaro-text-sec mb-1">Cortes p/ Mês</label>
+                  <input name="cutsPerPeriod" type="number" min="1" placeholder="4" required className="w-full bg-figaro-black border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-figaro-gold-base transition-colors" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#8C97A8] mb-1">Descrição</label>
-                <textarea name="description" rows={3} placeholder="Benefícios do plano..." className="w-full bg-[#0A0E14] border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#D4AF37] transition-colors"></textarea>
+                <label className="block text-sm font-medium text-figaro-text-sec mb-1">Descrição</label>
+                <textarea name="description" rows={3} placeholder="Benefícios do plano..." className="w-full bg-figaro-black border border-[#1A2332] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-figaro-gold-base transition-colors"></textarea>
               </div>
 
-              <Button type="submit" disabled={isSubmitting} className="w-full bg-[#D4AF37] hover:bg-[#D4AF37] text-white font-bold py-3 border-none shadow-[#D4AF37]/30 mt-2 disabled:opacity-50">
+              <Button type="submit" disabled={isSubmitting} className="w-full bg-figaro-gold-base hover:bg-figaro-gold-base text-white font-bold py-3 border-none shadow-figaro-gold-base/30 mt-2 disabled:opacity-50">
                 {isSubmitting ? 'Criando...' : 'Criar Plano'}
               </Button>
             </form>

@@ -12,7 +12,7 @@ export function PublicBarberCard({ name, bio, avatarUrl, onClick }: PublicBarber
     <button
       type="button"
       onClick={onClick}
-      className="w-full group flex items-center justify-between p-4 rounded-2xl bg-[#0A0E14]/80 backdrop-blur-md border border-white/10 transition-all duration-300 ease-out hover:scale-[1.02] hover:border-[#11AFFA]/40 hover:bg-white/[0.04] hover:shadow-[0_4px_20px_rgba(17,175,250,0.15)] text-left cursor-pointer"
+      className="w-full group flex items-center justify-between p-4 rounded-2xl bg-figaro-black/80 backdrop-blur-md border border-white/10 transition-all duration-300 ease-out hover:scale-[1.02] hover:border-[#11AFFA]/40 hover:bg-white/[0.04] hover:shadow-[0_4px_20px_rgba(17,175,250,0.15)] text-left cursor-pointer"
     >
       <div className="flex items-center gap-4 flex-1 overflow-hidden">
         {/* Foto de Perfil */}
@@ -29,7 +29,7 @@ export function PublicBarberCard({ name, bio, avatarUrl, onClick }: PublicBarber
           <h3 className="text-white font-bold text-lg sm:text-xl truncate">
             {name}
           </h3>
-          <p className="text-[#8C97A8] text-xs sm:text-sm mt-1 line-clamp-2 leading-relaxed">
+          <p className="text-figaro-text-sec text-xs sm:text-sm mt-1 line-clamp-2 leading-relaxed">
             {bio || 'Profissional especialista em cortes modernos e estilo.'}
           </p>
         </div>

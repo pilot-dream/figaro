@@ -60,7 +60,7 @@ export default function App() {
 
   if (!initialized) {
     return (
-      <div className="min-h-screen w-full bg-[#0A0E14] flex items-center justify-center">
+      <div className="min-h-screen w-full bg-figaro-black flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-[var(--color-figaro-blue)] border-t-transparent rounded-full animate-spin" />
       </div>
     )
@@ -72,7 +72,7 @@ export default function App() {
       <ConfirmModal />
       {/* Ambient Glow Orbs Removed as per request to destroy blue background */}
       {/* Main Container conditionally constrained */}
-      <main className={`relative z-10 w-full min-h-screen bg-[#0A0E14] shadow-[0_0_40px_rgba(0,0,0,0.5)] ${
+      <main className={`relative z-10 w-full min-h-screen bg-figaro-black shadow-[0_0_40px_rgba(0,0,0,0.5)] ${
         isPublicRoute 
           ? '' 
           : user && ['BARBER', 'MANAGER', 'OWNER'].includes(user.role) 
@@ -82,7 +82,7 @@ export default function App() {
         {/* Simple User Header Bar when authenticated */}
         {user && (
           <>
-            <div className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between py-3 px-6 border-b border-white/10 bg-[#0A0E14]/85 backdrop-blur-xl ${
+            <div className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between py-3 px-6 border-b border-white/10 bg-figaro-black/85 backdrop-blur-xl ${
               ['BARBER', 'MANAGER', 'OWNER'].includes(user.role) ? 'md:hidden' : 'max-w-xl mx-auto'
             }`}>
             <div className="flex items-center gap-2">
@@ -130,7 +130,7 @@ export default function App() {
                           </div>
                           <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
                             <div className="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center border border-white/5">
-                              <Bell className="w-6 h-6 text-gray-500" />
+                              <Bell className="w-6 h-6 text-figaro-text-sec" />
                             </div>
                             <p className="text-sm text-gray-400 font-medium">Nenhuma nova notificação</p>
                           </div>
@@ -162,7 +162,7 @@ export default function App() {
               {/* Profile Avatar */}
               {user.role !== 'CLIENT' && (
                 <button
-                  className="w-9 h-9 rounded-full overflow-hidden border-2 border-white/10 hover:border-[#D4AF37] transition-colors cursor-pointer"
+                  className="w-9 h-9 rounded-full overflow-hidden border-2 border-white/10 hover:border-figaro-gold-base transition-colors cursor-pointer"
                 >
                   <Link to="/painel/configuracoes">
                     <img 

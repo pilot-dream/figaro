@@ -20,14 +20,14 @@ export function EmptyState({
   return (
     <div className="w-full flex flex-col items-center justify-center p-10 rounded-2xl bg-white/5 border border-white/10 text-center animate-in fade-in duration-300">
       <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-5 ring-1 ring-white/10">
-        <Icon className="w-8 h-8 text-[#8C97A8]/50" strokeWidth={1.5} />
+        <Icon className="w-8 h-8 text-figaro-text-sec/50" strokeWidth={1.5} />
       </div>
       
       <h3 className="text-lg font-bold text-white mb-2 tracking-tight">
         {title}
       </h3>
       
-      <p className="text-sm text-[#8C97A8] max-w-sm mx-auto mb-6 leading-relaxed">
+      <p className="text-sm text-figaro-text-sec max-w-sm mx-auto mb-6 leading-relaxed">
         {description}
       </p>
 

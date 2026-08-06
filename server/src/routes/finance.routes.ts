@@ -57,7 +57,13 @@ router.get('/summary', requireAuth, async (req: AuthenticatedRequest, res, next)
       const appointments = await prisma.appointment.findMany({
         where: {
           status: { in: ['COMPLETED', 'CONFIRMED'] },
-          startTime: { gte: startDate }
+          startTime: { gte: startDate },
+          barber: {
+            OR: [
+              { ownerId: user.id },
+              { id: user.id }
+            ]
+          }
         },
         include: {
           barber: true
@@ -152,6 +158,13 @@ router.get('/chart-data', requireAuth, async (req: AuthenticatedRequest, res, ne
 
     if (barberId && barberId !== 'all') {
       whereClause.barberId = barberId
+    } else if (user.role === 'OWNER') {
+      whereClause.barber = {
+        OR: [
+          { ownerId: user.id },
+          { id: user.id }
+        ]
+      }
     } else if (user.role === 'BARBER') {
       whereClause.barberId = user.id
     }

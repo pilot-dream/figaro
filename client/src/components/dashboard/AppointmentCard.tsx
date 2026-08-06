@@ -44,7 +44,7 @@ export function AppointmentCard({
     COMPLETED: {
       label: 'Concluído',
       bg: 'bg-[#8C97A8]/20',
-      text: 'text-[#8C97A8]',
+      text: 'text-figaro-text-sec',
       border: 'border-[#8C97A8]/30',
       bar: 'border-l-[#8C97A8]',
     },
@@ -64,9 +64,9 @@ export function AppointmentCard({
     },
     PENDING: {
       label: 'Pendente',
-      bg: 'bg-[#D4AF37]',
-      text: 'text-[#D4AF37]',
-      border: 'border-[#D4AF37]',
+      bg: 'bg-figaro-gold-base',
+      text: 'text-figaro-gold-base',
+      border: 'border-figaro-gold-base',
       bar: 'border-l-[#11AFFA]',
     },
   }
@@ -78,14 +78,14 @@ export function AppointmentCard({
     <GlassCard
       variant="interactive"
       className={`p-5 space-y-3 transition-all duration-200 border-l-[5px] ${currentStatus.bar} bg-white/[0.04] backdrop-blur-xl border border-white/[0.1] hover:border-white/[0.2] rounded-2xl shadow-lg relative ${
-        showStatusMenu ? 'z-[999] overflow-visible shadow-2xl ring-1 ring-[#D4AF37]' : 'z-10 overflow-hidden'
+        showStatusMenu ? 'z-[999] overflow-visible shadow-2xl ring-1 ring-figaro-gold-base' : 'z-10 overflow-hidden'
       }`}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           {/* Tabular Time Badge */}
           <div className="bg-white/10 border border-white/15 text-white font-mono font-black text-sm px-3 py-1.5 rounded-xl shadow-inner flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <Clock className="w-3.5 h-3.5 text-figaro-gold-base" />
             {appointment.startTime}
           </div>
 
@@ -94,12 +94,12 @@ export function AppointmentCard({
               onClick={() => onSelectClient(appointment)}
               className="group cursor-pointer flex items-center gap-1.5"
             >
-              <h4 className="font-semibold text-[#F2F4F7] text-lg group-hover:text-[#D4AF37] transition-colors">
+              <h4 className="font-semibold text-[#F2F4F7] text-lg group-hover:text-figaro-gold-base transition-colors">
                 {appointment.clientName}
               </h4>
               <MessageSquare className="w-4 h-4 text-figaro-text-secondary group-hover:text-white" />
             </div>
-            <p className="text-sm font-medium text-[#D4AF37]">
+            <p className="text-sm font-medium text-figaro-gold-base">
               {appointment.serviceName}
             </p>
           </div>
@@ -130,7 +130,7 @@ export function AppointmentCard({
               />
 
               {/* Floating Dropdown Menu */}
-              <div className="absolute right-0 top-10 z-[9999] w-44 bg-[#0A0E14] backdrop-blur-2xl rounded-2xl p-1.5 shadow-[0_10px_38px_rgba(0,0,0,0.9)] border border-white/20 space-y-1">
+              <div className="absolute right-0 top-10 z-[9999] w-44 bg-figaro-black backdrop-blur-2xl rounded-2xl p-1.5 shadow-[0_10px_38px_rgba(0,0,0,0.9)] border border-white/20 space-y-1">
                 {(['CONFIRMED', 'COMPLETED', 'NO_SHOW', 'CANCELLED'] as AppointmentStatus[]).map(
                   (st) => (
                     <button
@@ -144,7 +144,7 @@ export function AppointmentCard({
                     >
                       {statusConfig[st].label}
                       {appointment.status === st && (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-figaro-gold-base" />
                       )}
                     </button>
                   )
