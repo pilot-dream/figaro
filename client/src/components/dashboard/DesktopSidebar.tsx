@@ -11,10 +11,10 @@ export function DesktopSidebar({ activeTab, onChangeTab }: DesktopSidebarProps) 
   const { user, logout } = useAuthStore()
 
   const navItems = [
-    { id: 'home' as BarberTab, label: 'Visão Geral', icon: Home },
-    { id: 'schedule' as BarberTab, label: 'Agenda Diária', icon: Calendar },
-    { id: 'financial' as BarberTab, label: 'Financeiro', icon: Wallet },
-    { id: 'subscriptions' as BarberTab, label: 'Clube VIP', icon: Users },
+    { id: 'home' as BarberTab, label: 'Início', icon: Home },
+    { id: 'schedule' as BarberTab, label: 'Agenda', icon: Calendar },
+    { id: 'financial' as BarberTab, label: 'Carteira', icon: Wallet },
+    { id: 'booking' as BarberTab, label: 'Novo Agendamento', icon: Plus },
     { id: 'settings' as BarberTab, label: 'Configurações', icon: Settings },
   ]
 

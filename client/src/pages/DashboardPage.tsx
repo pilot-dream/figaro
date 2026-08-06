@@ -13,7 +13,7 @@ import { TabSchedule } from '@/components/dashboard/tabs/TabSchedule'
 import { TabFinancial } from '@/components/dashboard/tabs/TabFinancial'
 import { TabBooking } from '@/components/dashboard/tabs/TabBooking'
 import { TabSettings } from '@/components/dashboard/tabs/TabSettings'
-import { TabSubscriptions } from '@/components/dashboard/tabs/TabSubscriptions'
+
 import { TabSaaS } from '@/components/dashboard/tabs/TabSaaS'
 import { TabNetwork } from '@/components/dashboard/tabs/TabNetwork'
 
@@ -167,7 +167,7 @@ export function DashboardPage() {
 
         {activeTab === 'settings' && user && <TabSettings barber={user} />}
 
-        {activeTab === 'subscriptions' && user && <TabSubscriptions />}
+
 
         {activeTab === 'saas' && user && <TabSaaS />}
 

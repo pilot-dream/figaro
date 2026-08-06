@@ -44,11 +44,15 @@ const TabSaaS = lazy(() =>
   import('./TabSaaS').then(module => ({ default: module.TabSaaS }))
 )
 
+const TabSubscriptions = lazy(() =>
+  import('./TabSubscriptions').then(module => ({ default: module.TabSubscriptions }))
+)
+
 interface TabSettingsProps {
   barber: User
 }
 
-type SettingsSubTab = 'profile' | 'services' | 'hours' | 'payments' | 'integrations' | 'notifications' | 'team' | 'plan'
+type SettingsSubTab = 'profile' | 'services' | 'hours' | 'payments' | 'integrations' | 'notifications' | 'team' | 'plan' | 'clube'
 
 export function TabSettings({ barber }: TabSettingsProps) {
   const addToast = useToastStore((state) => state.addToast)
@@ -530,6 +534,19 @@ export function TabSettings({ barber }: TabSettingsProps) {
             }`}
           >
             <Crown className="w-3.5 h-3.5" /> Meu Plano
+          </button>
+        )}
+
+        {barber.role === 'OWNER' && (
+          <button
+            onClick={() => setActiveSubTab('clube')}
+            className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+              activeSubTab === 'clube'
+                ? 'bg-figaro-gold-base text-white shadow-figaro-gold-base/30 font-semibold border border-figaro-gold-base'
+                : 'bg-white/[0.05] text-figaro-text-sec hover:text-white border border-white/10 backdrop-blur-md'
+            }`}
+          >
+            <Crown className="w-3.5 h-3.5" /> Clube VIP
           </button>
         )}
       </div>
@@ -1492,6 +1509,12 @@ export function TabSettings({ barber }: TabSettingsProps) {
             </div>
           </div>
         </div>
+      )}
+      {/* 9. SUB-ABA 8: CLUBE VIP */}
+      {activeSubTab === 'clube' && (
+        <Suspense fallback={<ModalSkeleton />}>
+          <TabSubscriptions />
+        </Suspense>
       )}
     </div>
   )
