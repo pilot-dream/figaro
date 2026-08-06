@@ -508,7 +508,6 @@ export function ClientBookingPage() {
                       {submitting ? <RefreshCw className="w-6 h-6 animate-spin text-black" /> : 'Confirmar Agendamento'}
                     </button>
                 </div>
-              )}
             </form>
           )}
         </div>
