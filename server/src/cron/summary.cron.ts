@@ -1,11 +1,11 @@
 import { prisma } from '../lib/prisma'
-import { whatsappService } from '../services/whatsapp.service'
+import { pushService } from '../services/push.service'
 
 /**
- * Envia um resumo diário (e financeiro semanal às segundas) para os barbeiros/donos.
+ * Envia um resumo diário (e financeiro semanal às segundas) para os barbeiros/donos via Push.
  */
 export async function processSummaries() {
-  console.log('📊 Executando varredura de Resumo Diário para a equipe...')
+  console.log('📊 Executando varredura de Resumo Diário para a equipe (Push)...')
   try {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
@@ -31,7 +31,7 @@ export async function processSummaries() {
 
     // Agrupar por barbeiro
     const barberMap = new Map<string, {
-      phone: string,
+      pushToken: string,
       tenantId: string,
       name: string,
       appointmentsCount: number,
@@ -39,7 +39,7 @@ export async function processSummaries() {
     }>()
 
     for (const appt of todayAppointments) {
-      if (!appt.barber.phone) continue
+      if (!appt.barber.pushToken) continue
 
       const barberId = appt.barber.id
       const tenantId = appt.barber.role === 'OWNER' ? appt.barber.id : appt.barber.ownerId
@@ -48,7 +48,7 @@ export async function processSummaries() {
 
       if (!barberMap.has(barberId)) {
         barberMap.set(barberId, {
-          phone: appt.barber.phone,
+          pushToken: appt.barber.pushToken,
           tenantId: tenantId,
           name: appt.barber.name,
           appointmentsCount: 0
@@ -66,17 +66,11 @@ export async function processSummaries() {
 
     // Enviar mensagens diárias
     for (const [_, data] of barberMap) {
-      const variables = {
-        barber_name: data.name,
-        appointment_count: data.appointmentsCount.toString(),
-        first_time: data.firstApptTime || '--'
-      }
-
-      await whatsappService.sendTemplateMessage(
-        data.tenantId,
-        data.phone,
-        'DAILY_SUMMARY',
-        variables
+      await pushService.sendNotification(
+        data.pushToken,
+        'Resumo do Dia 📊',
+        `Olá ${data.name}! Você tem ${data.appointmentsCount} agendamentos hoje. O primeiro é às ${data.firstApptTime || '--'}.`,
+        '/painel'
       )
     }
 
@@ -99,17 +93,17 @@ export async function processSummaries() {
         include: { barber: true }
       })
 
-      const financialMap = new Map<string, { phone: string, tenantId: string, revenue: number }>()
+      const financialMap = new Map<string, { pushToken: string, tenantId: string, revenue: number }>()
 
       for (const appt of lastWeekAppointments) {
-        if (!appt.barber.phone) continue
+        if (!appt.barber.pushToken) continue
 
         const tenantId = appt.barber.role === 'OWNER' ? appt.barber.id : appt.barber.ownerId
         if (!tenantId) continue
 
         if (!financialMap.has(appt.barber.id)) {
           financialMap.set(appt.barber.id, {
-            phone: appt.barber.phone,
+            pushToken: appt.barber.pushToken,
             tenantId,
             revenue: 0
           })
@@ -120,20 +114,16 @@ export async function processSummaries() {
       }
 
       for (const [_, data] of financialMap) {
-        const variables = {
-          revenue: data.revenue.toFixed(2)
-        }
-
-        await whatsappService.sendTemplateMessage(
-          data.tenantId,
-          data.phone,
-          'WEEKLY_FINANCIAL',
-          variables
+        await pushService.sendNotification(
+          data.pushToken,
+          'Fechamento Semanal 💰',
+          `Sua receita da semana passada foi de R$ ${data.revenue.toFixed(2)}. Bom trabalho!`,
+          '/painel'
         )
       }
     }
 
   } catch (error) {
-    console.error('❌ Erro no Cron de Resumos:', error)
+    console.error('❌ Erro no Cron de Resumos (Push):', error)
   }
 }

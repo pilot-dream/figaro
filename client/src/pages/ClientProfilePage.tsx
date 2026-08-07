@@ -35,8 +35,6 @@ export function ClientProfilePage() {
   const [showNotificationsModal, setShowNotificationsModal] = useState(false)
   
   const [notificationPrefs, setNotificationPrefs] = useState({
-    whatsapp: localStorage.getItem(`figaro_prefs_wa_${user?.id}`) !== 'false',
-    email: localStorage.getItem(`figaro_prefs_em_${user?.id}`) === 'true',
     push: localStorage.getItem(`figaro_prefs_pu_${user?.id}`) === 'true',
   })
 
@@ -46,8 +44,6 @@ export function ClientProfilePage() {
     
     // Save locally
     let prefix = ''
-    if (key === 'whatsapp') prefix = 'wa'
-    if (key === 'email') prefix = 'em'
     if (key === 'push') prefix = 'pu'
     
     localStorage.setItem(`figaro_prefs_${prefix}_${user?.id}`, String(newValue))
@@ -194,38 +190,9 @@ export function ClientProfilePage() {
 
             <div className="space-y-4">
               <div className="flex items-center justify-between bg-white/5 border border-white/10 p-4 rounded-2xl">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#25D366]/20 flex items-center justify-center">
-                    <MessageCircle className="w-5 h-5 text-[#25D366]" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-white text-sm">WhatsApp</h4>
-                    <p className="text-[10px] text-figaro-text-secondary">Lembretes de agendamento</p>
-                  </div>
-                </div>
-                <Switch 
-                  checked={notificationPrefs.whatsapp} 
-                  onChange={() => togglePref('whatsapp')} 
-                  variant="success"
-                />
-              </div>
 
-              <div className="flex items-center justify-between bg-white/5 border border-white/10 p-4 rounded-2xl">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-figaro-black text-white0/20 flex items-center justify-center">
-                    <Mail className="w-5 h-5 text-blue-400" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-white text-sm">E-mail</h4>
-                    <p className="text-[10px] text-figaro-text-secondary">Novidades e promoções</p>
-                  </div>
-                </div>
-                <Switch 
-                  checked={notificationPrefs.email} 
-                  onChange={() => togglePref('email')} 
-                  variant="primary"
-                />
-              </div>
+
+
               
               <div className="flex items-center justify-between bg-white/5 border border-white/10 p-4 rounded-2xl">
                 <div className="flex items-center gap-3">

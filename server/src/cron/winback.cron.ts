@@ -1,12 +1,12 @@
 import { prisma } from '../lib/prisma'
-import { whatsappService } from '../services/whatsapp.service'
+import { pushService } from '../services/push.service'
 
 /**
  * Busca clientes que não visitam a barbearia há exatamente 30, 60 ou 90 dias
- * e envia uma mensagem de reativação (Win-back).
+ * e envia uma mensagem de reativação (Win-back) via Push Notification.
  */
 export async function processWinbacks() {
-  console.log('🔄 Executando varredura de Win-back (Reativação de Clientes)...')
+  console.log('🔄 Executando varredura de Win-back (Push)...')
   try {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
@@ -27,6 +27,7 @@ export async function processWinbacks() {
             lte: targetDateEnd
           },
           marketingOptIn: true,
+          pushToken: { not: null },
           owner: {
             gamificationConfig: {
               enableWinBacks: true
@@ -39,22 +40,26 @@ export async function processWinbacks() {
       })
 
       for (const client of inactiveUsers) {
-        if (!client.phone || !client.ownerId) continue
+        if (!client.pushToken) continue
 
-        const variables = {
-          client_name: client.name,
-          days_inactive: days.toString()
+        let message = ''
+        if (days === 30) {
+          message = `Oi ${client.name}, já faz um mês desde o seu último corte. Que tal agendar um horário?`
+        } else if (days === 60) {
+          message = `${client.name}, seu cabelo já deve estar grande! 😅 Bora dar aquele trato?`
+        } else if (days === 90) {
+          message = `Estamos sentindo sua falta, ${client.name}! Volte e garanta o seu estilo em dia.`
         }
 
-        await whatsappService.sendTemplateMessage(
-          client.ownerId,
-          client.phone,
-          `WINBACK_${days}`,
-          variables
+        await pushService.sendNotification(
+          client.pushToken,
+          'Saudades de Você! 💈',
+          message,
+          '/agendar'
         )
       }
     }
   } catch (error) {
-    console.error('❌ Erro no Cron de Winback:', error)
+    console.error('❌ Erro no Cron de Winback (Push):', error)
   }
 }

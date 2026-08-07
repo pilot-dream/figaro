@@ -52,7 +52,7 @@ interface TabSettingsProps {
   barber: User
 }
 
-type SettingsSubTab = 'profile' | 'services' | 'hours' | 'payments' | 'integrations' | 'notifications' | 'team' | 'plan' | 'clube'
+type SettingsSubTab = 'profile' | 'services' | 'hours' | 'payments' | 'integrations' | 'team' | 'plan' | 'clube'
 
 export function TabSettings({ barber }: TabSettingsProps) {
   const addToast = useToastStore((state) => state.addToast)
@@ -60,35 +60,12 @@ export function TabSettings({ barber }: TabSettingsProps) {
   const [services, setServices] = useState<(Service & { isFeatured?: boolean; isCombo?: boolean })[]>([])
   const [copied, setCopied] = useState(false)
   const [showQrModal, setShowQrModal] = useState(false)
-  const [showWhatsappModal, setShowWhatsappModal] = useState(false)
-  
-  // Real WhatsApp Integration States
-  const [qrCodeBase64, setQrCodeBase64] = useState<string | null>(null)
-  const [instanceName, setInstanceName] = useState<string | null>(null)
-  const [isQrLoading, setIsQrLoading] = useState(false)
+
 
   // Profile Subtab Form State
   const [displayName, setDisplayName] = useState(barber.name || 'Filipe Lacerda')
   const [bio, setBio] = useState(barber.notes || 'Especialista em cortes clássicos e barboterapia.')
 
-  // WhatsApp Notifications State
-  const [whatsappEnabled, setWhatsappEnabled] = useState(barber.whatsappEnabled ?? false)
-  const [whatsappReminder24h, setWhatsappReminder24h] = useState(barber.whatsappReminder24h ?? false)
-  const [whatsappReminder2h, setWhatsappReminder2h] = useState(barber.whatsappReminder2h ?? false)
-  const [whatsappTemplate, setWhatsappTemplate] = useState(barber.whatsappTemplateBase || 'Olá {{client_name}}, lembrete do seu agendamento: {{services}} com {{barber_name}} às {{time}}.')
-
-  const handleUpdateWhatsApp = async (fields: Partial<{ whatsappEnabled: boolean; whatsappReminder24h: boolean; whatsappReminder2h: boolean; whatsappTemplateBase: string }>) => {
-    try {
-      await supabase.from('profiles').update({
-        whatsapp_enabled: fields.whatsappEnabled ?? whatsappEnabled,
-        whatsapp_reminder_24h: fields.whatsappReminder24h ?? whatsappReminder24h,
-        whatsapp_reminder_2h: fields.whatsappReminder2h ?? whatsappReminder2h,
-        whatsapp_template_base: fields.whatsappTemplateBase ?? whatsappTemplate
-      }).eq('id', barber.id)
-    } catch (err) {
-      console.error('Failed to update WhatsApp settings', err)
-    }
-  }
 
   // Google Calendar Integration State
   const [googleSyncEnabled, setGoogleSyncEnabled] = useState(barber.googleSyncEnabled ?? false)
@@ -500,16 +477,6 @@ export function TabSettings({ barber }: TabSettingsProps) {
           <Calendar className="w-3.5 h-3.5" /> Integrações
         </button>
 
-        <button
-          onClick={() => setActiveSubTab('notifications')}
-          className={`rounded-full px-4 py-2 text-xs transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
-            activeSubTab === 'notifications'
-              ? 'bg-figaro-gold-base text-white shadow-figaro-gold-base/30 font-semibold border border-figaro-gold-base'
-              : 'bg-white/[0.05] text-figaro-text-sec hover:text-white border border-white/10 backdrop-blur-md'
-          }`}
-        >
-          <MessageCircle className="w-3.5 h-3.5" /> Notificações
-        </button>
 
         {barber.role === 'OWNER' && (
           <button
@@ -1261,147 +1228,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
         </Suspense>
       )}
 
-      {/* 6. SUB-ABA 6: NOTIFICATIONS */}
-      {activeSubTab === 'notifications' && (
-        <div className="space-y-6">
-          <GlassCard className="p-6 border-figaro-gold-base relative overflow-hidden space-y-6">
-            <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-              <div className="w-10 h-10 rounded-full bg-figaro-gold-base border border-figaro-gold-base flex items-center justify-center">
-                <MessageCircle className="w-5 h-5 text-figaro-gold-base" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-white tracking-tight">
-                  Automações de WhatsApp
-                </h3>
-                <p className="text-xs text-figaro-text-sec">
-                  Gerencie lembretes e confirmações enviadas automaticamente para seus clientes.
-                </p>
-              </div>
-            </div>
 
-            <div className="space-y-6">
-              {/* Status de Conexão e Toggle Habilitar Geral */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl gap-4">
-                <div>
-                  <h4 className="text-sm font-semibold text-white">Status da Conexão</h4>
-                  <p className="text-xs text-figaro-text-sec">
-                    {barber.whatsappStatus === 'CONNECTED' 
-                      ? 'Seu WhatsApp está conectado e pronto para enviar.' 
-                      : 'Conecte seu WhatsApp para enviar mensagens através do seu número.'}
-                  </p>
-                </div>
-                <div className="flex items-center gap-4">
-                  {barber.whatsappStatus === 'CONNECTED' ? (
-                    <span className="text-xs font-semibold px-2 py-1 bg-[#2ED9A0]/20 text-[#2ED9A0] border border-[#2ED9A0]/30 rounded flex items-center gap-1">
-                      <Check className="w-3 h-3" /> Conectado
-                    </span>
-                  ) : (
-                    <button 
-                      onClick={async () => {
-                        setShowWhatsappModal(true)
-                        setIsQrLoading(true)
-                        setQrCodeBase64(null)
-                        try {
-                          const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
-                          const res = await fetch(`${API_URL}/whatsapp/instance/create`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ barberId: barber.id })
-                          })
-                          const data = await res.json()
-                          if (data.qrCodeBase64) {
-                            setQrCodeBase64(data.qrCodeBase64)
-                            setInstanceName(data.instanceName)
-                          }
-                        } catch (err) {
-                          console.error('Failed to create instance', err)
-                        } finally {
-                          setIsQrLoading(false)
-                        }
-                      }}
-                      className="text-xs font-semibold bg-[#2ED9A0] text-black px-4 py-2 rounded-lg shadow-[0_0_15px_rgba(46,217,160,0.3)] hover:scale-105 transition-all cursor-pointer"
-                    >
-                      Escanear QR Code
-                    </button>
-                  )}
-                  <label className="relative inline-flex items-center cursor-pointer ml-4">
-                    <input
-                      type="checkbox"
-                      className="sr-only peer"
-                      checked={whatsappEnabled}
-                      onChange={(e) => {
-                        setWhatsappEnabled(e.target.checked)
-                        handleUpdateWhatsApp({ whatsappEnabled: e.target.checked })
-                      }}
-                    />
-                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ED9A0]"></div>
-                  </label>
-                </div>
-              </div>
-
-              <div className={`space-y-4 transition-all ${!whatsappEnabled ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
-                {/* Lembrete 24h */}
-                <div className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl">
-                  <div>
-                    <h4 className="text-sm font-semibold text-white">Lembrete 24h antes</h4>
-                    <p className="text-xs text-figaro-text-sec">Avisa o cliente 1 dia antes do agendamento.</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="sr-only peer"
-                      checked={whatsappReminder24h}
-                      onChange={(e) => {
-                        setWhatsappReminder24h(e.target.checked)
-                        handleUpdateWhatsApp({ whatsappReminder24h: e.target.checked })
-                      }}
-                    />
-                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-figaro-gold-base"></div>
-                  </label>
-                </div>
-
-                {/* Lembrete 2h */}
-                <div className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl">
-                  <div>
-                    <h4 className="text-sm font-semibold text-white">Lembrete 2h antes</h4>
-                    <p className="text-xs text-figaro-text-sec">Lembrete final logo antes do horário marcado.</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="sr-only peer"
-                      checked={whatsappReminder2h}
-                      onChange={(e) => {
-                        setWhatsappReminder2h(e.target.checked)
-                        handleUpdateWhatsApp({ whatsappReminder2h: e.target.checked })
-                      }}
-                    />
-                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-figaro-gold-base"></div>
-                  </label>
-                </div>
-
-                {/* Template de Mensagem */}
-                <div className="pt-2 space-y-2">
-                  <label className="text-xs font-semibold text-figaro-text-sec block uppercase tracking-wider">
-                    Template Base da Mensagem
-                  </label>
-                  <textarea
-                    value={whatsappTemplate}
-                    onChange={(e) => setWhatsappTemplate(e.target.value)}
-                    onBlur={() => handleUpdateWhatsApp({ whatsappTemplateBase: whatsappTemplate })}
-                    rows={4}
-                    className="w-full bg-black/40 border border-white/10 text-white text-sm rounded-xl p-4 outline-none focus:border-figaro-gold-base resize-none"
-                    placeholder="Olá {{client_name}}, lembrete do seu agendamento..."
-                  />
-                  <p className="text-[10px] text-figaro-text-sec">
-                    Variáveis disponíveis: <code className="text-figaro-gold-base bg-figaro-gold-base px-1 rounded">{"{{client_name}}"}</code>, <code className="text-figaro-gold-base bg-figaro-gold-base px-1 rounded">{"{{barber_name}}"}</code>, <code className="text-figaro-gold-base bg-figaro-gold-base px-1 rounded">{"{{services}}"}</code>, <code className="text-figaro-gold-base bg-figaro-gold-base px-1 rounded">{"{{time}}"}</code>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </GlassCard>
-        </div>
-      )}
 
       {/* 7. SUB-ABA 7: TEAM */}
       {activeSubTab === 'team' && barber.role === 'OWNER' && (
@@ -1419,97 +1246,7 @@ export function TabSettings({ barber }: TabSettingsProps) {
         </div>
       )}
 
-      {/* WHATSAPP CONNECTION MODAL */}
-      {showWhatsappModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setShowWhatsappModal(false)}
-          />
-          <div className="relative w-full max-w-sm bg-[#121214] border border-[#2ED9A0]/30 rounded-3xl p-6 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <button
-              onClick={() => setShowWhatsappModal(false)}
-              className="absolute top-4 right-4 text-figaro-text-sec hover:text-white bg-white/5 rounded-full p-2 transition-colors cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <div className="text-center space-y-4">
-              <div className="mx-auto w-12 h-12 rounded-full bg-[#2ED9A0]/20 flex items-center justify-center">
-                <MessageCircle className="w-6 h-6 text-[#2ED9A0]" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white tracking-tight">
-                  Conectar Dispositivo
-                </h3>
-                <p className="text-sm text-figaro-text-sec mt-1">
-                  Abra o WhatsApp no seu celular, vá em Aparelhos Conectados e escaneie o código abaixo:
-                </p>
-              </div>
 
-              {/* Real QR Code */}
-              <div className="mx-auto w-48 h-48 bg-white rounded-xl flex items-center justify-center p-2 opacity-90 relative overflow-hidden">
-                {isQrLoading ? (
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2ED9A0]"></div>
-                ) : qrCodeBase64 ? (
-                  <img 
-                    src={qrCodeBase64.startsWith('data:image') ? qrCodeBase64 : `data:image/png;base64,${qrCodeBase64}`} 
-                    alt="QR Code" 
-                    className="w-full h-full object-contain mix-blend-multiply" 
-                  />
-                ) : (
-                  <div className="text-xs text-figaro-text-sec text-center px-4">
-                    Seu servidor Evolution API não respondeu com um QR Code.<br/><br/>
-                    Verifique o arquivo .env
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            {/* Polling Effect embedded logic via simple button manual check for now, or you could do a real useEffect polling if needed */}
-            <div className="mt-6 pt-4 border-t border-white/10">
-              <Button
-                onClick={async () => {
-                  if (!instanceName) {
-                    // Fallback to MOCK if real instance failed
-                    try {
-                      await supabase.from('profiles').update({
-                        whatsapp_status: 'CONNECTED',
-                        whatsapp_instance_id: `inst_${barber.id}`
-                      }).eq('id', barber.id)
-                      addToast("Simulação: WhatsApp Conectado com Sucesso! Atualize a página.", 'success')
-                      setShowWhatsappModal(false)
-                    } catch (e) {}
-                    return
-                  }
-                  
-                  try {
-                    const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
-                    const res = await fetch(`${API_URL}/whatsapp/instance/status/${instanceName}`)
-                    const data = await res.json()
-                    
-                    if (data.state === 'CONNECTED') {
-                      await supabase.from('profiles').update({
-                        whatsapp_status: 'CONNECTED',
-                        whatsapp_instance_id: instanceName
-                      }).eq('id', barber.id)
-                      
-                      addToast("Conectado com Sucesso!", 'success')
-                      setShowWhatsappModal(false)
-                    } else {
-                      addToast(`Status atual: ${data.state}. Por favor, escaneie o código.`, 'info')
-                    }
-                  } catch (err) {
-                    console.error('Failed to check status', err)
-                  }
-                }}
-                className="w-full bg-[#2ED9A0] text-black hover:bg-[#20A67A]"
-              >
-                Já Escaneei (Verificar Status)
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
       {/* 9. SUB-ABA 8: CLUBE VIP */}
       {activeSubTab === 'clube' && (
         <Suspense fallback={<ModalSkeleton />}>

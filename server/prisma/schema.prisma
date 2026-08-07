@@ -52,12 +52,7 @@ model User {
   googleSyncEnabled    Boolean  @default(false) @map("google_sync_enabled")
   googleSyncBusyTimes  Boolean  @default(false) @map("google_sync_busy_times")
   
-  whatsappInstanceId   String?  @map("whatsapp_instance_id")
-  whatsappStatus       String?  @default("DISCONNECTED") @map("whatsapp_status")
-  whatsappEnabled      Boolean  @default(false) @map("whatsapp_enabled")
-  whatsappReminder24h  Boolean  @default(false) @map("whatsapp_reminder_24h")
-  whatsappReminder2h   Boolean  @default(false) @map("whatsapp_reminder_2h")
-  whatsappTemplateBase String?  @default("Olá {{client_name}}, lembrete do seu agendamento: {{services}} com {{barber_name}} às {{time}}.") @map("whatsapp_template_base")
+
   
   businessHours        Json?    @map("business_hours")
   slotInterval         Int      @default(15) @map("slot_interval")
@@ -135,9 +130,9 @@ model Appointment {
   clientPhone        String?  @map("client_phone")
   clientNotes        String?  @map("client_notes")
   googleEventId      String?  @map("google_event_id")
-  wpConfirmationSent Boolean  @default(false) @map("wp_confirmation_sent")
-  wpReminder24hSent  Boolean  @default(false) @map("wp_reminder_24h_sent")
-  wpReminder2hSent   Boolean  @default(false) @map("wp_reminder_2h_sent")
+
+  pushReminder24hSent Boolean @default(false) @map("push_reminder_24h_sent")
+  pushReminder2hSent  Boolean @default(false) @map("push_reminder_2h_sent")
   createdAt          DateTime @default(now()) @map("created_at")
 
   client   User?                @relation("ClientAppointments", fields: [clientId], references: [id])

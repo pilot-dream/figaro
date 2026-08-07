@@ -1,6 +1,5 @@
 import cron from 'node-cron'
 import { prisma } from '../lib/prisma'
-import { whatsappService } from '../services/whatsapp.service'
 import { pushService } from '../services/push.service'
 
 /**
@@ -22,14 +21,10 @@ export async function processReminders() {
     const appointments24h = await prisma.appointment.findMany({
       where: {
         status: 'CONFIRMED',
-        wpReminder24hSent: false,
+        pushReminder24hSent: false,
         startTime: {
           gte: in24hStart,
           lte: in24hEnd
-        },
-        barber: {
-          whatsappEnabled: true,
-          whatsappReminder24h: true
         }
       },
       include: {
@@ -40,25 +35,33 @@ export async function processReminders() {
     })
 
     for (const appt of appointments24h) {
-      // 1. WhatsApp
-      const success = await whatsappService.send24hReminder(appt)
-      if (success) {
-        await prisma.appointment.update({
-          where: { id: appt.id },
-          data: { wpReminder24hSent: true }
-        })
+      const updateData: any = {}
+
+      // Web Push Notification
+      if (!appt.pushReminder24hSent) {
+        if (appt.client && appt.client.pushToken) {
+          const time = new Date(appt.startTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+          const date = new Date(appt.startTime).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
+          try {
+            await pushService.sendNotification(
+              appt.client.pushToken,
+              'Lembrete de Agendamento ✂️',
+              `Você tem um horário com ${appt.barber.name} amanhã (${date}) às ${time}.`,
+              '/meus-agendamentos'
+            )
+          } catch (error) {
+            console.error(`[Push 24h] Erro ao enviar para o cliente ${appt.clientId}:`, error)
+          }
+        }
+        // Sempre marca como processado para não cair no loop do cron novamente
+        updateData.pushReminder24hSent = true
       }
 
-      // 2. Web Push Notification
-      if (appt.client && appt.client.pushToken) {
-        const time = new Date(appt.startTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-        const date = new Date(appt.startTime).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
-        await pushService.sendNotification(
-          appt.client.pushToken,
-          'Lembrete de Agendamento ✂️',
-          `Você tem um horário com ${appt.barber.name} amanhã (${date}) às ${time}.`,
-          '/meus-agendamentos'
-        )
+      if (Object.keys(updateData).length > 0) {
+        await prisma.appointment.update({
+          where: { id: appt.id },
+          data: updateData
+        })
       }
     }
 
@@ -66,14 +69,10 @@ export async function processReminders() {
     const appointments2h = await prisma.appointment.findMany({
       where: {
         status: 'CONFIRMED',
-        wpReminder2hSent: false,
+        pushReminder2hSent: false,
         startTime: {
           gte: in2hStart,
           lte: in2hEnd
-        },
-        barber: {
-          whatsappEnabled: true,
-          whatsappReminder2h: true
         }
       },
       include: {
@@ -84,24 +83,32 @@ export async function processReminders() {
     })
 
     for (const appt of appointments2h) {
-      // 1. WhatsApp
-      const success = await whatsappService.send2hReminder(appt)
-      if (success) {
-        await prisma.appointment.update({
-          where: { id: appt.id },
-          data: { wpReminder2hSent: true }
-        })
+      const updateData: any = {}
+
+      // Web Push Notification
+      if (!appt.pushReminder2hSent) {
+        if (appt.client && appt.client.pushToken) {
+          const time = new Date(appt.startTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+          try {
+            await pushService.sendNotification(
+              appt.client.pushToken,
+              'Seu horário está chegando! ⏳',
+              `Seu corte com ${appt.barber.name} é hoje às ${time}. Não se atrase!`,
+              '/meus-agendamentos'
+            )
+          } catch (error) {
+            console.error(`[Push 2h] Erro ao enviar para o cliente ${appt.clientId}:`, error)
+          }
+        }
+        // Sempre marca como processado para não cair no loop do cron novamente
+        updateData.pushReminder2hSent = true
       }
 
-      // 2. Web Push Notification
-      if (appt.client && appt.client.pushToken) {
-        const time = new Date(appt.startTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-        await pushService.sendNotification(
-          appt.client.pushToken,
-          'Seu horário está chegando! ⏳',
-          `Seu corte com ${appt.barber.name} é hoje às ${time}. Não se atrase!`,
-          '/meus-agendamentos'
-        )
+      if (Object.keys(updateData).length > 0) {
+        await prisma.appointment.update({
+          where: { id: appt.id },
+          data: updateData
+        })
       }
     }
 
@@ -115,7 +122,7 @@ export async function processReminders() {
  * Inicia o Cron Job local para ambientes de desenvolvimento ou VPS tradicionais.
  */
 export function startReminderCron() {
-  console.log('⏳ Inicializando Cron Job de Lembretes do WhatsApp (a cada 15 min)...')
+  console.log('⏳ Inicializando Cron Job de Lembretes (a cada 15 min)...')
 
   cron.schedule('*/15 * * * *', async () => {
     await processReminders()

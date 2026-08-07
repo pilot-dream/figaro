@@ -71,7 +71,7 @@ export function TabSaaS() {
               <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" /> Equipe de Barbeiros (Ilimitada)
             </li>
             <li className="flex items-center gap-2 text-sm text-figaro-text-secondary">
-              <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" /> Lembretes Oficiais no WhatsApp
+              <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" /> Lembretes Oficiais via Push Notification
             </li>
             <li className="flex items-center gap-2 text-sm text-figaro-text-secondary">
               <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" /> Split de Pagamento

@@ -6,7 +6,6 @@ import authRoutes from './routes/auth.routes'
 import barberRoutes from './routes/barber.routes'
 import teamRoutes from './routes/team.routes'
 import googleRoutes from './routes/google.routes'
-import whatsappRoutes from './routes/whatsapp.routes'
 import financeRoutes from './routes/finance.routes'
 import appointmentsRoutes from './routes/appointments.routes'
 import mrrRoutes from './routes/mrr.routes'
@@ -43,7 +42,6 @@ app.use('/api', globalLimiter)
 app.use('/api/auth', authRoutes)
 app.use('/api/google', googleRoutes)
 app.use('/api/barbers', barberRoutes)
-app.use('/api/whatsapp', whatsappRoutes)
 app.use('/api/team', teamRoutes)
 app.use('/api/finance', financeRoutes)
 app.use('/api/appointments', appointmentsRoutes)
