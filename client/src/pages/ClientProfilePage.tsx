@@ -189,11 +189,7 @@ export function ClientProfilePage() {
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center justify-between bg-white/5 border border-white/10 p-4 rounded-2xl">
 
-
-
-              
               <div className="flex items-center justify-between bg-white/5 border border-white/10 p-4 rounded-2xl">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-figaro-amber/20 flex items-center justify-center">

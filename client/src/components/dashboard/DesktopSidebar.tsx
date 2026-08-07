@@ -1,4 +1,4 @@
-import { Home, Calendar, Wallet, Scissors, Settings, Users, LogOut, ArrowRight } from 'lucide-react'
+import { Home, Calendar, Wallet, Scissors, Settings, Users, LogOut, ArrowRight, Plus } from 'lucide-react'
 import type { BarberTab } from './BarberBottomNav'
 import { useAuthStore } from '@/stores/auth.store'
 
