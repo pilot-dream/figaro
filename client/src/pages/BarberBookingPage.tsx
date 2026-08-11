@@ -205,28 +205,6 @@ export function BarberBookingPage() {
                 <h2 className="text-white font-bold text-sm">{barber?.name || 'Barbearia Vivaz'}</h2>
               </div>
             </div>
-            {/* 2. Cards match applied here as well */}
-            <button className="w-10 h-10 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center relative">
-              <Bell className="w-5 h-5 text-white" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-figaro-gold-base rounded-full"></span>
-            </button>
-          </div>
-
-          {/* Gamification Card - 2. Cards matched */}
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-5 relative overflow-hidden">
-            <div className="flex justify-between items-start relative z-10">
-              <div>
-                <p className="text-figaro-text-sec text-sm">Bem-vindo</p>
-                <h2 className="text-white font-bold text-xl">{user?.name || 'Visitante'}</h2>
-              </div>
-              <div className="text-4xl drop-shadow-md">🎁</div>
-            </div>
-            <div className="mt-4 relative z-10 flex items-center gap-3">
-               <div className="flex-1 bg-white/10 h-2 rounded-full overflow-hidden">
-                 <div className="bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base w-[60%] h-full rounded-full"></div>
-               </div>
-            </div>
-            <p className="text-figaro-text-sec text-[10px] mt-2">Faltam 2 cortes para você ganhar seu prêmio</p>
           </div>
 
           {/* Promotional Banner */}
@@ -427,14 +405,16 @@ export function BarberBookingPage() {
               )}
 
               {selectedSlot && (
-                 <div className="pt-4">
+                <div className="fixed bottom-24 left-0 right-0 px-4 z-40 animate-in slide-in-from-bottom-10 fade-in duration-300 flex justify-center pointer-events-none">
+                  <div className="w-full max-w-xl mx-auto flex justify-center pointer-events-auto">
                     <button 
                       onClick={() => setStep(3)}
-                      className="w-full bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black font-semibold rounded-xl py-4 shadow-lg shadow-figaro-gold-base/30"
+                      className="w-full max-w-md bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black font-bold rounded-2xl py-4 shadow-[0_0_30px_rgba(212,175,55,0.3)] flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
                     >
-                      Ir para Confirmação
+                      Ir para Confirmação <span className="text-xl leading-none">→</span>
                     </button>
-                 </div>
+                  </div>
+                </div>
               )}
             </div>
           )}

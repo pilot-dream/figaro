@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { Button } from '@/components/ui/Button'
 import type { User } from '@/types'
-import { Plus, Edit2, Trash2, Star, User as UserIcon, X, Save, Upload } from 'lucide-react'
-import { uploadAvatar, supabase } from '@/lib/api'
+import { Plus, Edit2, Trash2, Star, User as UserIcon, X, Save, Upload, Link2, Copy, Check, UserPlus, Mail, Loader2 } from 'lucide-react'
+import { uploadAvatar, supabase, fetchTeamInviteLink, addTeamMemberByEmail, removeTeamMember } from '@/lib/api'
 import { useToastStore } from '@/stores/toast.store'
 import { useConfirmStore } from '@/stores/confirm.store'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -15,6 +15,15 @@ export function TeamSettings() {
   const [showModal, setShowModal] = useState(false)
   const [editingMember, setEditingMember] = useState<User | null>(null)
   const [isUploading, setIsUploading] = useState(false)
+
+  // Invite Link State
+  const [inviteToken, setInviteToken] = useState<string>('')
+  const [copied, setCopied] = useState(false)
+
+  // Add by Email State
+  const [addEmail, setAddEmail] = useState('')
+  const [addingEmail, setAddingEmail] = useState(false)
+  const [removingId, setRemovingId] = useState<string | null>(null)
 
   // Form State
   const [name, setName] = useState('')
@@ -28,31 +37,70 @@ export function TeamSettings() {
   const [commissionType, setCommissionType] = useState<'PERCENTAGE' | 'FIXED'>('PERCENTAGE')
   const [commissionValue, setCommissionValue] = useState<number>(0)
 
-  const fetchTeam = async () => {
+  const fetchTeam = useCallback(async () => {
     try {
       setLoading(true)
       const { data: session } = await supabase.auth.getSession()
       const token = session?.session?.access_token
       const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
-      const response = await fetch(`${API_URL}/team`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      if (response.ok) {
-        const data = await response.json()
+      
+      const [teamRes, inviteLinkRes] = await Promise.all([
+        fetch(`${API_URL}/team`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetchTeamInviteLink()
+      ])
+
+      if (teamRes.ok) {
+        const data = await teamRes.json()
         setTeam(data)
       }
+      setInviteToken(inviteLinkRes || '')
+
     } catch (err) {
       console.error('Failed to fetch team', err)
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     fetchTeam()
-  }, [])
+  }, [fetchTeam])
+
+  const inviteUrl = inviteToken
+    ? `${window.location.origin}/registro?invite=${inviteToken}`
+    : ''
+
+  const handleCopy = async () => {
+    if (!inviteUrl) return
+    try {
+      await navigator.clipboard.writeText(inviteUrl)
+      setCopied(true)
+      addToast('Link copiado!', 'success')
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      addToast('Erro ao copiar link', 'error')
+    }
+  }
+
+  const handleAddByEmail = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!addEmail.trim()) return
+
+    setAddingEmail(true)
+    try {
+      await addTeamMemberByEmail(addEmail.trim())
+      addToast('Barbeiro vinculado com sucesso!', 'success')
+      setAddEmail('')
+      await fetchTeam()
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erro ao vincular barbeiro'
+      addToast(message, 'error')
+    } finally {
+      setAddingEmail(false)
+    }
+  }
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -105,30 +153,42 @@ export function TeamSettings() {
     }
   }
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, memberName: string) => {
     const confirmed = await useConfirmStore.getState().requestConfirm({
-      message: 'Tem certeza que deseja remover este profissional da equipe?',
+      message: `Tem certeza que deseja remover ${memberName} da equipe?`,
       confirmText: 'Sim, remover'
     })
     if (!confirmed) return
-    const { data: session } = await supabase.auth.getSession()
-    const token = session?.session?.access_token
-    const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
+    
+    setRemovingId(id)
     try {
-      const response = await fetch(`${API_URL}/team/${id}`, { 
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
+      // First try the new unlink method (which just nullifies tenantId)
+      await removeTeamMember(id)
+      fetchTeam()
+      addToast(`${memberName} removido da equipe.`, 'info')
+    } catch (err: any) {
+      // Fallback to the old method if the new one fails
+      const { data: session } = await supabase.auth.getSession()
+      const token = session?.session?.access_token
+      const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
+      try {
+        const response = await fetch(`${API_URL}/team/${id}`, { 
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        if (response.ok) {
+          fetchTeam()
+          addToast(`${memberName} removido da equipe.`, 'info')
+        } else {
+          addToast('Erro ao remover membro', 'error')
         }
-      })
-      if (response.ok) {
-        fetchTeam()
-        addToast('Profissional removido da equipe.', 'info')
-      } else {
-        addToast('Erro ao remover membro', 'error')
+      } catch (fallbackErr) {
+        addToast('Erro de conexão ao remover membro', 'error')
       }
-    } catch (err) {
-      addToast('Erro de conexão ao remover membro', 'error')
+    } finally {
+      setRemovingId(null)
     }
   }
 
@@ -187,8 +247,72 @@ export function TeamSettings() {
           </p>
         </div>
         <Button onClick={openNewModal} className="w-full sm:w-auto bg-figaro-gold-base hover:bg-[#0090FF] text-white">
-          <Plus className="w-4 h-4 mr-2" /> Novo Colaborador
+          <Plus className="w-4 h-4 mr-2" /> Criar Colaborador
         </Button>
+      </div>
+
+      {/* Invite Link and Add By Email Sections */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <GlassCard className="p-5 flex flex-col justify-center space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-[#D4AF37]/10 border border-[#D4AF37]/20 flex items-center justify-center">
+              <Link2 className="w-4 h-4 text-[#D4AF37]" />
+            </div>
+            <div>
+              <h3 className="text-white font-bold text-sm">Convite para Novos Barbeiros</h3>
+              <p className="text-[11px] text-figaro-text-sec">Compartilhe o link para se cadastrarem já vinculados.</p>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              readOnly
+              value={inviteUrl}
+              className="flex-1 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs font-mono truncate focus:outline-none cursor-default select-all"
+            />
+            <button
+              onClick={handleCopy}
+              disabled={!inviteUrl}
+              className="px-4 py-2 rounded-xl bg-[#D4AF37] hover:bg-[#C5A028] disabled:opacity-40 text-black font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shrink-0"
+            >
+              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? 'Copiado' : 'Copiar'}
+            </button>
+          </div>
+        </GlassCard>
+
+        <GlassCard className="p-5 flex flex-col justify-center space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+              <UserPlus className="w-4 h-4 text-emerald-400" />
+            </div>
+            <div>
+              <h3 className="text-white font-bold text-sm">Adicionar Barbeiro Existente</h3>
+              <p className="text-[11px] text-figaro-text-sec">Vincule um profissional pelo email.</p>
+            </div>
+          </div>
+          <form onSubmit={handleAddByEmail} className="flex gap-2">
+            <div className="relative flex-1">
+              <Mail className="w-3.5 h-3.5 text-figaro-text-sec absolute left-3 top-2.5" />
+              <input
+                type="email"
+                required
+                value={addEmail}
+                onChange={(e) => setAddEmail(e.target.value)}
+                placeholder="email@barbeiro.com"
+                className="w-full pl-9 pr-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder:text-gray-500 focus:outline-none focus:border-emerald-500/50 transition-colors"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={addingEmail || !addEmail.trim()}
+              className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 text-white font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shrink-0"
+            >
+              {addingEmail ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <UserPlus className="w-3.5 h-3.5" />}
+              Vincular
+            </button>
+          </form>
+        </GlassCard>
       </div>
 
       {loading ? (
@@ -239,9 +363,11 @@ export function TeamSettings() {
                 <Button variant="secondary" onClick={() => openEditModal(member)} className="flex-1 text-xs py-1.5 h-auto border-white/20 hover:border-white/50 text-white">
                   <Edit2 className="w-3.5 h-3.5 mr-1.5" /> Editar
                 </Button>
-                <Button variant="secondary" onClick={() => handleDelete(member.id)} className="flex-1 text-xs py-1.5 h-auto border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50">
-                  <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Remover
-                </Button>
+                {member.role !== 'OWNER' && (
+                  <Button variant="secondary" onClick={() => handleDelete(member.id, member.name)} disabled={removingId === member.id} className="flex-1 text-xs py-1.5 h-auto border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50">
+                    {removingId === member.id ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5 mr-1.5" />} Remover
+                  </Button>
+                )}
               </div>
             </GlassCard>
           ))}
@@ -355,7 +481,7 @@ export function TeamSettings() {
                 </select>
               </div>
 
-              {/* Seção de Comissionamento (Apenas UI, lógica no backend ajustada depois) */}
+              {/* Seção de Comissionamento */}
               <div className="pt-4 border-t border-white/10 mt-4 space-y-4">
                 <label className="text-sm font-semibold text-white flex items-center gap-2">
                   <span className="text-[#2ED9A0]">💰</span> Regra de Comissionamento

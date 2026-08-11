@@ -23,35 +23,71 @@ function slugify(text: string): string {
 
 import { supabaseAdmin } from '../lib/supabaseAdmin'
 
-// POST /api/auth/register (Força CLIENT)
+// POST /api/auth/register (Força CLIENT, ou BARBER se inviteToken presente)
 router.post('/register', async (req, res, next) => {
   try {
-    const { name, email, password, phone } = req.body
+    const { name, email, password, phone, inviteToken } = req.body
     if (!name || !email || !password) {
       return res.status(400).json({ error: 'Nome, email e senha são obrigatórios' })
     }
+
+    // Se inviteToken presente, verificar se é um OWNER válido
+    let ownerForInvite: { id: string; name: string } | null = null
+    if (inviteToken && typeof inviteToken === 'string') {
+      const ownerProfile = await prisma.user.findUnique({
+        where: { id: inviteToken },
+        select: { id: true, name: true, role: true }
+      })
+      if (ownerProfile && (ownerProfile.role === 'OWNER' || ownerProfile.role === 'MANAGER')) {
+        ownerForInvite = { id: ownerProfile.role === 'OWNER' ? ownerProfile.id : (ownerProfile.id), name: ownerProfile.name }
+      }
+    }
+
+    const assignedRole = ownerForInvite ? 'BARBER' : 'CLIENT'
 
     // 1. Cria usuário no Supabase Auth
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
       email_confirm: true,
-      user_metadata: { name, phone }
+      user_metadata: { name, phone, role: assignedRole }
     })
 
     if (authError || !authData.user) {
       return res.status(400).json({ error: authError?.message || 'Erro ao criar usuário' })
     }
 
+    // 2. Gerar slug se for barbeiro (convidado)
+    let slug: string | null = null
+    if (ownerForInvite) {
+      const slugify = (text: string) => text.toString().toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-')
+      let baseSlug = slugify(name)
+      let candidateSlug = baseSlug
+      let counter = 1
+      while (await prisma.user.findUnique({ where: { slug: candidateSlug } })) {
+        candidateSlug = `${baseSlug}-${counter}`
+        counter++
+      }
+      slug = candidateSlug
+    }
+
     // Usamos upsert para evitar race condition com a trigger do banco (ou caso a trigger não exista)
     await prisma.user.upsert({
       where: { id: authData.user.id },
-      update: { role: 'CLIENT', name, phone: phone || null },
+      update: {
+        role: assignedRole,
+        name,
+        phone: phone || null,
+        ownerId: ownerForInvite?.id || null,
+        slug: slug,
+      },
       create: { 
         id: authData.user.id,
         name,
         phone: phone || null,
-        role: 'CLIENT' 
+        role: assignedRole,
+        ownerId: ownerForInvite?.id || null,
+        slug: slug,
       }
     })
 

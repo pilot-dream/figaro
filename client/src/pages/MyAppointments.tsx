@@ -126,9 +126,10 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
     (a.status !== 'CONFIRMED' && a.status !== 'PENDING') || 
     ((a.status === 'CONFIRMED' || a.status === 'PENDING') && isOneHourPast(a.startTime))
   )
+  const recentBarberIds = Array.from(new Set(appointments.map(a => a.barberId).filter(Boolean)));
+  const recentBarbers = barbers.filter(b => recentBarberIds.includes(b.id));
 
-  const displayedBarbers = barbers
-
+  const displayedBarbers = showAllBarbers || recentBarbers.length === 0 ? barbers : recentBarbers;
   return (
     <div className="min-h-screen w-full bg-figaro-black text-white pb-24 overflow-x-hidden">
       
@@ -325,6 +326,15 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
                 </div>
               )
             })}
+
+            {!showAllBarbers && recentBarbers.length > 0 && recentBarbers.length < barbers.length && (
+              <button
+                onClick={() => setShowAllBarbers(true)}
+                className="w-full py-4 mt-4 text-sm font-semibold text-figaro-gold-base border border-white/10 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors"
+              >
+                Ver todos os profissionais
+              </button>
+            )}
 
 
           </div>

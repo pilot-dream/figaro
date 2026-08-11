@@ -7,7 +7,7 @@ interface AuthState {
   loading: boolean
   initialized: boolean
   login: (email: string, password: string) => Promise<User>
-  register: (data: { name: string; email: string; password: string; role: Role; phone: string }) => Promise<User>
+  register: (data: { name: string; email: string; password: string; role: Role; phone: string; inviteToken?: string }) => Promise<User>
   logout: () => Promise<void>
   initAuth: () => Promise<void>
 }
@@ -57,19 +57,20 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  register: async ({ name, email, password, role, phone }) => {
+  register: async ({ name, email, password, role, phone, inviteToken }) => {
     set({ loading: true })
     try {
       const API_URL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "http://localhost:3001/api")
       
-      const endpoint = role === 'OWNER' ? '/auth/register-owner' : '/auth/register'
+      // Se tem inviteToken, sempre usar rota de registro normal (CLIENT/BARBER)
+      const endpoint = (!inviteToken && role === 'OWNER') ? '/auth/register-owner' : '/auth/register'
       
       const response = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name, email, password, phone, role })
+        body: JSON.stringify({ name, email, password, phone, role, inviteToken })
       })
 
       let data: any = {};

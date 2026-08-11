@@ -173,6 +173,7 @@ export function DashboardPage() {
 
         {activeTab === 'network' && user && <TabNetwork />}
 
+
       {/* Liquid Glass Bottom Navigation Bar */}
       <BarberBottomNav activeTab={activeTab} onChangeTab={setActiveTab} />
 

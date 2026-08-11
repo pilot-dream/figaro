@@ -11,6 +11,7 @@ export function RegisterPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const redirect = searchParams.get('redirect')
+  const inviteToken = searchParams.get('invite')
 
   const register = useAuthStore((s) => s.register)
 
@@ -18,7 +19,7 @@ export function RegisterPage() {
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
-  const [role, setRole] = useState<Role>('CLIENT')
+  const [role, setRole] = useState<Role>(inviteToken ? 'BARBER' : 'CLIENT')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,7 +27,14 @@ export function RegisterPage() {
     setLoading(true)
 
     try {
-      const user = await register({ name, email, phone, password, role })
+      const user = await register({
+        name,
+        email,
+        phone,
+        password,
+        role: inviteToken ? 'BARBER' : role,
+        inviteToken: inviteToken || undefined,
+      })
 
       if (redirect) {
         navigate(redirect)
@@ -35,8 +43,9 @@ export function RegisterPage() {
       } else {
         navigate('/meus-agendamentos')
       }
-    } catch (err: any) {
-      useToastStore.getState().addToast(err.message || 'Erro ao realizar cadastro', 'error')
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erro ao realizar cadastro'
+      useToastStore.getState().addToast(message, 'error')
     } finally {
       setLoading(false)
     }
@@ -58,31 +67,40 @@ export function RegisterPage() {
           </p>
         </div>
 
-        {/* Role Selector Tabs */}
-        <div className="grid grid-cols-2 gap-2 p-1 bg-white/5 rounded-xl border border-glass-border">
-          <button
-            type="button"
-            onClick={() => setRole('CLIENT')}
-            className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-              role === 'CLIENT'
-                ? 'bg-[var(--color-figaro-blue)] text-white shadow-md'
-                : 'text-figaro-text-secondary hover:text-white'
-            }`}
-          >
-            Sou Cliente
-          </button>
-          <button
-            type="button"
-            onClick={() => setRole('OWNER')}
-            className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-              role === 'OWNER'
-                ? 'bg-[var(--color-figaro-amber)] text-white shadow-md'
-                : 'text-figaro-text-secondary hover:text-white'
-            }`}
-          >
-            Minha Barbearia
-          </button>
-        </div>
+        {/* Invite Banner or Role Selector Tabs */}
+        {inviteToken ? (
+          <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-xl p-4 text-center space-y-1">
+            <p className="text-sm font-bold text-[#D4AF37]">✨ Convite de Equipe</p>
+            <p className="text-xs text-figaro-text-secondary">
+              Você está criando uma conta de <strong className="text-white">Barbeiro</strong> vinculada a uma barbearia.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-2 p-1 bg-white/5 rounded-xl border border-glass-border">
+            <button
+              type="button"
+              onClick={() => setRole('CLIENT')}
+              className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                role === 'CLIENT'
+                  ? 'bg-[var(--color-figaro-blue)] text-white shadow-md'
+                  : 'text-figaro-text-secondary hover:text-white'
+              }`}
+            >
+              Sou Cliente
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole('OWNER')}
+              className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                role === 'OWNER'
+                  ? 'bg-[var(--color-figaro-amber)] text-white shadow-md'
+                  : 'text-figaro-text-secondary hover:text-white'
+              }`}
+            >
+              Minha Barbearia
+            </button>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="space-y-1">

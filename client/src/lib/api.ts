@@ -211,6 +211,69 @@ export async function fetchMyTeam(): Promise<User[]> {
   }
 }
 
+// ==========================================
+// TEAM MANAGEMENT API (Invite, Add, Remove)
+// ==========================================
+
+/** Busca o token de convite (UUID do OWNER) para montar o link */
+export async function fetchTeamInviteLink(): Promise<string> {
+  const { data: session } = await supabase.auth.getSession()
+  const token = session?.session?.access_token
+  if (!token) throw new Error('Não autenticado')
+
+  const res = await fetch(`${API_URL}/team/link`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  })
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}))
+    throw new Error(errData.error || 'Falha ao buscar link de convite')
+  }
+
+  const data: { inviteToken: string } = await res.json()
+  return data.inviteToken
+}
+
+/** Vincula um barbeiro existente pelo email */
+export async function addTeamMemberByEmail(email: string): Promise<User> {
+  const { data: session } = await supabase.auth.getSession()
+  const token = session?.session?.access_token
+  if (!token) throw new Error('Não autenticado')
+
+  const res = await fetch(`${API_URL}/team/add`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ email })
+  })
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}))
+    throw new Error(errData.error || 'Falha ao vincular barbeiro')
+  }
+
+  return res.json()
+}
+
+/** Desvincula um barbeiro da equipe (não deleta a conta) */
+export async function removeTeamMember(barberId: string): Promise<void> {
+  const { data: session } = await supabase.auth.getSession()
+  const token = session?.session?.access_token
+  if (!token) throw new Error('Não autenticado')
+
+  const res = await fetch(`${API_URL}/team/remove/${barberId}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${token}` }
+  })
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}))
+    throw new Error(errData.error || 'Falha ao remover membro da equipe')
+  }
+}
+
 export async function fetchBarberBySlug(
   slug: string
 ): Promise<{ barber: User; services: Service[] }> {

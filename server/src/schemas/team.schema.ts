@@ -11,3 +11,13 @@ export const createTeamMemberSchema = z.object({
   commissionType: z.enum(['PERCENTAGE', 'FIXED']).optional().default('PERCENTAGE'),
   commissionValue: z.number().min(0, 'Valor não pode ser negativo').optional().default(0)
 })
+
+/** Schema para POST /api/team/add — vincula barbeiro existente pelo email */
+export const addTeamMemberByEmailSchema = z.object({
+  email: z.string().email('E-mail inválido')
+})
+
+/** Schema para DELETE /api/team/remove/:barberId — params UUID */
+export const removeTeamMemberParamsSchema = z.object({
+  barberId: z.string().uuid('ID de barbeiro inválido')
+})

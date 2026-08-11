@@ -10,13 +10,15 @@ interface DesktopSidebarProps {
 export function DesktopSidebar({ activeTab, onChangeTab }: DesktopSidebarProps) {
   const { user, logout } = useAuthStore()
 
-  const navItems = [
-    { id: 'home' as BarberTab, label: 'Início', icon: Home },
-    { id: 'schedule' as BarberTab, label: 'Agenda', icon: Calendar },
-    { id: 'financial' as BarberTab, label: 'Carteira', icon: Wallet },
-    { id: 'booking' as BarberTab, label: 'Novo Agendamento', icon: Plus },
-    { id: 'settings' as BarberTab, label: 'Configurações', icon: Settings },
+  const navItems: { id: BarberTab; label: string; icon: typeof Home }[] = [
+    { id: 'home', label: 'Início', icon: Home },
+    { id: 'schedule', label: 'Agenda', icon: Calendar },
+    { id: 'financial', label: 'Carteira', icon: Wallet },
+    { id: 'booking', label: 'Novo Agendamento', icon: Plus },
+    { id: 'settings', label: 'Configurações', icon: Settings },
   ]
+
+
 
   return (
     <div className="hidden md:flex w-64 flex-col fixed inset-y-0 left-0 bg-figaro-black border-r border-white/10 z-50">

@@ -1,7 +1,7 @@
-import { Home, Calendar, Wallet, Scissors, Settings, Crown, Building2 } from 'lucide-react'
+import { Home, Calendar, Wallet, Scissors, Settings, Crown, Building2, Users } from 'lucide-react'
 import { useAuthStore } from '@/stores/auth.store'
 
-export type BarberTab = 'home' | 'schedule' | 'financial' | 'booking' | 'settings' | 'subscriptions' | 'saas' | 'network'
+export type BarberTab = 'home' | 'schedule' | 'financial' | 'booking' | 'settings' | 'subscriptions' | 'saas' | 'network' | 'team'
 
 interface BarberBottomNavProps {
   activeTab: BarberTab
@@ -23,6 +23,8 @@ export function BarberBottomNav({ activeTab, onChangeTab }: BarberBottomNavProps
   if (user?.role === 'OWNER') {
     tabs.push({ id: 'subscriptions', label: 'Clube', icon: Crown })
   }
+
+
 
   // Se o usuário for OWNER e plano ENTERPRISE, adicionamos a aba Rede
   if (user?.role === 'OWNER' && user?.subscriptionPlan === 'ENTERPRISE') {
