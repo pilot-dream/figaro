@@ -357,15 +357,18 @@ export function ClientBookingPage() {
                   })}
               </div>
 
+              {/* Floating Action Button */}
               {selectedServices.length > 0 && (
-                 <div className="pt-6">
+                <div className="fixed bottom-24 left-0 right-0 px-4 z-40 animate-in slide-in-from-bottom-10 fade-in duration-300 flex justify-center pointer-events-none">
+                  <div className="w-full max-w-xl mx-auto flex justify-center pointer-events-auto">
                     <button 
                       onClick={() => setStep(2)}
-                      className="w-full bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black font-semibold rounded-xl py-4 shadow-lg shadow-figaro-gold-base/30"
+                      className="w-full max-w-md bg-gradient-to-r from-figaro-gold-light to-figaro-gold-base text-black font-bold rounded-2xl py-4 shadow-[0_0_30px_rgba(212,175,55,0.3)] flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all"
                     >
-                      Prosseguir para Horários
+                      Avançar para Horários <span className="text-xl leading-none">→</span>
                     </button>
-                 </div>
+                  </div>
+                </div>
               )}
             </div>
           )}
