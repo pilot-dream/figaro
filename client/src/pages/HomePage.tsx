@@ -15,7 +15,7 @@ export function HomePage({ onStartBooking }: HomePageProps) {
   const [services, setServices] = useState<Service[]>([])
   const [barbers, setBarbers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
-  const { toggleService } = useBookingStore()
+  const { toggleService, selectedServices } = useBookingStore()
 
   useEffect(() => {
     async function loadData() {
@@ -32,7 +32,6 @@ export function HomePage({ onStartBooking }: HomePageProps) {
 
   const handleSelectService = (service: Service) => {
     toggleService(service)
-    onStartBooking()
   }
 
   return (
@@ -97,35 +96,44 @@ export function HomePage({ onStartBooking }: HomePageProps) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {services.map((srv) => (
-              <GlassCard
-                key={srv.id}
-                variant="interactive"
-                onClick={() => handleSelectService(srv)}
-                className="flex items-center justify-between group"
-              >
-                <div className="space-y-1.5 pr-4">
-                  <h4 className="font-semibold text-white group-hover:text-[var(--color-figaro-blue)] transition-colors">
-                    {srv.name}
-                  </h4>
-                  <p className="text-xs text-figaro-text-secondary line-clamp-2">{srv.description}</p>
-                  <div className="flex items-center gap-3 pt-1 text-xs text-figaro-text-secondary font-medium">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-[var(--color-figaro-amber)]" />
-                      {srv.durationMin} min
+            {services.map((srv) => {
+              const isSelected = selectedServices.some((s) => s.id === srv.id)
+              return (
+                <GlassCard
+                  key={srv.id}
+                  variant="interactive"
+                  onClick={() => handleSelectService(srv)}
+                  className={`flex items-center justify-between group transition-all duration-300 ${
+                    isSelected ? 'border-[var(--color-figaro-blue)] ring-1 ring-[var(--color-figaro-blue)] bg-[var(--color-figaro-blue)]/10' : ''
+                  }`}
+                >
+                  <div className="space-y-1.5 pr-4">
+                    <h4 className={`font-semibold transition-colors ${
+                      isSelected ? 'text-[var(--color-figaro-blue)]' : 'text-white group-hover:text-[var(--color-figaro-blue)]'
+                    }`}>
+                      {srv.name}
+                    </h4>
+                    <p className="text-xs text-figaro-text-secondary line-clamp-2">{srv.description}</p>
+                    <div className="flex items-center gap-3 pt-1 text-xs text-figaro-text-secondary font-medium">
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5 text-[var(--color-figaro-amber)]" />
+                        {srv.durationMin} min
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <span className="text-lg font-extrabold text-white block">
+                      R$ {srv.price.toFixed(2)}
+                    </span>
+                    <span className={`text-[10px] font-medium underline ${
+                      isSelected ? 'text-[var(--color-figaro-blue)]' : 'text-figaro-text-secondary group-hover:text-[var(--color-figaro-blue)]'
+                    }`}>
+                      {isSelected ? 'Selecionado' : 'Selecionar'}
                     </span>
                   </div>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <span className="text-lg font-extrabold text-white block">
-                    R$ {srv.price.toFixed(2)}
-                  </span>
-                  <span className="text-[10px] text-[var(--color-figaro-blue)] font-medium underline">
-                    Selecionar
-                  </span>
-                </div>
-              </GlassCard>
-            ))}
+                </GlassCard>
+              )
+            })}
           </div>
         )}
       </div>
@@ -170,6 +178,18 @@ export function HomePage({ onStartBooking }: HomePageProps) {
           </p>
         </div>
       </GlassCard>
+      {/* Floating Action Button */}
+      {selectedServices.length > 0 && (
+        <div className="fixed bottom-24 left-0 right-0 px-4 z-40 animate-in slide-in-from-bottom-10 fade-in duration-300 flex justify-center">
+          <Button 
+            size="lg" 
+            onClick={onStartBooking} 
+            className="w-full max-w-md shadow-[0_0_30px_rgba(17,175,250,0.3)] bg-[var(--color-figaro-blue)] hover:bg-[#0B9AE0] text-white rounded-2xl py-4 font-bold text-base flex items-center justify-center gap-2"
+          >
+            Avançar para Horários <ArrowRight className="w-5 h-5" />
+          </Button>
+        </div>
+      )}
     </div>
   )
 }
