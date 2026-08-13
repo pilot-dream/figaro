@@ -136,7 +136,7 @@ export function ClientBookingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen w-full bg-figaro-black text-white overflow-x-hidden pb-24">
+      <div className="min-h-[100dvh] w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
         <div className="px-4 py-20 flex justify-center">
           <div className="w-16 h-16 border-4 border-figaro-gold-base border-t-transparent rounded-full animate-spin" />
         </div>
@@ -146,7 +146,7 @@ export function ClientBookingPage() {
 
   if (notFound || !barber) {
     return (
-      <div className="min-h-screen w-full bg-figaro-black text-white overflow-x-hidden pb-24">
+      <div className="min-h-[100dvh] w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
         <div className="px-4 py-20 flex justify-center items-center">
           <div className="p-8 space-y-4 bg-white/5 backdrop-blur-md border border-white/10 text-center">
             <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
@@ -163,7 +163,7 @@ export function ClientBookingPage() {
 
   if (completed) {
     return (
-      <div className="min-h-screen w-full bg-figaro-black text-white overflow-x-hidden pb-24">
+      <div className="min-h-[100dvh] w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
         <div className="px-4 py-12 flex flex-col items-center">
           <div className="p-8 text-center space-y-6 bg-white/5 backdrop-blur-md border border-white/10 w-full">
             <div className="w-20 h-20 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center mx-auto border border-green-500/30">
@@ -196,7 +196,7 @@ export function ClientBookingPage() {
   return (
     <LocalErrorBoundary>
       {/* 1. Main Wrapper STRICTLY matched */}
-      <div className="min-h-screen w-full bg-figaro-black text-white overflow-x-hidden pb-24">
+      <div className="min-h-[100dvh] w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
         <div className="px-4 pt-6 space-y-6">
           
           {/* Header */}

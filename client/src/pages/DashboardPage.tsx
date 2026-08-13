@@ -127,7 +127,7 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="flex w-full min-h-screen">
+    <div className="flex w-full min-h-[100dvh]">
       {/* Sidebar Desktop */}
       <DesktopSidebar activeTab={activeTab} onChangeTab={setActiveTab} />
       

@@ -131,7 +131,7 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
 
   const displayedBarbers = showAllBarbers || recentBarbers.length === 0 ? barbers : recentBarbers;
   return (
-    <div className="min-h-screen w-full bg-figaro-black text-white pb-24 overflow-x-hidden">
+    <div className="min-h-[100dvh] w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
       
       {/* Header */}
       <div className="px-6 pt-6 pb-6 flex items-center">
@@ -274,7 +274,7 @@ export function MyAppointments({ onNewBooking }: { onNewBooking?: () => void }) 
 
       {/* Modal for Selecting Recent Barbers - adapted to Full Screen Dark Mode */}
       {showSelectBarberModal && (
-        <div className="fixed inset-0 min-h-screen w-full bg-figaro-black z-50 overflow-y-auto pb-24">
+        <div className="fixed inset-0 min-h-[100dvh] w-full bg-[#0A0E14] z-50 overflow-y-auto pb-24">
           <div className="flex items-center px-4 py-4 mt-2 border-b border-white/10">
             <button
               onClick={() => {

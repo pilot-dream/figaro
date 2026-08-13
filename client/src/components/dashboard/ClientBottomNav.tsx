@@ -16,7 +16,7 @@ export function ClientBottomNav({ onActionClick }: ClientBottomNavProps) {
   const isProfile = currentPath === '/perfil'
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 pt-2">
+    <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-2">
       <nav className="bg-figaro-black/85 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/80 flex items-center justify-around px-8 py-1.5 max-w-lg mx-auto rounded-full relative">
           
           {/* Lado Esquerdo: Agenda */}

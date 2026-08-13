@@ -63,7 +63,7 @@ export function SubscriptionCheckout() {
   }
 
   return (
-    <div className="min-h-screen bg-figaro-black text-white p-4 sm:p-6 md:p-8">
+    <div className="min-h-[100dvh] bg-[#0A0E14] text-white p-4 sm:p-6 md:p-8">
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-center gap-4">

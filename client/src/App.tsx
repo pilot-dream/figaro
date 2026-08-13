@@ -60,19 +60,19 @@ export default function App() {
 
   if (!initialized) {
     return (
-      <div className="min-h-screen w-full bg-figaro-black flex items-center justify-center">
+      <div className="min-h-[100dvh] w-full bg-[#0A0E14] text-white overflow-x-hidden flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-[var(--color-figaro-blue)] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#05070a] text-figaro-text-primary relative overflow-x-hidden">
+    <div className="min-h-[100dvh] w-full bg-[#0A0E14] text-white overflow-x-hidden relative">
       <ToastContainer />
       <ConfirmModal />
       {/* Ambient Glow Orbs Removed as per request to destroy blue background */}
       {/* Main Container conditionally constrained */}
-      <main className={`relative z-10 w-full min-h-screen bg-figaro-black shadow-[0_0_40px_rgba(0,0,0,0.5)] ${
+      <main className={`relative z-10 w-full min-h-[100dvh] bg-[#0A0E14] shadow-[0_0_40px_rgba(0,0,0,0.5)] ${
         isPublicRoute 
           ? '' 
           : user && ['BARBER', 'MANAGER', 'OWNER'].includes(user.role) 
@@ -82,7 +82,7 @@ export default function App() {
         {/* Simple User Header Bar when authenticated */}
         {user && (
           <>
-            <div className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between py-3 px-6 border-b border-white/10 bg-figaro-black/85 backdrop-blur-xl ${
+            <div className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-3 px-6 border-b border-white/10 bg-figaro-black/85 backdrop-blur-xl ${
               ['BARBER', 'MANAGER', 'OWNER'].includes(user.role) ? 'md:hidden' : 'max-w-xl mx-auto'
             }`}>
             <div className="flex items-center gap-2">

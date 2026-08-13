@@ -135,7 +135,7 @@ export function BarberBookingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-figaro-black text-white py-20 flex justify-center">
+      <div className="min-h-[100dvh] bg-[#0A0E14] text-white overflow-x-hidden py-20 flex justify-center">
         <div className="w-16 h-16 border-4 border-figaro-gold-base border-t-transparent rounded-full animate-spin" />
       </div>
     )
@@ -143,7 +143,7 @@ export function BarberBookingPage() {
 
   if (notFound || !barber) {
     return (
-      <div className="min-h-screen bg-figaro-black text-white py-20 flex justify-center items-center px-4">
+      <div className="min-h-[100dvh] bg-[#0A0E14] text-white overflow-x-hidden py-20 flex justify-center items-center px-4">
         <div className="p-8 space-y-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl max-w-sm text-center">
           <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
           <h2 className="text-white font-bold text-lg">Barbeiro não encontrado</h2>
@@ -158,7 +158,7 @@ export function BarberBookingPage() {
 
   if (completed) {
     return (
-      <div className="min-h-screen bg-figaro-black text-white py-12 px-4 flex flex-col items-center">
+      <div className="min-h-[100dvh] bg-[#0A0E14] text-white overflow-x-hidden py-12 px-4 flex flex-col items-center">
         <div className="p-8 text-center space-y-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl max-w-md w-full">
           <div className="w-20 h-20 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center mx-auto border border-green-500/30">
             <CheckCircle2 className="w-12 h-12" />
@@ -189,7 +189,7 @@ export function BarberBookingPage() {
   return (
     <LocalErrorBoundary>
       {/* 1. Main Wrapper STRICTLY matched */}
-      <div className="min-h-screen bg-figaro-black text-white pb-32">
+      <div className="min-h-[100dvh] bg-[#0A0E14] text-white overflow-x-hidden pb-32">
         <div className="max-w-md mx-auto px-4 pt-6 space-y-6">
           
           {/* Header */}

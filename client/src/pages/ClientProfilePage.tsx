@@ -60,7 +60,7 @@ export function ClientProfilePage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-figaro-black text-white pb-24 overflow-x-hidden">
+    <div className="min-h-[100dvh] w-full bg-[#0A0E14] text-white overflow-x-hidden pb-24">
       {/* Avatar Section */}
       <div className="px-6 flex flex-col items-center mt-2 mb-8">
         <div className="relative">

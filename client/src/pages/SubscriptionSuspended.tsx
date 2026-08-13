@@ -2,7 +2,7 @@ import { ShieldAlert, ArrowRight } from 'lucide-react'
 
 export function SubscriptionSuspended() {
   return (
-    <div className="min-h-screen w-full bg-figaro-black flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-[100dvh] w-full bg-[#0A0E14] text-white overflow-x-hidden flex flex-col items-center justify-center p-4 relative overflow-hidden">
       {/* Ambient Glows */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-500/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-[#11AFFA]/5 to-transparent pointer-events-none" />
