@@ -707,6 +707,26 @@ export async function createBlockedTime(
   }
 }
 
+export async function fetchBarberBlockedTimes(barberId: string, dateStr: string): Promise<any[]> {
+  const startOfDay = new Date(`${dateStr}T00:00:00-03:00`).toISOString()
+  const endOfDay = new Date(`${dateStr}T23:59:59-03:00`).toISOString()
+
+  const { data, error } = await supabase
+    .from('blocked_times')
+    .select('*')
+    .eq('barber_id', barberId)
+    .gte('start_time', startOfDay)
+    .lt('start_time', endOfDay)
+    .order('start_time', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching blocked times:', error.message)
+    return []
+  }
+
+  return data || []
+}
+
 export async function updateClientNotes(clientId: string, notes: string): Promise<void> {
   const { error } = await supabase
     .from('profiles')

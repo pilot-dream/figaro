@@ -10,11 +10,12 @@ interface BlockTimeModalProps {
 
 export function BlockTimeModal({ onClose, onBlock }: BlockTimeModalProps) {
   const [reason, setReason] = useState('Almoço / Pausa Técnica')
-  const [time, setTime] = useState('12:00 - 13:00')
+  const [startTime, setStartTime] = useState('12:00')
+  const [endTime, setEndTime] = useState('13:00')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onBlock(reason, time)
+    onBlock(reason, `${startTime} - ${endTime}`)
     onClose()
   }
 
@@ -24,7 +25,7 @@ export function BlockTimeModal({ onClose, onBlock }: BlockTimeModalProps) {
         <div className="flex items-center justify-between border-b border-white/10 pb-3">
           <div className="flex items-center gap-2 text-[var(--color-figaro-terracotta)] font-bold text-base">
             <Lock className="w-5 h-5" />
-            <span>Bloqueio Rápido de Horário</span>
+            <span>Bloqueio Personalizado de Horário</span>
           </div>
           <button onClick={onClose} className="p-1 rounded-full text-figaro-text-secondary hover:text-white">
             <X className="w-5 h-5" />
@@ -43,17 +44,27 @@ export function BlockTimeModal({ onClose, onBlock }: BlockTimeModalProps) {
             />
           </div>
 
-          <div>
-            <label className="text-figaro-text-secondary block font-semibold mb-1">Horário da Pausa</label>
-            <select
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-glass-border text-white text-xs focus:outline-none"
-            >
-              <option value="12:00 - 13:00">12:00 - 13:00 (Almoço)</option>
-              <option value="15:00 - 15:30">15:00 - 15:30 (Pausa Tarde)</option>
-              <option value="18:00 - 18:30">18:00 - 18:30 (Manutenção Equipamentos)</option>
-            </select>
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <label className="text-figaro-text-secondary block font-semibold mb-1">Início</label>
+              <input
+                type="time"
+                required
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs focus:outline-none focus:border-figaro-gold-base"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="text-figaro-text-secondary block font-semibold mb-1">Fim</label>
+              <input
+                type="time"
+                required
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-glass-border text-white text-xs focus:outline-none focus:border-figaro-gold-base"
+              />
+            </div>
           </div>
 
           <div className="flex items-center justify-end gap-2 pt-2">

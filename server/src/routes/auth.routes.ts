@@ -72,24 +72,30 @@ router.post('/register', async (req, res, next) => {
     }
 
     // Usamos upsert para evitar race condition com a trigger do banco (ou caso a trigger não exista)
-    await prisma.user.upsert({
-      where: { id: authData.user.id },
-      update: {
-        role: assignedRole,
-        name,
-        phone: phone || null,
-        ownerId: ownerForInvite?.id || null,
-        slug: slug,
-      },
-      create: { 
-        id: authData.user.id,
-        name,
-        phone: phone || null,
-        role: assignedRole,
-        ownerId: ownerForInvite?.id || null,
-        slug: slug,
-      }
-    })
+    try {
+      await prisma.user.upsert({
+        where: { id: authData.user.id },
+        update: {
+          role: assignedRole,
+          name,
+          phone: phone || null,
+          ownerId: ownerForInvite?.id || null,
+          slug: slug,
+        },
+        create: { 
+          id: authData.user.id,
+          name,
+          phone: phone || null,
+          role: assignedRole,
+          ownerId: ownerForInvite?.id || null,
+          slug: slug,
+        }
+      })
+    } catch (upsertError) {
+      console.error('CRITICAL UPSERT ERROR IN REGISTER:', upsertError)
+      await supabaseAdmin.auth.admin.deleteUser(authData.user.id)
+      return res.status(500).json({ error: 'Erro ao configurar a conta. Por favor, tente novamente.' })
+    }
 
     try {
       // Vincula agendamentos

@@ -27,7 +27,7 @@ export function RegisterPage() {
     setLoading(true)
 
     try {
-      const user = await register({
+      await register({
         name,
         email,
         phone,
@@ -36,15 +36,10 @@ export function RegisterPage() {
         inviteToken: inviteToken || undefined,
       })
 
-      if (redirect) {
-        navigate(redirect)
-      } else if (user.role === 'BARBER' || user.role === 'MANAGER' || user.role === 'OWNER') {
-        navigate('/painel')
-      } else {
-        navigate('/meus-agendamentos')
-      }
+      useToastStore.getState().addToast('Conta criada com sucesso, por favor faça login', 'success')
+      navigate('/login')
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Erro ao realizar cadastro'
+      const message = err instanceof Error ? err.message : 'Houve um erro ao criar a conta'
       useToastStore.getState().addToast(message, 'error')
     } finally {
       setLoading(false)

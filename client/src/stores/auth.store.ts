@@ -84,15 +84,10 @@ export const useAuthStore = create<AuthState>((set) => ({
         throw new Error(data.error || 'Falha ao criar conta')
       }
 
-      // Após criar a conta no backend com sucesso (que já cria no Supabase Auth via Admin API),
-      // nós apenas fazemos o login usando as mesmas credenciais para obter a sessão.
-      const signInResult = await supabase.auth.signInWithPassword({ email, password })
-      if (signInResult.error) throw new Error(signInResult.error.message)
-      if (!signInResult.data.user) throw new Error('Usuário não encontrado após login')
-
-      const profile = await fetchProfile(signInResult.data.user.id, signInResult.data.user.email)
-      set({ user: profile, loading: false })
-      return profile
+      // The account is created successfully on the backend.
+      // We no longer auto-login here as requested by the user.
+      set({ loading: false })
+      return undefined as any
     } catch (err: any) {
       set({ loading: false })
       throw err

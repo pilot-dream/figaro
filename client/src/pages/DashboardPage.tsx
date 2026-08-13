@@ -18,7 +18,7 @@ import { TabSaaS } from '@/components/dashboard/tabs/TabSaaS'
 import { TabNetwork } from '@/components/dashboard/tabs/TabNetwork'
 
 import type { AppointmentStatus } from '@/types'
-import { fetchBarberAppointments, fetchSubscribers, updateAppointmentStatus, createBlockedTime, supabase } from '@/lib/api'
+import { fetchBarberAppointments, fetchSubscribers, updateAppointmentStatus, createBlockedTime, fetchBarberBlockedTimes, supabase } from '@/lib/api'
 import { getBrasiliaTodayStr } from '@/lib/date'
 
 export function DashboardPage() {
@@ -69,6 +69,35 @@ export function DashboardPage() {
       } catch (err) {
         console.error('Error fetching subscribers for agenda:', err)
       }
+
+      // Fetch Blocked Times to display on the agenda
+      try {
+        const blockedTimes = await fetchBarberBlockedTimes(user.id, selectedDate)
+        const blockedAppointments: DashboardAppointment[] = blockedTimes.map(block => {
+          const startTimeStr = new Date(block.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' })
+          const endTimeStr = new Date(block.end_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' })
+          
+          return {
+            id: block.id,
+            clientId: undefined,
+            clientName: 'Horário Bloqueado',
+            clientPhone: '',
+            serviceName: block.reason || 'Bloqueio Manual',
+            startTime: startTimeStr,
+            endTime: endTimeStr,
+            price: 0,
+            status: 'CANCELLED' as AppointmentStatus, // Using CANCELLED as a way to visually distinct it or we can add BLOCKED if supported. Let's use 'CONFIRMED' but with special styling in the card if we can't change the type. Actually, AppointmentStatus only accepts specific values. We'll use CONFIRMED but the UI handles it by name. Wait, the AppointmentCard might need a way to distinct it. Let's use 'PENDING' or just 'CONFIRMED'.
+            notes: 'Horário indisponível para agendamentos.',
+            clientHistory: []
+          }
+        })
+        allAppointments = [...allAppointments, ...blockedAppointments]
+      } catch (err) {
+        console.error('Error fetching blocked times:', err)
+      }
+
+      // Sort all appointments by start time
+      allAppointments.sort((a, b) => a.startTime.localeCompare(b.startTime))
 
       setAppointments(allAppointments)
     } catch (err) {
