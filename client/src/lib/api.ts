@@ -61,44 +61,6 @@ export async function uploadImage(file: File, bucketName: string = 'avatars'): P
 }
 
 // ==========================================
-// SEED DEFAULT DATA IF SUPABASE TABLES ARE EMPTY
-// ==========================================
-const DEFAULT_SERVICES = [
-  {
-    name: 'Corte Figaro Signature',
-    description: 'Corte tesoura/máquina com lavagem especial, finalização e massagem capilar.',
-    duration_min: 45,
-    price: 75.0,
-    is_active: true,
-    sort_order: 1,
-  },
-  {
-    name: 'Barba Terapia com Toalha Quente',
-    description: 'Modelagem de barba com óleo essencial, toalha aquecida e massagem facial.',
-    duration_min: 30,
-    price: 55.0,
-    is_active: true,
-    sort_order: 2,
-  },
-  {
-    name: 'Combo Imperial (Corte + Barba)',
-    description: 'Experiência completa de corte e barba com alinhamento de sobrancelha cortesia.',
-    duration_min: 70,
-    price: 115.0,
-    is_active: true,
-    sort_order: 3,
-  },
-  {
-    name: 'Acabamento & Pezinho',
-    description: 'Manutenção de contornos, nuca e nuca limpa com navalha afiada.',
-    duration_min: 20,
-    price: 30.0,
-    is_active: true,
-    sort_order: 4,
-  },
-]
-
-// ==========================================
 // SERVICES API
 // ==========================================
 export async function fetchServices(): Promise<Service[]> {
@@ -111,18 +73,6 @@ export async function fetchServices(): Promise<Service[]> {
   if (error) {
     console.error('Error fetching services:', error.message)
     return []
-  }
-
-  // Auto-seed default services if DB table is empty
-  if (!data || data.length === 0) {
-    const { data: inserted } = await supabase
-      .from('services')
-      .insert(DEFAULT_SERVICES)
-      .select('*')
-
-    if (inserted) {
-      return inserted.map(mapServiceFromDb)
-    }
   }
 
   return (data || []).map(mapServiceFromDb)
